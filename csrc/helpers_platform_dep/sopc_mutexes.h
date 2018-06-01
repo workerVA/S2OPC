@@ -45,4 +45,6 @@ SOPC_ReturnStatus Mutex_UnlockAndWaitCond(Condition* cond, Mutex* mut);
 // Lock on return. Return SOPC_STATUS_TIMEOUT in case of timeout before condition signaled
 SOPC_ReturnStatus Mutex_UnlockAndTimedWaitCond(Condition* cond, Mutex* mut, uint32_t milliSecs);
 
+SOPC_ReturnStatus DoOnce(Once* once, void (*func)(void));
+
 #endif /* SOPC_MUTEXES_H_ */

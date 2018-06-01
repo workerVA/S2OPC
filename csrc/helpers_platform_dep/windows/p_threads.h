@@ -37,4 +37,8 @@ typedef struct Thread
     void* args;
 } Thread;
 
+typedef INIT_ONCE Once;
+
+#define ONCE_STATIC_INIT INIT_ONCE_STATIC_INIT
+
 #endif /* SOPC_P_THREADS_H_ */

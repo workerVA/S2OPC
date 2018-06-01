@@ -135,6 +135,35 @@ SOPC_ReturnStatus Mutex_UnlockAndTimedWaitCond(Condition* cond, Mutex* mut, uint
     return status;
 }
 
+struct once_ctx
+{
+    void (*func)(void);
+};
+
+static BOOL CALLBACK once_proxy(PINIT_ONCE once, PVOID param, PVOID *context)
+{
+    (void) once;
+    (void) context;
+    struct once_ctx *ctx = param;
+    ctx->func();
+    return true;
+}
+
+SOPC_ReturnStatus DoOnce(Once* once, void (*func)(void))
+{
+    if (once == NULL || func == NULL)
+    {
+        return SOPC_STATUS_INVALID_PARAMETERS;
+    }
+
+    struct once_ctx ctx = {
+        .func = func,
+    };
+
+    InitOnceExecuteOnce(once, once_proxy, &ctx, NULL);
+    return SOPC_STATUS_OK;
+}
+
 DWORD WINAPI SOPC_Thread_StartFct(LPVOID args)
 {
     Thread* thread = (Thread*) args;

@@ -26,4 +26,8 @@ typedef pthread_cond_t Condition;
 
 typedef pthread_t Thread;
 
+typedef pthread_once_t Once;
+
+#define ONCE_STATIC_INIT PTHREAD_ONCE_INIT
+
 #endif /* SOPC_P_THREADS_H_ */

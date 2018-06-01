@@ -23,6 +23,7 @@
  * http://check.sourceforge.net/doc/check_html/check_4.html#No-Fork-Mode
  */
 
+#include <inttypes.h>
 #include <check.h>
 #include <stdlib.h>
 
@@ -317,6 +318,28 @@ START_TEST(test_thread_condvar)
 }
 END_TEST
 
+static int once_var = 0;
+
+static void once_init(void)
+{
+    once_var++;
+}
+
+START_TEST(test_thread_once)
+{
+    Once once1 = ONCE_STATIC_INIT;
+    Once once2 = ONCE_STATIC_INIT;
+
+    ck_assert_int_eq(0, once_var);
+    ck_assert_int_eq(SOPC_STATUS_OK, DoOnce(&once1, once_init));
+    ck_assert_int_eq(1, once_var);
+    ck_assert_int_eq(SOPC_STATUS_OK, DoOnce(&once1, once_init));
+    ck_assert_int_eq(1, once_var);
+    ck_assert_int_eq(SOPC_STATUS_OK, DoOnce(&once2, once_init));
+    ck_assert_int_eq(2, once_var);
+}
+END_TEST
+
 Suite* tests_make_suite_threads(void)
 {
     Suite* s;
@@ -331,6 +354,9 @@ Suite* tests_make_suite_threads(void)
     suite_add_tcase(s, tc_thread_mutex);
     tc_thread_mutex = tcase_create("Threads and condition variables");
     tcase_add_test(tc_thread_mutex, test_thread_condvar);
+    suite_add_tcase(s, tc_thread_mutex);
+    tc_thread_mutex = tcase_create("Once");
+    tcase_add_test(tc_thread_mutex, test_thread_once);
     suite_add_tcase(s, tc_thread_mutex);
 
     return s;

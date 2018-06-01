@@ -204,6 +204,16 @@ SOPC_ReturnStatus Mutex_UnlockAndTimedWaitCond(Condition* cond, Mutex* mut, uint
     return status;
 }
 
+SOPC_ReturnStatus DoOnce(Once* once, void (*func)(void))
+{
+    if (once == NULL || func == NULL)
+    {
+        return SOPC_STATUS_INVALID_PARAMETERS;
+    }
+
+    return (pthread_once(once, func) == 0) ? SOPC_STATUS_OK : SOPC_STATUS_NOK;
+}
+
 SOPC_ReturnStatus SOPC_Thread_Create(Thread* thread, void* (*startFct)(void*), void* startArgs)
 {
     SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
