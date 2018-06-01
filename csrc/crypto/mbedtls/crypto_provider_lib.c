@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "crypto_init.h"
 #include "crypto_provider_lib.h"
 
 #include "../sopc_crypto_decl.h"
@@ -33,6 +34,8 @@
 
 SOPC_ReturnStatus SOPC_CryptoProvider_Init(SOPC_CryptoProvider* pCryptoProvider)
 {
+    SOPC_MbedTLS_Init();
+
     SOPC_CryptolibContext* pctx = NULL;
 
     if (NULL == pCryptoProvider)

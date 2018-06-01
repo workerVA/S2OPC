@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "crypto_init.h"
 #include "key_manager_lib.h"
 
 #include "../sopc_crypto_profiles.h"
@@ -38,6 +39,8 @@ SOPC_ReturnStatus SOPC_KeyManager_AsymmetricKey_CreateFromBuffer(const uint8_t* 
                                                                  uint32_t lenBuf,
                                                                  SOPC_AsymmetricKey** ppKey)
 {
+    SOPC_MbedTLS_Init();
+
     SOPC_AsymmetricKey* key = NULL;
 
     if (NULL == buffer || 0 == lenBuf || NULL == ppKey)
@@ -70,6 +73,8 @@ SOPC_ReturnStatus SOPC_KeyManager_AsymmetricKey_CreateFromFile(const char* szPat
                                                                char* password,
                                                                uint32_t lenPassword)
 {
+    SOPC_MbedTLS_Init();
+
     SOPC_AsymmetricKey* key = NULL;
 
     if (NULL == szPath || NULL == ppKey)
@@ -101,6 +106,8 @@ SOPC_ReturnStatus SOPC_KeyManager_AsymmetricKey_CreateFromFile(const char* szPat
 SOPC_ReturnStatus SOPC_KeyManager_AsymmetricKey_CreateFromCertificate(const SOPC_Certificate* pCert,
                                                                       SOPC_AsymmetricKey** pKey)
 {
+    SOPC_MbedTLS_Init();
+
     if (NULL == pCert || NULL == pKey)
         return SOPC_STATUS_INVALID_PARAMETERS;
     *pKey = malloc(sizeof(SOPC_AsymmetricKey));
@@ -140,6 +147,8 @@ SOPC_ReturnStatus SOPC_KeyManager_AsymmetricKey_ToDER(const SOPC_AsymmetricKey* 
                                                       uint32_t lenDest,
                                                       uint32_t* pLenWritten)
 {
+    SOPC_MbedTLS_Init();
+
     SOPC_ReturnStatus status = SOPC_STATUS_NOK;
     uint8_t* buffer = NULL;
     int lengthWritten = 0;
@@ -174,6 +183,8 @@ SOPC_ReturnStatus SOPC_KeyManager_Certificate_CreateFromDER(const uint8_t* buffe
                                                             uint32_t lenDER,
                                                             SOPC_Certificate** ppCert)
 {
+    SOPC_MbedTLS_Init();
+
     mbedtls_x509_crt* crt = NULL;
     SOPC_Certificate* certif = NULL;
 
@@ -215,6 +226,8 @@ SOPC_ReturnStatus SOPC_KeyManager_Certificate_CreateFromDER(const uint8_t* buffe
  */
 SOPC_ReturnStatus SOPC_KeyManager_Certificate_CreateFromFile(const char* szPath, SOPC_Certificate** ppCert)
 {
+    SOPC_MbedTLS_Init();
+
     mbedtls_x509_crt* crt = NULL;
     SOPC_Certificate* certif = NULL;
 
