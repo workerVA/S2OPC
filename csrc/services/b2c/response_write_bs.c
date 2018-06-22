@@ -137,20 +137,32 @@ void response_write_bs__reset_ResponseWrite(void)
   @ requires (response_write_bs__wvi <= nb_req) ==> \valid(arr_StatusCode + (response_write_bs__wvi));
   @ assigns *response_write_bs__isvalid;
   @ assigns *response_write_bs__sc;
-  @ ensures *response_write_bs__isvalid == false ==> response_write_bs__wvi > nb_req;
-  @ ensures *response_write_bs__isvalid == true ==> 0 <= response_write_bs__wvi <= nb_req;
+  @
+  @ behavior isvalid_true :
+  @ 	assumes response_write_bs__wvi <= nb_req;
+  @ 	ensures *response_write_bs__isvalid == true;
+  @
+  @ behavior isvalid_false :
+  @ 	assumes response_write_bs__wvi > nb_req;
+  @ 	ensures *response_write_bs__isvalid == false;
+  @
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
  */
 
 void response_write_bs__getall_ResponseWrite_StatusCode(const constants__t_WriteValue_i response_write_bs__wvi,
                                                         t_bool* const response_write_bs__isvalid,
                                                         constants__t_StatusCode_i* const response_write_bs__sc)
 {
-    *response_write_bs__isvalid = false;
-
     if (response_write_bs__wvi <= nb_req) /* It is not necessary to test arr_StatusCode */
     {
         *response_write_bs__isvalid = true;
         util_status_code__C_to_B(arr_StatusCode[response_write_bs__wvi], response_write_bs__sc);
+    }
+    else
+    {
+        *response_write_bs__isvalid = false;
     }
 }
 
@@ -165,20 +177,23 @@ void response_write_bs__set_ResponseWrite_StatusCode(const constants__t_WriteVal
     util_status_code__B_to_C(response_write_bs__sc, &arr_StatusCode[response_write_bs__wvi]);
 }
 
-/*@ requires \valid((OpcUa_WriteResponse*) response_write_bs__msg_out);
+/*@ requires \valid(msg_write_resp);
   @ requires (nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req)
   ==> (\valid(arr_StatusCode) && \valid(arr_StatusCode+(1..nb_req)));
-  @ assigns ((OpcUa_WriteResponse*) response_write_bs__msg_out)->NoOfResults;
-  @ assigns ((OpcUa_WriteResponse*) response_write_bs__msg_out)->Results;
-  @ assigns ((OpcUa_WriteResponse*) response_write_bs__msg_out)->NoOfDiagnosticInfos;
-  @ assigns ((OpcUa_WriteResponse*) response_write_bs__msg_out)->DiagnosticInfos;
+  @ assigns msg_write_resp->NoOfResults;
+  @ assigns msg_write_resp->Results;
+  @ assigns *(msg_write_resp->Results);
+  @ assigns msg_write_resp->NoOfDiagnosticInfos;
+  @ assigns msg_write_resp->DiagnosticInfos;
+  @ ensures nb_req > 0 ==> \forall integer x; 1 <= x <= nb_req ==> msg_write_resp->Results[x] == arr_StatusCode[x]; // Not true in case of memory error
+  @ ensures msg_write_resp->NoOfDiagnosticInfos == 0;
+  @ ensures msg_write_resp->DiagnosticInfos == \null;
+  // No ensures for NoOfResults in case of memory error
  */
 
-/* TODO: Separate in sub function for cast traversal */
 
-void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i response_write_bs__msg_out)
+void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
 {
-    OpcUa_WriteResponse* msg_write_resp = (OpcUa_WriteResponse*) response_write_bs__msg_out;
     SOPC_StatusCode* lsc = NULL;
 
     if (nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req)
@@ -201,4 +216,11 @@ void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i res
     msg_write_resp->Results = lsc;
     msg_write_resp->NoOfDiagnosticInfos = 0;
     msg_write_resp->DiagnosticInfos = NULL;
+}
+
+void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i response_write_bs__msg_out)
+{
+    OpcUa_WriteResponse* msg_write_resp = (OpcUa_WriteResponse*) response_write_bs__msg_out;
+
+    s_write_WriteResponse_msg_out(msg_write_resp);
 }
