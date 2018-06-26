@@ -34,6 +34,9 @@
 #include "sopc_toolkit_constants.h"
 #include "sopc_types.h"
 
+#include <assert.h>
+#include "cast_wrapper.h"
+
 /* Globals */
 static SOPC_StatusCode* arr_StatusCode; /* Indexed from 1, first element is never used. */
 static t_entier4 nb_req;
@@ -54,7 +57,8 @@ void response_write_bs__INITIALISATION(void)
 /*@ requires \valid(response_write_bs__ResponseWrite_allocated);
   @ requires \valid(arr_StatusCode);
   @ assigns nb_req;
-  @ assigns *arr_StatusCode;
+  @ assigns arr_StatusCode;
+  @ assigns arr_StatusCode[0..response_write_bs__nb_req + 1];
   @ assigns *response_write_bs__ResponseWrite_allocated;
   @
   @ behavior has_allocated:
@@ -67,7 +71,8 @@ void response_write_bs__INITIALISATION(void)
   @ 	ensures nb_req == response_write_bs__nb_req;
   @
   @ behavior not_allocated:
-  @ 	assumes response_write_bs__nb_req < 0 || (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode);
+  @ 	assumes response_write_bs__nb_req < 0 || (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX /
+  sizeof(SOPC_StatusCode);
   @ 	ensures arr_StatusCode == \null;
   @ 	ensures *response_write_bs__ResponseWrite_allocated == false;
   @ 	ensures nb_req == 0;
@@ -79,7 +84,6 @@ void response_write_bs__INITIALISATION(void)
 /* Can response_write_bs__nb_req be at MAX_INT ?
  * Can we suppose that response_write_bs__nb_req will never be negative normally ?*/
 
-
 void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 response_write_bs__nb_req,
                                                              t_bool* const response_write_bs__ResponseWrite_allocated)
 {
@@ -88,9 +92,9 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
 
     /* MAX_INT problem */
     if (response_write_bs__nb_req >= 0 &&
-    		(uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode))
+        (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode))
     {
-    	/* MAX_INT problem */
+        /* MAX_INT problem */
         arr_StatusCode = (SOPC_StatusCode*) malloc(sizeof(SOPC_StatusCode) * (size_t)(response_write_bs__nb_req + 1));
     }
     else
@@ -99,11 +103,10 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
     }
     if (NULL != arr_StatusCode)
     {
-
-    	/*@ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
-    	  @ loop assigns arr_StatusCode[0..i];
-    	  @ loop variant response_write_bs__nb_req + 1 - i;
-    	 */
+        /*@ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
+          @ loop assigns arr_StatusCode[0..i];
+          @ loop variant response_write_bs__nb_req + 1 - i;
+         */
 
         for (int32_t i = 0; i <= response_write_bs__nb_req; i++)
         {
@@ -137,18 +140,9 @@ void response_write_bs__reset_ResponseWrite(void)
   @ requires (response_write_bs__wvi <= nb_req) ==> \valid(arr_StatusCode + (response_write_bs__wvi));
   @ assigns *response_write_bs__isvalid;
   @ assigns *response_write_bs__sc;
-  @
-  @ behavior isvalid_true :
-  @ 	assumes response_write_bs__wvi <= nb_req;
-  @ 	ensures *response_write_bs__isvalid == true;
-  @
-  @ behavior isvalid_false :
-  @ 	assumes response_write_bs__wvi > nb_req;
-  @ 	ensures *response_write_bs__isvalid == false;
-  @
-  @
-  @ complete behaviors;
-  @ disjoint behaviors;
+  @ ensures (response_write_bs__wvi <= nb_req) ==> *response_write_bs__isvalid == true;
+  @ ensures (response_write_bs__wvi > nb_req) ==> *response_write_bs__isvalid == false && *response_write_bs__sc ==
+  \old(*response_write_bs__sc);
  */
 
 void response_write_bs__getall_ResponseWrite_StatusCode(const constants__t_WriteValue_i response_write_bs__wvi,
@@ -185,12 +179,12 @@ void response_write_bs__set_ResponseWrite_StatusCode(const constants__t_WriteVal
   @ assigns *(msg_write_resp->Results);
   @ assigns msg_write_resp->NoOfDiagnosticInfos;
   @ assigns msg_write_resp->DiagnosticInfos;
-  @ ensures nb_req > 0 ==> \forall integer x; 1 <= x <= nb_req ==> msg_write_resp->Results[x] == arr_StatusCode[x]; // Not true in case of memory error
+  @ ensures nb_req > 0 ==> \forall integer x; 1 <= x <= nb_req ==> msg_write_resp->Results[x] == arr_StatusCode[x]; //
+  Not true in case of memory error
   @ ensures msg_write_resp->NoOfDiagnosticInfos == 0;
   @ ensures msg_write_resp->DiagnosticInfos == \null;
   // No ensures for NoOfResults in case of memory error
  */
-
 
 void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
 {
@@ -220,6 +214,8 @@ void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
 
 void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i response_write_bs__msg_out)
 {
+    assert(*(SOPC_EncodeableType**) response_write_bs__msg_out == &OpcUa_WriteRequest_EncodeableType);
+
     OpcUa_WriteResponse* msg_write_resp = (OpcUa_WriteResponse*) response_write_bs__msg_out;
 
     s_write_WriteResponse_msg_out(msg_write_resp);
