@@ -99,7 +99,8 @@ void service_browse_decode_bs__decode_browse_request(
     s_decode_browse_request(req, service_browse_decode_bs__StatusCode_service);
 }
 
-/*@ assigns request;
+/*@ requires \valid(request);
+  @ assigns request;
   @ ensures request == \null;
  */
 
@@ -181,8 +182,62 @@ extern void service_browse_decode_bs__get_BrowseView(constants__t_NodeId_i* cons
     }
 }
 
-/*@
- */
+/*@ requires \valid(request);
+  @ requires \valid(service_browse_decode_bs__p_isvalid);
+  @ requires \valid(service_browse_decode_bs__p_NodeId);
+  @ requires \valid(service_browse_decode_bs__p_dir);
+  @ requires \valid(service_browse_decode_bs__p_isreftype);
+  @ requires \valid(service_browse_decode_bs__p_reftype);
+  @ requires \valid(service_browse_decode_bs__p_inc_subtype);
+  @ requires 0 < service_browse_decode_bs__p_bvi <= request->NoOfNodesToBrowse;
+  @ assigns *service_browse_decode_bs__p_isvalid;
+  @ assigns *service_browse_decode_bs__p_NodeId;
+  @ assigns *service_browse_decode_bs__p_dir;
+  @ assigns *service_browse_decode_bs__p_isreftype;
+  @ assigns *service_browse_decode_bs__p_reftype;
+  @ assigns *service_browse_decode_bs__p_inc_subtype;
+  @
+  @ behavior incorrect_request:
+  @ 	assumes (\null == request || service_browse_decode_bs__p_bvi <= 0 || service_browse_decode_bs__p_bvi >
+  request->NoOfNodesToBrowse);
+  @ 	ensures *service_browse_decode_bs__p_isvalid == false;
+  @ 	ensures *service_browse_decode_bs__p_NodeId == constants__c_NodeId_indet;
+  @ 	ensures *service_browse_decode_bs__p_dir == constants__e_bd_indet;
+  @ 	ensures *service_browse_decode_bs__p_isreftype == false;
+  @ 	ensures *service_browse_decode_bs__p_reftype == constants__c_NodeId_indet;
+  @ 	ensures *service_browse_decode_bs__p_inc_subtype == false;
+  @
+  @ behavior correct_browse_request:
+  @ 	assumes (\null != request && 0 < service_browse_decode_bs__p_bvi <= request->NoOfNodesToBrowse);
+  @ 	assumes request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType !=
+  SOPC_IdentifierType_Numeric || request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].ReferenceTypeId.Data.Numeric != 0;
+  @ 	ensures *service_browse_decode_bs__p_isvalid == true;
+  @ 	ensures *service_browse_decode_bs__p_NodeId == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].NodeId;
+  @ 	ensures *service_browse_decode_bs__p_dir \in {0, 1, 2, 3, 4};
+  @ 	ensures *service_browse_decode_bs__p_isreftype == true;
+  @ 	ensures *service_browse_decode_bs__p_reftype == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].ReferenceTypeId;
+  @ 	ensures *service_browse_decode_bs__p_inc_subtype == request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].IncludeSubtypes;
+  @
+  @ behavior empty_browse_request:
+  @ 	assumes (\null != request && 0 < service_browse_decode_bs__p_bvi <= request->NoOfNodesToBrowse);
+  @ 	assumes request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+  SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].ReferenceTypeId.Data.Numeric == 0;
+  @ 	ensures *service_browse_decode_bs__p_isvalid == true;
+  @ 	ensures *service_browse_decode_bs__p_NodeId == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+  1].NodeId;
+  @ 	ensures *service_browse_decode_bs__p_dir \in {0, 1, 2, 3, 4};
+  @ 	ensures *service_browse_decode_bs__p_isreftype == false;
+  @ 	ensures *service_browse_decode_bs__p_reftype == constants__c_NodeId_indet;
+  @ 	ensures *service_browse_decode_bs__p_inc_subtype == false;
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
+*/
 
 void service_browse_decode_bs__getall_BrowseValue(const constants__t_BrowseValue_i service_browse_decode_bs__p_bvi,
                                                   t_bool* const service_browse_decode_bs__p_isvalid,

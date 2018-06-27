@@ -101,7 +101,8 @@ void service_write_decode_bs__decode_write_request(
     s_decode_write_request(req, service_write_decode_bs__StatusCode_service);
 }
 
-/*@ assigns request;
+/*@ requires \valid(request);
+  @ assigns request;
   @ ensures request == \null;
  */
 
