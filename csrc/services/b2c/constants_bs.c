@@ -32,6 +32,17 @@ void constants_bs__INITIALISATION(void) {}
 /*--------------------
    OPERATIONS Clause
   --------------------*/
+
+/*@ predicate is_NodeId_Subtype(constants_bs__t_NodeId_i type1, constants_bs__t_NodeId_i type2) =
+  @  //TODO implement this when the subtype query is functional
+  @ \true;
+ */
+
+/*@ requires \valid(constants_bs__p_res);
+  @ assigns *constants_bs__p_res;
+  @ ensures *constants_bs__p_res <==> is_NodeId_Subtype(constants_bs__p_type1, constants_bs__p_type2);
+ */
+
 void constants_bs__get_Is_SubType(const constants_bs__t_NodeId_i constants_bs__p_type1,
                                   const constants_bs__t_NodeId_i constants_bs__p_type2,
                                   t_bool* const constants_bs__p_res)
@@ -42,6 +53,16 @@ void constants_bs__get_Is_SubType(const constants_bs__t_NodeId_i constants_bs__p
     *constants_bs__p_res = true;
 }
 
+/*@ requires \valid(constants_bs__p_isvalid);
+  @ requires \valid(constants_bs__p_nid);
+  @ requires \valid_read(constants_bs__p_expnid);
+  @ assigns *constants_bs__p_isvalid;
+  @ assigns *constants_bs__p_nid;
+  @ ensures (constants_bs__p_expnid != constants_bs__c_ExpandedNodeId_indet) ==>
+  *constants_bs__p_nid == &constants_bs__p_expnid->NodeId && *constants_bs__p_isvalid == true;
+  @ ensures (constants_bs__p_expnid == constants_bs__c_ExpandedNodeId_indet) ==>
+  *constants_bs__p_nid == constants_bs__c_NodeId_indet && *constants_bs__p_isvalid == false;
+ */
 void constants_bs__getall_conv_ExpandedNodeId_NodeId(const constants_bs__t_ExpandedNodeId_i constants_bs__p_expnid,
                                                      t_bool* const constants_bs__p_isvalid,
                                                      constants_bs__t_NodeId_i* const constants_bs__p_nid)
@@ -59,10 +80,20 @@ void constants_bs__getall_conv_ExpandedNodeId_NodeId(const constants_bs__t_Expan
     }
 }
 
+/*@ requires \valid(constants_bs__p_card_channel);
+  @ assigns *constants_bs__p_card_channel;
+  @ ensures *constants_bs__p_card_channel == constants_bs__t_channel_i_max;
+ */
+
 void constants_bs__get_card_t_channel(t_entier4* const constants_bs__p_card_channel)
 {
     *constants_bs__p_card_channel = constants_bs__t_channel_i_max;
 }
+
+/*@ requires \valid(constants_bs__p_card_session);
+  @ assigns *constants_bs__p_card_session;
+  @ ensures *constants_bs__p_card_session == constants_bs__t_session_i_max;
+ */
 
 void constants_bs__get_card_t_session(t_entier4* const constants_bs__p_card_session)
 {
@@ -73,12 +104,21 @@ void constants_bs__get_card_t_subscription(t_entier4* const constants_bs__p_card
 {
     *constants_bs__p_card_subscription = constants_bs__t_subscription_i_max;
 }
+/*@ requires \valid(constants_bs__p_channel);
+  @ assigns *constants_bs__p_channel;
+  @ ensures *constants_bs__p_channel == (uint32_t) constants_bs__p_ind;
+ */
 
 void constants_bs__get_cast_t_channel(const t_entier4 constants_bs__p_ind,
                                       constants_bs__t_channel_i* const constants_bs__p_channel)
 {
     *constants_bs__p_channel = (uint32_t) constants_bs__p_ind; // TODO: add precondition in B model
 }
+
+/*@ requires \valid(constants_bs__p_session);
+  @ assigns *constants_bs__p_session;
+  @ ensures *constants_bs__p_session == (uint32_t) constants_bs__p_ind;
+ */
 
 void constants_bs__get_cast_t_session(const t_entier4 constants_bs__p_ind,
                                       constants_bs__t_session_i* const constants_bs__p_session)
@@ -92,12 +132,24 @@ void constants_bs__get_cast_t_subscription(const t_entier4 constants_bs__p_ind,
     *constants_bs__p_subscription = (uint32_t) constants_bs__p_ind; // TODO: add precondition in B model
 }
 
+/*@ requires \valid(constants_bs__p_res);
+  @ assigns *constants_bs__p_res;
+  @ ensures *constants_bs__p_res <==> (constants_bs__c_channel_indet != constants_bs__p_channel &&
+  constants_bs__p_channel > 0 && constants_bs__p_channel <= constants_bs__t_channel_i_max);
+ */
+
 void constants_bs__is_t_channel(const constants_bs__t_channel_i constants_bs__p_channel,
                                 t_bool* const constants_bs__p_res)
 {
     *constants_bs__p_res = (constants_bs__c_channel_indet != constants_bs__p_channel && constants_bs__p_channel > 0 &&
                             constants_bs__p_channel <= constants_bs__t_channel_i_max);
 }
+
+/*@ requires \valid(constants_bs__p_res);
+  @ assigns *constants_bs__p_res;
+  @ ensures *constants_bs__p_res <==> (constants_bs__c_channel_config_idx_indet != constants_bs__p_config_idx &&
+  constants_bs__p_config_idx > 0 && constants_bs__p_config_idx <= constants_bs__t_channel_config_idx_i_max);
+ */
 
 void constants_bs__is_t_channel_config_idx(const constants_bs__t_channel_config_idx_i constants_bs__p_config_idx,
                                            t_bool* const constants_bs__p_res)
@@ -106,6 +158,13 @@ void constants_bs__is_t_channel_config_idx(const constants_bs__t_channel_config_
         (constants_bs__c_channel_config_idx_indet != constants_bs__p_config_idx && constants_bs__p_config_idx > 0 &&
          constants_bs__p_config_idx <= constants_bs__t_channel_config_idx_i_max);
 }
+
+/*@ requires \valid(constants_bs__p_res);
+  @ assigns *constants_bs__p_res;
+  @ ensures *constants_bs__p_res <==> (constants_bs__p_endpoint_config_idx != constants_bs__c_endpoint_config_idx_indet
+  && constants_bs__p_endpoint_config_idx > 0 && constants_bs__p_endpoint_config_idx <=
+  constants_bs__t_endpoint_config_idx_i_max);
+ */
 
 void constants_bs__is_t_endpoint_config_idx(
     const constants_bs__t_endpoint_config_idx_i constants_bs__p_endpoint_config_idx,
