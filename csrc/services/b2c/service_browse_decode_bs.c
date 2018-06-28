@@ -215,7 +215,8 @@ extern void service_browse_decode_bs__get_BrowseView(constants__t_NodeId_i* cons
   @ 	ensures *service_browse_decode_bs__p_isvalid == true;
   @ 	ensures *service_browse_decode_bs__p_NodeId == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].NodeId;
-  @ 	ensures *service_browse_decode_bs__p_dir \in {0, 1, 2, 3, 4};
+  @ 	ensures *service_browse_decode_bs__p_dir \in {\old(*service_browse_decode_bs__p_dir), constants__e_bd_forward,
+  constants__e_bd_inverse, constants__e_bd_both};
   @ 	ensures *service_browse_decode_bs__p_isreftype == true;
   @ 	ensures *service_browse_decode_bs__p_reftype == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].ReferenceTypeId;
@@ -230,7 +231,8 @@ extern void service_browse_decode_bs__get_BrowseView(constants__t_NodeId_i* cons
   @ 	ensures *service_browse_decode_bs__p_isvalid == true;
   @ 	ensures *service_browse_decode_bs__p_NodeId == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].NodeId;
-  @ 	ensures *service_browse_decode_bs__p_dir \in {0, 1, 2, 3, 4};
+  @ 	ensures *service_browse_decode_bs__p_dir \in {\old(*service_browse_decode_bs__p_dir), constants__e_bd_forward,
+  constants__e_bd_inverse, constants__e_bd_both};
   @ 	ensures *service_browse_decode_bs__p_isreftype == false;
   @ 	ensures *service_browse_decode_bs__p_reftype == constants__c_NodeId_indet;
   @ 	ensures *service_browse_decode_bs__p_inc_subtype == false;

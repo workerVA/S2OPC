@@ -40,13 +40,32 @@ void msg_read_request_bs__INITIALISATION(void) {}
 /*--------------------
    OPERATIONS Clause
   --------------------*/
-void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_msg_i msg_read_request_bs__msg,
-                                                           const constants__t_ReadValue_i msg_read_request_bs__rvi,
-                                                           constants__t_StatusCode_i* const msg_read_request_bs__sc,
-                                                           constants__t_AttributeId_i* const msg_read_request_bs__aid)
+
+/*@ requires \valid(msg_read_req);
+  @ requires \valid(msg_read_request_bs__isvalid);
+  @ requires \valid(msg_read_request_bs__aid);
+  @ assigns *msg_read_request_bs__aid;
+  @ assigns *msg_read_request_bs__isvalid;
+  @ assigns bWarned;
+  @ ensures (\null != msg_read_req &&
+      msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
+      NULL != msg_read_req->NodesToRead &&
+      \null != msg_read_request_bs__aid &&
+      msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in {e_aid_NodeId, e_aid_NodeClass,
+      e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel})
+      <==> *msg_read_request_bs__isvalid;
+  @ ensures (\null != msg_read_req &&
+      msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
+      NULL != msg_read_req->NodesToRead) ==> msg_read_request_bs__aid \in {\old(*msg_read_request_bs__aid),
+      constants__e_aid_NodeId, constants__e_aid_NodeClass, constants__e_aid_BrowseName, constants__e_aid_DisplayName,
+      constants__e_aid_Value, constants__e_aid_AccessLevel}
+ */
+
+static void s_getall_req_ReadValue_AttributeId(OpcUa_ReadRequest* msg_read_req,
+                                               const constants__t_ReadValue_i msg_read_request_bs__rvi,
+                                               constants__t_StatusCode_i* const msg_read_request_bs__sc,
+                                               constants__t_AttributeId_i* const msg_read_request_bs__aid)
 {
-    /* TODO: is message type checked at this point? */
-    OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__msg;
     static bool bWarned = false;
     *msg_read_request_bs__sc = constants__e_sc_ok;
 
@@ -69,6 +88,21 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
         isvalid = false;
         *msg_read_request_bs__sc = constants__e_sc_bad_index_range_invalid;
     }
+}
+
+void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_msg_i msg_read_request_bs__msg,
+                                                           const constants__t_ReadValue_i msg_read_request_bs__rvi,
+                                                           constants__t_StatusCode_i* const msg_read_request_bs__sc,
+                                                           constants__t_AttributeId_i* const msg_read_request_bs__aid)
+{
+    /* TODO: is message type checked at this point? */
+    /* Added same assert as in service_write_decode_bs.c. Is it correct here ?*/
+    assert(*(SOPC_EncodeableType**) msg_read_request_bs__msg == &OpcUa_ReadRequest_EncodeableType);
+
+    OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__msg;
+
+    s_getall_req_ReadValue_AttributeId(msg_read_req, msg_read_request_bs__rvi, msg_read_request_bs__sc,
+                                       msg_read_request_bs__aid);
 }
 
 void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i msg_read_request_bs__msg,

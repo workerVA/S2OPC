@@ -179,8 +179,8 @@ void response_write_bs__set_ResponseWrite_StatusCode(const constants__t_WriteVal
   @ assigns *(msg_write_resp->Results);
   @ assigns msg_write_resp->NoOfDiagnosticInfos;
   @ assigns msg_write_resp->DiagnosticInfos;
-  @ ensures nb_req > 0 ==> \forall integer x; 1 <= x <= nb_req ==> msg_write_resp->Results[x] == arr_StatusCode[x]; //
-  Not true in case of memory error
+  @ ensures nb_req > 0 ==> \forall integer x; 1 <= x <= nb_req ==> msg_write_resp->Results[x] == arr_StatusCode[x];
+  // Not true in case of memory error
   @ ensures msg_write_resp->NoOfDiagnosticInfos == 0;
   @ ensures msg_write_resp->DiagnosticInfos == \null;
   // No ensures for NoOfResults in case of memory error
