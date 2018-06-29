@@ -60,8 +60,6 @@ void address_space_bs__INITIALISATION(void)
   @ assigns *address_space_bs__node;
   @ ensures \null == address_space_bs__nid ==> *address_space_bs__nid_valid == false && *address_space_bs__node ==
  \old(*address_space_bs__node);
-  @ ensures \null != address_space_bs__nid && SOPC_Dict_Get(address_space_bs__nodes, pnid_req, \null) != \null ==>
-      *address_space_bs__nid_valid == true && *address_space_bs__node == val;
  */
 
 /* This is a_NodeId~ */
@@ -90,58 +88,54 @@ void address_space_bs__readall_AddressSpace_Node(const constants__t_NodeId_i add
 }
 
 /*@ predicate is_correct_variant(constants__t_AttributeId_i address_space_bs__aid, constants__t_NodeClass_i
-  address_space_bs__ncl, constants__t_Node_i address_space_bs__node) =
-  @ \match address_space_bs__aid
-  @ {
-  @		case constants__e_aid_NodeId:
-  @ 		*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_NodeId_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue &&
-  @ 		*address_space_bs__aid.Value.NodeId
-  @ 	case constants__e_aid_NodeClass:
-  @			*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_Int32_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue &&
-  @ 		*address_space_bs__aid.Value.Int32 == (int32_t) address_space_bs__node->node_class
-  @ 	case constants__e_aid_BrowseName:
-  @			*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_QualifiedName_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue &&
-  @ 		*address_space_bs__aid.Value.Qname
-  @ 	case constants__e_aid_DisplayName:
-  @			*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_LocalizedText_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue &&
-  @ 		*address_space_bs__aid.Value.LocalizedText
-  @ 	case constants__e_aid_Value:
-  @ 		\match address_space_bs__ncl
-  @			{
-  @ 			case constants__e_ncl_Variable | constants__e_ncl_VariableType :
-  @ 				*address_space_bs__aid != \null &&
-  @ 				*address_space_bs__aid.DoNotClear == true &&
-  @ 				*address_space_bs__aid.BuiltInTypeId
-  @				case _ :
-  @					*address_space_bs__aid != \null &&
-  @ 				*address_space_bs__aid.DoNotClear == 0 &&
-  @					*address_space_bs__aid.BuiltInTypeId == SOPC_Null_Id &&
-  @ 				*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue
-  @ 		}
-  @ 	case constants__e_aid_AccessLevel:
-  @			*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_Byte_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue &&
-  @ 		*address_space_bs__aid.Value.Byte == SOPC_AccessLevelMask_CurrentRead | SOPC_AccessLevelMask_CurrentWrite
-  @ 	case _ :
-  @			*address_space_bs__aid != \null &&
-  @ 		*address_space_bs__aid.DoNotClear == 0 &&
-  @			*address_space_bs__aid.BuiltInTypeId == SOPC_Null_Id &&
-  @ 		*address_space_bs__aid.ArrayType == SOPC_VariantArrayType_SingleValue
-  @ }
+  address_space_bs__ncl, constants__t_Node_i address_space_bs__node,constants__t_Variant_i* address_space_bs__variant)=
+  @ (address_space_bs__aid == constants__e_aid_NodeId &&
+  @ 		*address_space_bs__variant != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_NodeId_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue &&
+  @ 		(*address_space_bs__variant)->Value.NodeId) ||
+  @ (address_space_bs__aid == constants__e_aid_NodeClass &&
+  @			*address_space_bs__variant != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_Int32_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue &&
+  @ 		(*address_space_bs__variant)->Value.Int32 == (int32_t) address_space_bs__node->node_class) ||
+  @ (address_space_bs__aid == constants__e_aid_BrowseName &&
+  @			*address_space_bs__variant != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_QualifiedName_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue &&
+  @ 		(*address_space_bs__variant)->Value.Qname) ||
+  @ (address_space_bs__aid == constants__e_aid_DisplayName &&
+  @			*address_space_bs__variant != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_LocalizedText_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue &&
+  @ 		(*address_space_bs__variant)->Value.LocalizedText) ||
+  @ (address_space_bs__aid == constants__e_aid_Value &&
+  @ 		((address_space_bs__ncl \in {constants__e_ncl_Variable, constants__e_ncl_VariableType} &&
+  @ 				*address_space_bs__variant != \null &&
+  @ 				(*address_space_bs__variant)->DoNotClear == true &&
+  @ 				(*address_space_bs__variant)->BuiltInTypeId ) ||
+  @ 		(!(address_space_bs__ncl \in {constants__e_ncl_Variable, constants__e_ncl_VariableType}) &&
+  @					*address_space_bs__variant != \null &&
+  @ 				(*address_space_bs__variant)->DoNotClear == 0 &&
+  @					(*address_space_bs__variant)->BuiltInTypeId == SOPC_Null_Id &&
+  @ 				(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue))) ||
+  @ (address_space_bs__aid == constants__e_aid_AccessLevel &&
+  @			*address_space_bs__variant != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_Byte_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue &&
+  @ 		(*address_space_bs__variant)->Value.Byte == (SOPC_AccessLevelMask_CurrentRead |
+  SOPC_AccessLevelMask_CurrentWrite)) ||
+  @ (!(address_space_bs__aid \in {constants__e_aid_NodeId, constants__e_aid_NodeClass, constants__e_aid_BrowseName,
+  constants__e_aid_DisplayName, constants__e_aid_Value, constants__e_aid_AccessLevel}) &&
+  @			(*address_space_bs__variant) != \null &&
+  @ 		(*address_space_bs__variant)->DoNotClear == 0 &&
+  @			(*address_space_bs__variant)->BuiltInTypeId == SOPC_Null_Id &&
+  @ 		(*address_space_bs__variant)->ArrayType == SOPC_VariantArrayType_SingleValue);
  */
 
 /*@ requires \valid(address_space_bs__node);
@@ -154,7 +148,8 @@ void address_space_bs__readall_AddressSpace_Node(const constants__t_NodeId_i add
   @ ensures address_space_bs__aid != constants__e_aid_Value || (address_space_bs__ncl == constants__e_ncl_Variable ||
   address_space_bs__ncl == constants__e_ncl_VariableType) ==>
   *address_space_bs__sc == constants__e_sc_bad_attribute_id_invalid;
-  @ ensures is_correct_variant(address_space_bs__aid, address_space_bs__ncl, address_space_bs__node);
+  @ ensures is_correct_variant(address_space_bs__aid, address_space_bs__ncl, address_space_bs__node,
+  address_space_bs__variant);
  */
 
 /* Reads any attribute and outputs a variant (valid or not)

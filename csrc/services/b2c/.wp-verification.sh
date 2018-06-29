@@ -28,19 +28,24 @@ CPPCOMMAND='gcc -C -E -I/home/simon/Systerel/S2OPC/csrc/services/bgenc -I/home/s
 
 WPFUNC='-wp-fct'
 
-FILESWCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request.c address_space_bs.c msg_read_request_bs.c"
+FILESWCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
 
-if [[ -n $SOURCEFILE ]]
+if [[ -z $SOURCEFILE ]]
 then
-    if [[ -z $FUNC ]]
+    echo "WP verification for all annotated files."
+    frama-c $FRAMACARGS "$CPPCOMMAND" $FILESWCONTRACTS
+else
+    if [[ -r $SOURCEFILE && -z $FUNC ]]
     then
         echo "Verification du fichier $SOURCEFILE"
         frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
     else
-        echo "Verification de la fonction $FUNC dans $SOURCEFILE"
-        frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
+        if [[ -r $SOURCEFILE && -n $FUNC ]]
+        then
+            echo "Verification de la fonction $FUNC dans $SOURCEFILE"
+            frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
+        else
+            echo "None"
+        fi
     fi
-else
-    echo "None"
 fi
-

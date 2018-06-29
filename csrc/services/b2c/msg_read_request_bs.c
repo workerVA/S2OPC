@@ -32,6 +32,8 @@
 #include "sopc_logger.h"
 #include "sopc_types.h"
 
+#include "cast_wrapper.h"
+
 /*------------------------
    INITIALISATION Clause
   ------------------------*/
@@ -46,7 +48,6 @@ void msg_read_request_bs__INITIALISATION(void) {}
   @ requires \valid(msg_read_request_bs__aid);
   @ assigns *msg_read_request_bs__aid;
   @ assigns *msg_read_request_bs__isvalid;
-  @ assigns bWarned;
   @ ensures (\null != msg_read_req &&
       msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
       NULL != msg_read_req->NodesToRead &&
@@ -56,9 +57,9 @@ void msg_read_request_bs__INITIALISATION(void) {}
       <==> *msg_read_request_bs__isvalid;
   @ ensures (\null != msg_read_req &&
       msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
-      NULL != msg_read_req->NodesToRead) ==> msg_read_request_bs__aid \in {\old(*msg_read_request_bs__aid),
+      NULL != msg_read_req->NodesToRead) ==> *msg_read_request_bs__aid \in {\old(*msg_read_request_bs__aid),
       constants__e_aid_NodeId, constants__e_aid_NodeClass, constants__e_aid_BrowseName, constants__e_aid_DisplayName,
-      constants__e_aid_Value, constants__e_aid_AccessLevel}
+      constants__e_aid_Value, constants__e_aid_AccessLevel};
  */
 
 static void s_getall_req_ReadValue_AttributeId(OpcUa_ReadRequest* msg_read_req,
