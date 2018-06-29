@@ -30,7 +30,7 @@ WPFUNC='-wp-fct'
 
 FILESWCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
 
-if [[ -z $SOURCEFILE ]]
+if [[ -z $SOURCEFILE || $SOURCEFILE == 'all' ]]
 then
     echo "WP verification for all annotated files."
     frama-c $FRAMACARGS "$CPPCOMMAND" $FILESWCONTRACTS
@@ -40,12 +40,15 @@ else
         echo "Verification du fichier $SOURCEFILE"
         frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
     else
-        if [[ -r $SOURCEFILE && -n $FUNC ]]
+        if [[ -r $SOURCEFILE && 'gui' != $FUNC ]]
         then
             echo "Verification de la fonction $FUNC dans $SOURCEFILE"
             frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
         else
-            echo "None"
+            if [[ -r $SOURCEFILE && 'gui' == $FUNC ]]
+            then
+                frama-c-gui $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
+            fi
         fi
     fi
 fi

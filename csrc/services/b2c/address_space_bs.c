@@ -115,9 +115,9 @@ void address_space_bs__readall_AddressSpace_Node(const constants__t_NodeId_i add
   @ 		(*address_space_bs__variant)->Value.LocalizedText) ||
   @ (address_space_bs__aid == constants__e_aid_Value &&
   @ 		((address_space_bs__ncl \in {constants__e_ncl_Variable, constants__e_ncl_VariableType} &&
-  @ 				*address_space_bs__variant != \null &&
-  @ 				(*address_space_bs__variant)->DoNotClear == true &&
-  @ 				(*address_space_bs__variant)->BuiltInTypeId ) ||
+  @ 				(address_space_bs__node->node_class == OpcUa_NodeClass_Variable) ? *address_space_bs__variant ==
+  &(address_space_bs__node->data.variable.Value) : *address_space_bs__variant ==
+  &(address_space_bs__node->data.variable_type.Value)) ||
   @ 		(!(address_space_bs__ncl \in {constants__e_ncl_Variable, constants__e_ncl_VariableType}) &&
   @					*address_space_bs__variant != \null &&
   @ 				(*address_space_bs__variant)->DoNotClear == 0 &&
