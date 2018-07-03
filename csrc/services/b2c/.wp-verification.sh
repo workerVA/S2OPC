@@ -37,12 +37,12 @@ then
 else
     if [[ -r $SOURCEFILE && -z $FUNC ]]
     then
-        echo "Verification du fichier $SOURCEFILE"
+        echo "WP verification on file $SOURCEFILE"
         frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
     else
         if [[ -r $SOURCEFILE && 'gui' != $FUNC ]]
         then
-            echo "Verification de la fonction $FUNC dans $SOURCEFILE"
+            echo "WP verification of function $FUNC in $SOURCEFILE"
             frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
         else
             if [[ -r $SOURCEFILE && 'gui' == $FUNC ]]
