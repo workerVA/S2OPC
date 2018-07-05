@@ -192,13 +192,14 @@ extern void service_browse_decode_bs__get_BrowseView(constants__t_NodeId_i* cons
   @ requires \valid(request);
   @ requires \valid(request->NodesToBrowse);
   @ requires \valid(request->NodesToBrowse+(service_browse_decode_bs__p_bvi - 1));
-  @ requires \forall integer i; 0 <= i < service_browse_decode_bs__p_bvi ==> \valid_read(request->NodesToBrowse+i);
   @ assigns *service_browse_decode_bs__p_isvalid;
   @ assigns *service_browse_decode_bs__p_NodeId;
   @ assigns *service_browse_decode_bs__p_dir;
   @ assigns *service_browse_decode_bs__p_isreftype;
   @ assigns *service_browse_decode_bs__p_reftype;
   @ assigns *service_browse_decode_bs__p_inc_subtype;
+  @ ensures service_browse_decode_bs__p_bvi > request->NoOfNodesToBrowse;
+  @ ensures service_browse_decode_bs__p_bvi <= request->NoOfNodesToBrowse;
   @
   @ behavior incorrect_request:
   @ 	assumes (\null == request || service_browse_decode_bs__p_bvi > request->NoOfNodesToBrowse);

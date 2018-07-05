@@ -18,9 +18,16 @@
 
 # Script to check wp verification
 
-SOURCEFILE=$1
-
-FUNC=$2
+if [[ -n $1 && $1 == "-gui" ]]
+then
+    FRAMAC="frama-c-gui"
+    SOURCEFILE=$2
+    FUNC=$3
+else
+    FRAMAC="frama-c"
+    SOURCEFILE=$1
+    FUNC=$2
+fi
 
 FRAMACARGS='-wp -wp-rte -cpp-command'
 
@@ -33,22 +40,13 @@ FILESWCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_de
 if [[ -z $SOURCEFILE || $SOURCEFILE == 'all' ]]
 then
     echo "WP verification for all annotated files."
-    frama-c $FRAMACARGS "$CPPCOMMAND" $FILESWCONTRACTS
+    $FRAMAC $FRAMACARGS "$CPPCOMMAND" $FILESWCONTRACTS
 else
     if [[ -r $SOURCEFILE && -z $FUNC ]]
     then
         echo "WP verification on file $SOURCEFILE"
-        frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
+        $FRAMAC $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
     else
-        if [[ -r $SOURCEFILE && 'gui' != $FUNC ]]
-        then
-            echo "WP verification of function $FUNC in $SOURCEFILE"
-            frama-c $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
-        else
-            if [[ -r $SOURCEFILE && 'gui' == $FUNC ]]
-            then
-                frama-c-gui $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
-            fi
-        fi
+        $FRAMAC $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
     fi
 fi

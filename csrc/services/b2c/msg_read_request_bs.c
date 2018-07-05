@@ -42,10 +42,18 @@ void msg_read_request_bs__INITIALISATION(void) {}
 /*--------------------
    OPERATIONS Clause
   --------------------*/
-
+static OpcUa_ReadRequest* wrapper(void* msg)
+{
+    assert(*(SOPC_EncodeableType**) msg == &OpcUa_ReadRequest_EncodeableType);
+    OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg;
+    return msg_read_req;
+}
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__isvalid);
   @ requires \valid(msg_read_request_bs__aid);
+  @ requires msg_read_request_bs__rvi >= 1;
+  @ requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
+  @
   @ assigns *msg_read_request_bs__aid;
   @ assigns *msg_read_request_bs__isvalid;
   @ ensures (\null != msg_read_req &&
@@ -106,12 +114,65 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
                                        msg_read_request_bs__aid);
 }
 
+/*@ requires \valid(msg_read_req);
+  @ requires \valid(msg_read_request_bs__isvalid);
+  @ requires \valid(msg_read_request_bs__nid);
+  @ requires msg_read_request_bs__rvi >= 1;
+  @ assigns *msg_read_request_bs__isvalid;
+  @ assigns *msg_read_request_bs__nid;
+  @
+  @ behavior valid:
+  @ 	assumes msg_read_req != \null;
+  @ 	assumes msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead;
+  @ 	assumes msg_read_req->NodesToRead != \null;
+  @ 	requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
+  @ 	ensures *msg_read_request_bs__isvalid == true;
+  @ 	ensures *msg_read_request_bs__nid == &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
+  @
+  @ behavior invalid:
+  @ 	assumes msg_read_req == \null || msg_read_request_bs__rvi > msg_read_req->NoOfNodesToRead ||
+  msg_read_req->NodesToRead == \null;
+  @ 	ensures *msg_read_request_bs__nid == constants__c_NodeId_indet;
+  @ 	ensures *msg_read_request_bs__isvalid == false;
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
+ */
+
+static void s_getall_req_ReadValue_NodeId(OpcUa_ReadRequest* msg_read_req,
+                                          const constants__t_ReadValue_i msg_read_request_bs__rvi,
+                                          constants__t_NodeId_i* const msg_read_request_bs__nid)
+{
+    *msg_read_request_bs__nid = &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
+}
+
 void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i msg_read_request_bs__msg,
                                                       const constants__t_ReadValue_i msg_read_request_bs__rvi,
                                                       constants__t_NodeId_i* const msg_read_request_bs__nid)
 {
     OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__msg;
-    *msg_read_request_bs__nid = &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
+
+    s_getall_req_ReadValue_NodeId(msg_read_req, msg_read_request_bs__rvi, msg_read_request_bs__nid);
+}
+
+/*@ requires \valid(msg_read_req);
+  @ requires \valid(msg_read_request_bs__p_tsToReturn);
+  @ assigns *msg_read_request_bs__p_tsToReturn;
+  @ ensures \null == msg_read_req ==> *msg_read_request_bs__p_tsToReturn == constants__c_TimestampsToReturn_indet;
+  @ ensures \null != msg_read_req && \null != msg_read_request_bs__p_tsToReturn && msg_read_req->TimestampsToReturn \in
+  {OpcUa_TimestampsToReturn_Source, OpcUa_TimestampsToReturn_Server, OpcUa_TimestampsToReturn_Both,
+  OpcUa_TimestampsToReturn_Neither} ==>
+  *msg_read_request_bs__p_tsToReturn \in {constants__e_ttr_source, constants__e_ttr_server, constants__e_ttr_both,
+  constants__e_ttr_neither};
+  @ ensures \null == msg_read_req || !(msg_read_req->TimestampsToReturn \in {OpcUa_TimestampsToReturn_Source,
+  OpcUa_TimestampsToReturn_Server, OpcUa_TimestampsToReturn_Both, OpcUa_TimestampsToReturn_Neither}) ==>
+  *msg_read_request_bs__p_tsToReturn == constants__c_TimestampsToReturn_indet;
+ */
+
+static void s_read_req_TimestampsToReturn(OpcUa_ReadRequest* msg_read_req,
+                                          constants__t_TimestampsToReturn_i* const msg_read_request_bs__p_tsToReturn)
+{
+    *msg_read_request_bs__p_tsToReturn = util_TimestampsToReturn__C_to_B(msg_read_req->TimestampsToReturn);
 }
 
 void msg_read_request_bs__read_req_TimestampsToReturn(
@@ -119,19 +180,45 @@ void msg_read_request_bs__read_req_TimestampsToReturn(
     constants__t_TimestampsToReturn_i* const msg_read_request_bs__p_tsToReturn)
 {
     OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__p_msg;
-    *msg_read_request_bs__p_tsToReturn = util_TimestampsToReturn__C_to_B(msg_read_req->TimestampsToReturn);
+    s_read_req_TimestampsToReturn(msg_read_req, msg_read_request_bs__p_tsToReturn);
+}
+
+/*@ requires \valid(msg_read_req);
+  @ requires \valid(msg_read_request_bs__p_maxAge_valid);
+  @ assigns *msg_read_request_bs__p_maxAge_valid;
+  @ ensures *msg_read_request_bs__p_maxAge_valid <==> (\null != msg_read_req &&
+  msg_read_req->MaxAge >= 0);
+ */
+
+static void s_read_req_MaxAge(OpcUa_ReadRequest* msg_read_req, t_bool* const msg_read_request_bs__p_maxAge_valid)
+{
+    *msg_read_request_bs__p_maxAge_valid = msg_read_req->MaxAge >= 0;
 }
 
 void msg_read_request_bs__read_req_MaxAge(const constants__t_msg_i msg_read_request_bs__p_msg,
                                           t_bool* const msg_read_request_bs__p_maxAge_valid)
 {
     OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__p_msg;
-    *msg_read_request_bs__p_maxAge_valid = msg_read_req->MaxAge >= 0;
+
+    s_read_req_MaxAge(msg_read_req, msg_read_request_bs__p_maxAge_valid);
+}
+
+/*@ requires \valid(msg_read_req);
+  @ requires \valid(msg_read_request_bs__nb);
+  @ assigns *msg_read_request_bs__nb;
+  @ ensures \null == msg_read_req ==> *msg_read_request_bs__nb == 0;
+  @ ensures \null != msg_read_req ==>  *msg_read_request_bs__nb == msg_read_req->NoOfNodesToRead;
+ */
+
+static void s_read_req_nb_ReadValue(OpcUa_ReadRequest* msg_read_req, t_entier4* const msg_read_request_bs__nb)
+{
+    *msg_read_request_bs__nb = msg_read_req->NoOfNodesToRead;
 }
 
 void msg_read_request_bs__read_req_nb_ReadValue(const constants__t_msg_i msg_read_request_bs__msg,
                                                 t_entier4* const msg_read_request_bs__nb)
 {
     OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__msg;
-    *msg_read_request_bs__nb = msg_read_req->NoOfNodesToRead;
+
+    s_read_req_nb_ReadValue(msg_read_req, msg_read_request_bs__nb);
 }

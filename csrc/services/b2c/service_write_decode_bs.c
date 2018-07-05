@@ -29,6 +29,8 @@
 #include "sopc_types.h"
 
 #include <assert.h>
+#include <stdlib.h>
+
 #include "cast_wrapper.h"
 
 /* Globals */
@@ -140,8 +142,8 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @ requires \valid(service_write_decode_bs__value);
   @ requires \valid(request);
   @ requires \valid(request->NodesToWrite);
-  @ requires \valid(&request->NodesToWrite[service_write_decode_bs__wvi - 1]);
-  @ requires 0 <= service_write_decode_bs__wvi && 0 <= request->NoOfNodesToWrite;
+  @ requires \valid(request->NodesToWrite+(service_write_decode_bs__wvi - 1));
+  @ requires 1 <= service_write_decode_bs__wvi && 0 <= request->NoOfNodesToWrite;
   @ assigns *service_write_decode_bs__isvalid;
   @ assigns *service_write_decode_bs__status;
   @ assigns *service_write_decode_bs__aid;
@@ -248,41 +250,28 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
   @ requires \valid(service_write_decode_bs__nid);
   @ requires \valid(service_write_decode_bs__aid);
   @ requires \valid(service_write_decode_bs__value);
-  @ requires 1 <= service_write_decode_bs__wvi && 0 <= request->NoOfNodesToWrite;
   @ requires \valid(request);
-  @ requires \valid(request->NodesToWrite);
-  @ requires \forall integer i; 0 <= i < service_write_decode_bs__wvi ==> \valid_read(request->NodesToWrite+i);
+  @ requires \valid(request->NodesToWrite+(service_write_decode_bs__wvi - 1));
+  @ requires service_write_decode_bs__wvi >= 1;
   @ assigns *service_write_decode_bs__isvalid;
   @ assigns *service_write_decode_bs__status;
-  @ assigns *service_write_decode_bs__aid;
   @ assigns *service_write_decode_bs__nid;
+  @ assigns *service_write_decode_bs__aid;
   @ assigns *service_write_decode_bs__value;
+  @ assigns *service_write_decode_bs__status;
   @
-  @ behavior A:
-  @ 	assumes (\null == request || service_write_decode_bs__wvi > request->NoOfNodesToWrite);
+  @ behavior error:
+  @ 	assumes \null == request || service_write_decode_bs__wvi > request->NoOfNodesToWrite;
   @ 	ensures *service_write_decode_bs__isvalid == false;
   @ 	ensures *service_write_decode_bs__status == constants__e_sc_bad_internal_error;
   @ 	ensures *service_write_decode_bs__aid == \old(*service_write_decode_bs__aid);
   @ 	ensures *service_write_decode_bs__nid == \old(*service_write_decode_bs__nid);
   @ 	ensures *service_write_decode_bs__value == \old(*service_write_decode_bs__value);
-  @
-  @ behavior B:
-  @ 	assumes (\null != request && service_write_decode_bs__wvi <= request->NoOfNodesToWrite);
-  @		ensures *service_write_decode_bs__nid == &request->NodesToWrite[service_write_decode_bs__wvi - 1].NodeId;
-  @ 	ensures *service_write_decode_bs__value == &request->NodesToWrite[service_write_decode_bs__wvi - 1].Value.Value;
-  @ 	ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeId ==>
-  (*service_write_decode_bs__aid == constants__e_aid_NodeId && *service_write_decode_bs__status ==
-  constants__c_StatusCode_indet && *service_write_decode_bs__isvalid == true);
-  @ 	ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeClass ==>
-  (*service_write_decode_bs__aid == constants__e_aid_NodeClass && *service_write_decode_bs__status ==
-  constants__c_StatusCode_indet && *service_write_decode_bs__isvalid == true);
-  @ 	ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_Value ==>
-  (*service_write_decode_bs__aid == constants__e_aid_Value && *service_write_decode_bs__status ==
-  constants__c_StatusCode_indet && *service_write_decode_bs__isvalid == true);
-  @
+
   @ complete behaviors;
   @ disjoint behaviors;
  */
+
 void service_write_decode_bs__getall_WriteValue2(const constants__t_WriteValue_i service_write_decode_bs__wvi,
                                                  t_bool* const service_write_decode_bs__isvalid,
                                                  constants__t_StatusCode_i* const service_write_decode_bs__status,
@@ -302,7 +291,8 @@ void service_write_decode_bs__getall_WriteValue2(const constants__t_WriteValue_i
     {
         wv = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
         *service_write_decode_bs__isvalid = true;
-        *service_write_decode_bs__nid = &wv->NodeId;
+        SOPC_NodeId* tmp = &wv->NodeId;
+        *service_write_decode_bs__nid = tmp;
         *service_write_decode_bs__value = &wv->Value.Value;
         aid = wv->AttributeId;
         switch (aid)
@@ -330,6 +320,15 @@ void service_write_decode_bs__getall_WriteValue2(const constants__t_WriteValue_i
         *service_write_decode_bs__isvalid = false;
         *service_write_decode_bs__status = constants__e_sc_bad_internal_error;
     }
+}
+
+/*@ assigns \nothing;
+  @ ensures \valid(\result) || \result == \null;
+*/
+
+static OpcUa_WriteValue* writevalue_malloc(size_t size)
+{
+    return (OpcUa_WriteValue*) malloc(size);
 }
 
 void service_write_decode_bs__getall_WriteValuePointer(
