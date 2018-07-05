@@ -54,16 +54,26 @@ void response_write_bs__INITIALISATION(void)
    OPERATIONS Clause
   --------------------*/
 
+/*@ assigns \nothing;
+  @ ensures \result == \null || \valid((SOPC_StatusCode*)\result+(0 .. nb-1));
+ */
+
+static SOPC_StatusCode* statuscode_malloc(size_t size, int nb)
+{
+    return (SOPC_StatusCode*) malloc(size);
+}
+
 /*@ requires \valid(response_write_bs__ResponseWrite_allocated);
   @ requires response_write_bs__nb_req >= 0;
   @ assigns nb_req;
   @ assigns arr_StatusCode;
-  @ assigns arr_StatusCode[0 .. response_write_bs__nb_req];
   @ assigns *response_write_bs__ResponseWrite_allocated;
   @ ensures \false;
   @
   @ behavior has_allocated:
   @ 	assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode);
+  @
+  @ 	assigns arr_StatusCode[0 .. response_write_bs__nb_req];
   @ 	ensures \false;
   @ 	ensures \valid(arr_StatusCode+(0 .. response_write_bs__nb_req));
   @ 	ensures \forall integer x; 0 <= x <= response_write_bs__nb_req ==> arr_StatusCode[x] == OpcUa_BadInternalError;
@@ -72,7 +82,7 @@ void response_write_bs__INITIALISATION(void)
   @
   @ behavior not_allocated:
   @ 	assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX /
-  sizeof(SOPC_StatusCode);
+  sizeof(SOPC_StatusCode) || arr_StatusCode == \null;
   @ 	ensures \false;
   @ 	ensures arr_StatusCode == \null;
   @ 	ensures *response_write_bs__ResponseWrite_allocated == false;
@@ -94,8 +104,8 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
     if (response_write_bs__nb_req >= 0 &&
         (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode))
     {
-        arr_StatusCode = (SOPC_StatusCode*) malloc(sizeof(SOPC_StatusCode) * (size_t)(response_write_bs__nb_req + 1));
-        //@ assert \false;
+        arr_StatusCode = statuscode_malloc(sizeof(SOPC_StatusCode) * (size_t)(response_write_bs__nb_req + 1),
+                                           response_write_bs__nb_req + 1);
     }
     else
     {
@@ -103,15 +113,15 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
     }
     if (NULL != arr_StatusCode)
     {
-        /*@ loop invariant 0 <= i <= response_write_bs__nb_req + 1;
+        //@ assert \valid(arr_StatusCode+(0 .. response_write_bs__nb_req));
+        /*@ loop invariant 0 <= i <= response_write_bs__nb_req+1;
           @ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
-          @ loop assigns arr_StatusCode[0..i];
+          @ loop assigns arr_StatusCode[0 .. i];
           @ loop variant response_write_bs__nb_req + 1 - i;
          */
 
         for (int32_t i = 0; i <= response_write_bs__nb_req + 1; i++)
         {
-            //@ assert \false;
             arr_StatusCode[i] = OpcUa_BadInternalError;
         }
         *response_write_bs__ResponseWrite_allocated = true;
