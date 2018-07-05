@@ -1,11 +1,11 @@
 #include <stddef.h>
 
 /*@ assigns \result;
-    ensures \result == \null || \valid((int*) \result + (0 .. size));
+    ensures \result == \null || \valid((char*) \result + (0 .. size));
 */
-extern int* malloc(size_t size);
+extern void* malloc(size_t size);
 
-/*@ requires \null == ptr || \true
+/*@ requires \null == ptr || \true;
     assigns \nothing;
     ensures \true;
  */

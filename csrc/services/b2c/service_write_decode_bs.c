@@ -31,7 +31,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "cast_wrapper.h"
+#include "frama_c_assert.h"
 
 /* Globals */
 static OpcUa_WriteRequest* request;

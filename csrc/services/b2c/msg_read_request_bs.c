@@ -29,10 +29,10 @@
 #include "util_b2c.h"
 
 #include "address_space_impl.h"
+#include "frama_c_assert.h"
 #include "sopc_logger.h"
 #include "sopc_types.h"
 
-#include "cast_wrapper.h"
 
 /*------------------------
    INITIALISATION Clause

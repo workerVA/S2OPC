@@ -18,6 +18,8 @@
 
 # Script to check wp verification
 
+ENV="/home/simon/Systerel/S2OPC"
+
 if [[ -n $1 && $1 == "-gui" ]]
 then
     FRAMAC="frama-c-gui"
@@ -31,7 +33,7 @@ fi
 
 FRAMACARGS='-wp -wp-rte -cpp-command'
 
-CPPCOMMAND='gcc -C -E -I/home/simon/Systerel/S2OPC/csrc/services/bgenc -I/home/simon/Systerel/S2OPC/csrc/services -I/home/simon/Systerel/S2OPC/install/include/'
+CPPCOMMAND="gcc -C -E -I$ENV/csrc/services/b2c -I$ENV/csrc/services/bgenc -I$ENV/csrc/services -I$ENV/install/include -I$ENV/tests/wp"
 
 WPFUNC='-wp-fct'
 

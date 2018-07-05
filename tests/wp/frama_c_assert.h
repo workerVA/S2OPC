@@ -1,12 +1,12 @@
 /*
- * cast_wrapper.h
+ * frama_c_assert.h
  *
  *  Created on: 25 juin 2018
  *      Author: simon
  */
 
-#ifndef CAST_WRAPPER_H_
-#define CAST_WRAPPER_H_
+#ifndef FRAMA_C_ASSERT_H_
+#define FRAMA_C_ASSERT_H_
 
 #ifdef __FRAMAC__
 // Let us use asserts for defensive programming, but make them invisible to
@@ -15,5 +15,4 @@
 #define assert(x) ;
 #endif // __FRAMAC__
 
-
-#endif /* CAST_WRAPPER_H_ */
+#endif /* FRAMA_C_ASSERT_H_ */

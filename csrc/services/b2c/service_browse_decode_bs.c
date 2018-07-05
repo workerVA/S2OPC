@@ -29,7 +29,8 @@
 #include "util_b2c.h"
 
 #include <assert.h>
-#include "cast_wrapper.h"
+
+#include "frama_c_assert.h"
 
 /* Globals */
 static OpcUa_BrowseRequest* request;

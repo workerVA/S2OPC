@@ -22,21 +22,20 @@
  * Implements the structures behind the address space.
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "b2c.h"
 #include "response_write_bs.h"
+
+#include "frama_c_assert.h"
 #include "util_b2c.h"
 
 #include "sopc_services_api.h"
 #include "sopc_toolkit_config_internal.h"
 #include "sopc_toolkit_constants.h"
 #include "sopc_types.h"
-
-#include <assert.h>
-#include <stdlib.h>
-#include "cast_wrapper.h"
 
 /* Globals */
 static SOPC_StatusCode* arr_StatusCode; /* Indexed from 1, first element is never used. */
@@ -56,26 +55,25 @@ void response_write_bs__INITIALISATION(void)
   --------------------*/
 
 /*@ requires \valid(response_write_bs__ResponseWrite_allocated);
-  @ requires \valid(arr_StatusCode);
+  @ requires response_write_bs__nb_req >= 0;
   @ assigns nb_req;
-  @ assigns __fc_heap_status;
   @ assigns arr_StatusCode;
   @ assigns arr_StatusCode[0 .. response_write_bs__nb_req];
   @ assigns *response_write_bs__ResponseWrite_allocated;
   @ ensures \false;
   @
   @ behavior has_allocated:
-  @ 	assumes response_write_bs__nb_req >= 0;
   @ 	assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode);
-  @ 	ensures \fresh(arr_StatusCode, sizeof(SOPC_StatusCode) * (size_t)(response_write_bs__nb_req + 1));
-  @ 	ensures \valid(arr_StatusCode);
+  @ 	ensures \false;
+  @ 	ensures \valid(arr_StatusCode+(0 .. response_write_bs__nb_req));
   @ 	ensures \forall integer x; 0 <= x <= response_write_bs__nb_req ==> arr_StatusCode[x] == OpcUa_BadInternalError;
   @ 	ensures *response_write_bs__ResponseWrite_allocated == true;
   @ 	ensures nb_req == response_write_bs__nb_req;
   @
   @ behavior not_allocated:
-  @ 	assumes response_write_bs__nb_req < 0 || (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX /
+  @ 	assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX /
   sizeof(SOPC_StatusCode);
+  @ 	ensures \false;
   @ 	ensures arr_StatusCode == \null;
   @ 	ensures *response_write_bs__ResponseWrite_allocated == false;
   @ 	ensures nb_req == 0;
@@ -97,6 +95,7 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
         (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode))
     {
         arr_StatusCode = (SOPC_StatusCode*) malloc(sizeof(SOPC_StatusCode) * (size_t)(response_write_bs__nb_req + 1));
+        //@ assert \false;
     }
     else
     {
@@ -104,13 +103,15 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
     }
     if (NULL != arr_StatusCode)
     {
-        /*@ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
+        /*@ loop invariant 0 <= i <= response_write_bs__nb_req + 1;
+          @ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
           @ loop assigns arr_StatusCode[0..i];
           @ loop variant response_write_bs__nb_req + 1 - i;
          */
 
-        for (int32_t i = 0; i <= response_write_bs__nb_req; i++)
+        for (int32_t i = 0; i <= response_write_bs__nb_req + 1; i++)
         {
+            //@ assert \false;
             arr_StatusCode[i] = OpcUa_BadInternalError;
         }
         *response_write_bs__ResponseWrite_allocated = true;
