@@ -55,7 +55,7 @@ void response_write_bs__INITIALISATION(void)
   --------------------*/
 
 /*@ assigns \result;
-  @ ensures \result == \null || \valid((SOPC_StatusCode*)\result+(0 .. nb-1));
+  @ ensures \result == NULL || \valid((SOPC_StatusCode*)\result+(0 .. nb-1));
  */
 
 static SOPC_StatusCode* statuscode_malloc(size_t size, int nb)
@@ -150,21 +150,20 @@ void response_write_bs__reset_ResponseWrite(void)
 }
 
 /*@ requires \valid(response_write_bs__isvalid);
-  @ requires nb_req >= 0; // always true
-  @ requires response_write_bs__wvi >= 0; // maybe in B specification ?
+  @ 	requires \valid(arr_StatusCode+response_write_bs__wvi);
   @
-  @ assigns *response_write_bs__isvalid;
-  @ assigns *response_write_bs__sc;
-  @
-  @ behavior is_valid:
+  @ behavior A:
   @ 	assumes response_write_bs__wvi <= nb_req;
-  @		requires \valid(response_write_bs__sc);
-  @ 	requires \valid_read(arr_StatusCode + (response_write_bs__wvi));
+  @ 	requires \valid(response_write_bs__sc);
+  @ 	requires \valid(arr_StatusCode);
+  @ 	assigns *response_write_bs__isvalid;
+  @ 	assigns *response_write_bs__sc;
   @ 	ensures *response_write_bs__isvalid == true;
   @
-  @ behavior is_invalid:
+  @ behavior B:
   @ 	assumes response_write_bs__wvi > nb_req;
   @ 	ensures *response_write_bs__isvalid == false;
+  @ 	assigns *response_write_bs__isvalid;
   @ 	ensures *response_write_bs__sc == \old(*response_write_bs__sc);
   @
   @ complete behaviors;
