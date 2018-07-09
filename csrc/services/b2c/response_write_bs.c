@@ -75,8 +75,7 @@ static SOPC_StatusCode* statuscode_malloc(size_t size, int nb)
   @ 	ensures \false;
   @ 	ensures \null == arr_StatusCode || \valid(arr_StatusCode+(0 .. response_write_bs__nb_req)) ;
   @ 	ensures \null != arr_StatusCode ==> \forall integer x; 0 <= x <= response_write_bs__nb_req ==>
-  arr_StatusCode[x]
-  == OpcUa_BadInternalError;
+  arr_StatusCode[x] == OpcUa_BadInternalError;
   @ 	ensures \null != arr_StatusCode ==> *response_write_bs__ResponseWrite_allocated == true;
   @ 	ensures \null != arr_StatusCode ==> nb_req == response_write_bs__nb_req;
   @ 	ensures \null == arr_StatusCode ==> *response_write_bs__ResponseWrite_allocated == false;
@@ -117,7 +116,7 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
     {
         /*@ loop invariant 0 <= i <= response_write_bs__nb_req+1;
           @ loop invariant \forall integer x; 0 <= x < i ==> arr_StatusCode[x] == OpcUa_BadInternalError;
-          @ loop assigns arr_StatusCode[0 .. (i-1)];
+          @ loop assigns i, arr_StatusCode[0 .. (i-1)];
           @ loop variant response_write_bs__nb_req + 1 - i;
          */
 
@@ -147,43 +146,6 @@ void response_write_bs__reset_ResponseWrite(void)
     free(arr_StatusCode);
     arr_StatusCode = NULL;
     nb_req = 0;
-}
-
-/*@ requires \valid(response_write_bs__isvalid);
-  @ 	requires \valid(arr_StatusCode+response_write_bs__wvi);
-  @
-  @ behavior A:
-  @ 	assumes response_write_bs__wvi <= nb_req;
-  @ 	requires \valid(response_write_bs__sc);
-  @ 	requires \valid(arr_StatusCode);
-  @ 	assigns *response_write_bs__isvalid;
-  @ 	assigns *response_write_bs__sc;
-  @ 	ensures *response_write_bs__isvalid == true;
-  @
-  @ behavior B:
-  @ 	assumes response_write_bs__wvi > nb_req;
-  @ 	ensures *response_write_bs__isvalid == false;
-  @ 	assigns *response_write_bs__isvalid;
-  @ 	ensures *response_write_bs__sc == \old(*response_write_bs__sc);
-  @
-  @ complete behaviors;
-  @ disjoint behaviors;
- */
-
-void response_write_bs__getall_ResponseWrite_StatusCode(const constants__t_WriteValue_i response_write_bs__wvi,
-                                                        t_bool* const response_write_bs__isvalid,
-                                                        constants__t_StatusCode_i* const response_write_bs__sc)
-{
-    if (response_write_bs__wvi <= nb_req) /* It is not necessary to test arr_StatusCode */
-    {
-        //@ assert response_write_bs__wvi <= nb_req;
-        *response_write_bs__isvalid = true;
-        util_status_code__C_to_B(arr_StatusCode[response_write_bs__wvi], response_write_bs__sc);
-    }
-    else
-    {
-        *response_write_bs__isvalid = false;
-    }
 }
 
 /*@ requires \valid(arr_StatusCode + (response_write_bs__wvi));
