@@ -15,3 +15,4 @@ genc/
 bgenc/
 *.log
 csrc/configuration/sopc_toolkit_build_info.h
+**/.frama-c
