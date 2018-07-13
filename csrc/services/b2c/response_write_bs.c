@@ -214,9 +214,9 @@ void response_write_bs__set_ResponseWrite_StatusCode(const constants__t_WriteVal
 static SOPC_StatusCode* statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, size_t size, size_t nb);
 
 #ifndef __FRAMAC__
-static SOPC_StatusCode* statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, size_t size, size_t nb)
+static void statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, size_t size, size_t nb)
 {
-    return (SOPC_StatusCode*) memcpy(p1, (void*) p2, size * nb);
+    (SOPC_StatusCode*) memcpy(p1, (void*) p2, size * nb);
 }
 #endif
 
