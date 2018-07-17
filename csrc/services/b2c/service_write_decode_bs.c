@@ -140,6 +140,9 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @ requires \valid(service_write_decode_bs__nid);
   @ requires \valid(service_write_decode_bs__aid);
   @ requires \valid(service_write_decode_bs__value);
+  @ requires \separated(service_write_decode_bs__status, service_write_decode_bs__nid,
+  service_write_decode_bs__aid, service_write_decode_bs__value, service_write_decode_bs__isvalid,
+  request, request->NodesToWrite+(service_write_decode_bs__wvi - 1));
   @ requires \valid(request);
   @ requires \valid(request->NodesToWrite+(service_write_decode_bs__wvi - 1));
   @ requires 1 <= service_write_decode_bs__wvi <= request->NoOfNodesToWrite;
@@ -216,14 +219,32 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
     }
 }
 
-/*@ assigns \nothing;
-  @ ensures \valid(\result) || \result == \null;
+/*@ ghost int has_mem; */
+
+/*@ requires \true;
+  @ assigns \result;
+  @ assigns \result \from size, nb;
+  @ behavior allocated:
+  @     assumes has_mem;
+  @     ensures \valid(\result + (0 .. nb-1));
+  @
+  @ behavior not_allocated:
+  @ 	assumes !has_mem;
+  @     ensures \result == \null;
+  @
+  @ disjoint behaviors;
+  @ complete behaviors;
+
 */
 
-static OpcUa_WriteValue* writevalue_malloc(size_t size)
+static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb);
+
+#ifndef __FRAMAC__
+static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb)
 {
-    return (OpcUa_WriteValue*) malloc(size);
+    return (OpcUa_WriteValue*) malloc(size * nb);
 }
+#endif // __FRAMAC__
 
 void service_write_decode_bs__getall_WriteValuePointer(
     const constants__t_WriteValue_i service_write_decode_bs__wvi,
