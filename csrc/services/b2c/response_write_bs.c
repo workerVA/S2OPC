@@ -36,10 +36,6 @@
 #include "sopc_toolkit_constants.h"
 #include "sopc_types.h"
 
-#ifdef __FRAMAC__
-#include "frama_c_assert.h"
-#endif // __FRAMAC__
-
 /* Globals */
 static SOPC_StatusCode* arr_StatusCode; /* Indexed from 1, first element is never used. */
 static t_entier4 nb_req;
@@ -59,13 +55,13 @@ void response_write_bs__INITIALISATION(void)
 
 /*@ axiomatic malloc_prop
   @ {
-  @     predicate is_malloc_result(SOPC_StatusCode* p, integer n);
-  @     axiom S : \forall integer n, SOPC_StatusCode* p1, t_bool* p2; is_malloc_result(p1, n) ==>
+  @     predicate is_malloc_response(SOPC_StatusCode* p, integer n);
+  @     axiom S : \forall integer n, SOPC_StatusCode* p1, t_bool* p2; is_malloc_response(p1, n) ==>
   \separated(p1+(0 .. n), p2);
   @
-  @     predicate is_malloc_separated(SOPC_StatusCode* p1, SOPC_StatusCode* p2, integer n);
+  @     predicate is_malloc_msg_response(SOPC_StatusCode* p1, SOPC_StatusCode* p2, integer n);
   @     axiom T : \forall integer n, SOPC_StatusCode* p1, SOPC_StatusCode* p2;
-  is_malloc_separated(p1, p2, n) ==> \separated(p1+(0 .. n), p2+(0 .. n));
+  is_malloc_msg_response(p1, p2, n) ==> \separated(p1+(0 .. n), p2+(0 .. n));
   @ }
  */
 
@@ -77,8 +73,10 @@ void response_write_bs__INITIALISATION(void)
   @ behavior allocated:
   @     assumes has_mem;
   @     ensures \valid(\result + (0 .. nb-1));
-  @     ensures is_malloc_result(\result, nb - 1);
-  @     ensures is_malloc_separated(\result, arr_StatusCode+1, nb-1); //Bourrin, a changer
+  // useful when called by alloc_write_request_responses_malloc
+  @     ensures is_malloc_response(\result, nb - 1);
+  // useful when called by s_write_WriteResponse_msg_out
+  @     ensures is_malloc_msg_response(\result, arr_StatusCode+1, nb-1);
   @
   @ behavior not_allocated:
   @     assumes !has_mem;
@@ -119,13 +117,10 @@ static SOPC_StatusCode* statuscode_malloc(size_t size, size_t nb)
   @ disjoint behaviors;
   @ complete behaviors;
  */
-
-/* Can response_write_bs__nb_req be at MAX_INT ? */
-
 void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 response_write_bs__nb_req,
                                                              t_bool* const response_write_bs__ResponseWrite_allocated)
 {
-    *response_write_bs__ResponseWrite_allocated = false; /* TODO: set a true and false in b2c.h */
+    *response_write_bs__ResponseWrite_allocated = false;
     nb_req = 0;
 
     if (response_write_bs__nb_req >= 0 &&
@@ -177,8 +172,6 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
 }
 
 /*@ requires \true;
-  //freeable is not implemented still
-  @ frees arr_StatusCode;
   @ assigns nb_req;
   @ assigns arr_StatusCode;
   @ ensures nb_req == 0;
@@ -187,8 +180,6 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
 
 void response_write_bs__reset_ResponseWrite(void)
 {
-    //@ assert \true;
-    // freeable is not implemented still
     free(arr_StatusCode);
     arr_StatusCode = NULL;
     nb_req = 0;
@@ -244,7 +235,7 @@ static void statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, si
   @ disjoint behaviors;
  */
 
-void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
+static void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
 {
     if (nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req)
     {
@@ -263,7 +254,7 @@ void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
       @ behavior A:
       @     assumes nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req && has_mem;
       @     ensures \forall integer i; 0 <= i < nb_req ==> msg_write_resp->Results[i] == (arr_StatusCode + 1)[i];
-      @        ensures msg_write_resp->NoOfResults == nb_req;
+      @     ensures msg_write_resp->NoOfResults == nb_req;
       @
       @ behavior B:
       @     assumes nb_req <= 0 || (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) < (uint64_t) nb_req || !has_mem;
@@ -285,6 +276,7 @@ void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
     msg_write_resp->NoOfDiagnosticInfos = 0;
 }
 
+#ifndef __FRAMAC__
 void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i response_write_bs__msg_out)
 {
     assert(*(SOPC_EncodeableType**) response_write_bs__msg_out == &OpcUa_WriteRequest_EncodeableType);
@@ -293,3 +285,4 @@ void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i res
 
     s_write_WriteResponse_msg_out(msg_write_resp);
 }
+#endif

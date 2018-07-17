@@ -35,6 +35,10 @@ void util_message__get_encodeable_type(const constants__t_msg_type_i message__ms
 
 void util_message__get_message_type(SOPC_EncodeableType* encType, constants__t_msg_type_i* message__msg_type);
 
+/*@ requires \valid(status);
+  @ assigns *status;
+ */
+
 void util_status_code__B_to_C(constants__t_StatusCode_i bstatus, SOPC_StatusCode* status);
 
 void util_status_code__C_to_B(SOPC_StatusCode status, constants__t_StatusCode_i* bstatus);

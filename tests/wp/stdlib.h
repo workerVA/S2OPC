@@ -24,9 +24,5 @@
 */
 extern void* malloc(size_t size);
 
-/*@ requires \null == ptr || \true;
-    assigns \nothing;
-    ensures \true;
- */
-
-extern void free(void* ptr);
+// We ignore free in frama-c since no interesting property can be defined without "frees" ACSL support
+#define free(x) ;
