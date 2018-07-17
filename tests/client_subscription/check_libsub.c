@@ -208,7 +208,7 @@ START_TEST(test_half_broken_subscriptions)
          .n_max_keepalive = 3,
          .n_max_lifetime = 1000,
          .data_change_callback = datachange_callback_do_nothing,
-         .timeout_ms = CONNECTION_TIMEOUT,
+         .timeout_ms = 200,
          .sc_lifetime = 3600000,
          .token_target = 3},
         {.server_url = "opc.tcp://localhost:4842", /* Do not connect this one */
@@ -227,7 +227,7 @@ START_TEST(test_half_broken_subscriptions)
          .n_max_keepalive = 3,
          .n_max_lifetime = 1000,
          .data_change_callback = datachange_callback_do_nothing,
-         .timeout_ms = CONNECTION_TIMEOUT,
+         .timeout_ms = 200,
          .sc_lifetime = 3600000,
          .token_target = 3},
         {.server_url = "opc.tcp://localhost:4843", /* Do not connect this one */
@@ -246,7 +246,7 @@ START_TEST(test_half_broken_subscriptions)
          .n_max_keepalive = 3,
          .n_max_lifetime = 1000,
          .data_change_callback = datachange_callback_do_nothing,
-         .timeout_ms = CONNECTION_TIMEOUT,
+         .timeout_ms = 200,
          .sc_lifetime = 3600000,
          .token_target = 3}};
 
@@ -258,8 +258,7 @@ START_TEST(test_half_broken_subscriptions)
     ck_assert(SOPC_LibSub_Configured() == SOPC_STATUS_OK);
 
     /* Wait for deconnection, failed assert, or subscription success */
-    SOPC_TimeReference timeout =
-        SOPC_TimeReference_AddMilliseconds(SOPC_TimeReference_GetCurrent(), ROBUSTNESS_TIMEOUT);
+    SOPC_TimeReference timeout = SOPC_TimeReference_AddMilliseconds(SOPC_TimeReference_GetCurrent(), 600);
     while (SOPC_TimeReference_Compare(SOPC_TimeReference_GetCurrent(), timeout) <= 0)
     {
         SOPC_TimeReference curTime = SOPC_TimeReference_GetCurrent();
