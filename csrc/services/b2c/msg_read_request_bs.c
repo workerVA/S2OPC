@@ -22,6 +22,7 @@
  * Implements the base machine that reads a ReadRequest.
  */
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -29,10 +30,12 @@
 #include "util_b2c.h"
 
 #include "address_space_impl.h"
-#include "frama_c_assert.h"
 #include "sopc_logger.h"
 #include "sopc_types.h"
 
+#ifdef __FRAMAC__
+#include "frama_c_assert.h"
+#endif //__FRAMAC__
 
 /*------------------------
    INITIALISATION Clause
@@ -42,12 +45,7 @@ void msg_read_request_bs__INITIALISATION(void) {}
 /*--------------------
    OPERATIONS Clause
   --------------------*/
-static OpcUa_ReadRequest* wrapper(void* msg)
-{
-    assert(*(SOPC_EncodeableType**) msg == &OpcUa_ReadRequest_EncodeableType);
-    OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg;
-    return msg_read_req;
-}
+
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__isvalid);
   @ requires \valid(msg_read_request_bs__aid);
@@ -122,18 +120,18 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
   @ assigns *msg_read_request_bs__nid;
   @
   @ behavior valid:
-  @ 	assumes msg_read_req != \null;
-  @ 	assumes msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead;
-  @ 	assumes msg_read_req->NodesToRead != \null;
-  @ 	requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
-  @ 	ensures *msg_read_request_bs__isvalid == true;
-  @ 	ensures *msg_read_request_bs__nid == &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
+  @     assumes msg_read_req != \null;
+  @     assumes msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead;
+  @     assumes msg_read_req->NodesToRead != \null;
+  @     requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
+  @     ensures *msg_read_request_bs__isvalid == true;
+  @     ensures *msg_read_request_bs__nid == &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
   @
   @ behavior invalid:
-  @ 	assumes msg_read_req == \null || msg_read_request_bs__rvi > msg_read_req->NoOfNodesToRead ||
+  @     assumes msg_read_req == \null || msg_read_request_bs__rvi > msg_read_req->NoOfNodesToRead ||
   msg_read_req->NodesToRead == \null;
-  @ 	ensures *msg_read_request_bs__nid == constants__c_NodeId_indet;
-  @ 	ensures *msg_read_request_bs__isvalid == false;
+  @     ensures *msg_read_request_bs__nid == constants__c_NodeId_indet;
+  @     ensures *msg_read_request_bs__isvalid == false;
   @
   @ complete behaviors;
   @ disjoint behaviors;

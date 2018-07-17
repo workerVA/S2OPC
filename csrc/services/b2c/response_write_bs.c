@@ -59,12 +59,12 @@ void response_write_bs__INITIALISATION(void)
 
 /*@ axiomatic malloc_prop
   @ {
-  @ 	predicate is_malloc_result(SOPC_StatusCode* p, integer n);
-  @ 	axiom S : \forall integer n, SOPC_StatusCode* p1, t_bool* p2; is_malloc_result(p1, n) ==>
+  @     predicate is_malloc_result(SOPC_StatusCode* p, integer n);
+  @     axiom S : \forall integer n, SOPC_StatusCode* p1, t_bool* p2; is_malloc_result(p1, n) ==>
   \separated(p1+(0 .. n), p2);
   @
-  @ 	predicate is_malloc_separated(SOPC_StatusCode* p1, SOPC_StatusCode* p2, integer n);
-  @ 	axiom T : \forall integer n, SOPC_StatusCode* p1, SOPC_StatusCode* p2;
+  @     predicate is_malloc_separated(SOPC_StatusCode* p1, SOPC_StatusCode* p2, integer n);
+  @     axiom T : \forall integer n, SOPC_StatusCode* p1, SOPC_StatusCode* p2;
   is_malloc_separated(p1, p2, n) ==> \separated(p1+(0 .. n), p2+(0 .. n));
   @ }
  */
@@ -77,11 +77,11 @@ void response_write_bs__INITIALISATION(void)
   @ behavior allocated:
   @     assumes has_mem;
   @     ensures \valid(\result + (0 .. nb-1));
-  @ 	ensures is_malloc_result(\result, nb - 1);
-  @ 	ensures is_malloc_separated(\result, arr_StatusCode+1, nb-1); //Bourrin, a changer
+  @     ensures is_malloc_result(\result, nb - 1);
+  @     ensures is_malloc_separated(\result, arr_StatusCode+1, nb-1); //Bourrin, a changer
   @
   @ behavior not_allocated:
-  @ 	assumes !has_mem;
+  @     assumes !has_mem;
   @     ensures \result == \null;
   @
   @ disjoint behaviors;
@@ -105,16 +105,16 @@ static SOPC_StatusCode* statuscode_malloc(size_t size, size_t nb)
   @ assigns \at(arr_StatusCode[0 .. response_write_bs__nb_req], Post);
   @ assigns *response_write_bs__ResponseWrite_allocated;
   @ behavior has_allocated:
-  @ 	assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) && has_mem;
-  @ 	ensures \forall integer y; 0 <= y <= response_write_bs__nb_req ==> arr_StatusCode[y] == OpcUa_BadInternalError;
-  @ 	ensures *response_write_bs__ResponseWrite_allocated == true;
-  @ 	ensures nb_req == response_write_bs__nb_req;
+  @     assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) && has_mem;
+  @     ensures \forall integer y; 0 <= y <= response_write_bs__nb_req ==> arr_StatusCode[y] == OpcUa_BadInternalError;
+  @     ensures *response_write_bs__ResponseWrite_allocated == true;
+  @     ensures nb_req == response_write_bs__nb_req;
   @
   @ behavior not_allocated:
-  @ 	assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) || !has_mem;
-  @ 	ensures arr_StatusCode == \null;
-  @ 	ensures *response_write_bs__ResponseWrite_allocated == false;
-  @ 	ensures nb_req == 0;
+  @     assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) || !has_mem;
+  @     ensures arr_StatusCode == \null;
+  @     ensures *response_write_bs__ResponseWrite_allocated == false;
+  @     ensures nb_req == 0;
   @
   @ disjoint behaviors;
   @ complete behaviors;
@@ -143,19 +143,19 @@ void response_write_bs__alloc_write_request_responses_malloc(const t_entier4 res
       @ assigns *response_write_bs__ResponseWrite_allocated;
       @
       @ behavior sub_has_allocated:
-      @ 	assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) &&
+      @     assumes (uint64_t) response_write_bs__nb_req + 1 <= (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) &&
       has_mem;
-      @ 	ensures *response_write_bs__ResponseWrite_allocated == true;
-      @ 	ensures \forall integer z; 0 <= z < response_write_bs__nb_req + 1 ==> arr_StatusCode[z] ==
+      @     ensures *response_write_bs__ResponseWrite_allocated == true;
+      @     ensures \forall integer z; 0 <= z < response_write_bs__nb_req + 1 ==> arr_StatusCode[z] ==
       OpcUa_BadInternalError;
-      @ 	ensures nb_req == response_write_bs__nb_req;
+      @     ensures nb_req == response_write_bs__nb_req;
       @
       @ behavior sub_not_allocated:
-      @ 	assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) ||
+      @     assumes (uint64_t) response_write_bs__nb_req + 1 > (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) ||
       !has_mem;
-      @ 	ensures arr_StatusCode == \null;
-      @ 	ensures *response_write_bs__ResponseWrite_allocated == false;
-      @ 	ensures nb_req == 0;
+      @     ensures arr_StatusCode == \null;
+      @     ensures *response_write_bs__ResponseWrite_allocated == false;
+      @     ensures nb_req == 0;
       @
       @ disjoint behaviors;
       @ complete behaviors;
@@ -217,7 +217,7 @@ static void statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, si
 #ifndef __FRAMAC__
 static void statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, size_t size, size_t nb)
 {
-    (SOPC_StatusCode*) memcpy(p1, (void*) p2, size * nb);
+    memcpy(p1, (const void*) p2, size * nb);
 }
 #endif
 
@@ -231,14 +231,14 @@ static void statuscode_memcpy(SOPC_StatusCode* p1, const SOPC_StatusCode* p2, si
   @ ensures msg_write_resp->NoOfDiagnosticInfos == 0;
   @
   @ behavior has_allocated:
-  @ 	assumes nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req && has_mem;
-  @ 	ensures \forall integer i; 0 <= i < nb_req ==> msg_write_resp->Results[i] == arr_StatusCode[i+1];
-  @ 	ensures msg_write_resp->NoOfResults == nb_req;
+  @     assumes nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req && has_mem;
+  @     ensures \forall integer i; 0 <= i < nb_req ==> msg_write_resp->Results[i] == arr_StatusCode[i+1];
+  @     ensures msg_write_resp->NoOfResults == nb_req;
   @
   @ behavior not_allocated:
-  @ 	assumes nb_req <= 0 || (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) < (uint64_t) nb_req || !has_mem;
-  @ 	ensures msg_write_resp->Results == \null;
-  @ 	ensures msg_write_resp->NoOfResults == 0;
+  @     assumes nb_req <= 0 || (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) < (uint64_t) nb_req || !has_mem;
+  @     ensures msg_write_resp->Results == \null;
+  @     ensures msg_write_resp->NoOfResults == 0;
   @
   @ complete behaviors;
   @ disjoint behaviors;
@@ -261,21 +261,21 @@ void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
       @ assigns msg_write_resp->NoOfResults;
       @
       @ behavior A:
-      @ 	assumes nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req && has_mem;
-      @ 	ensures \forall integer i; 0 <= i < nb_req ==> msg_write_resp->Results[i] == (arr_StatusCode + 1)[i];
-      @		ensures msg_write_resp->NoOfResults == nb_req;
+      @     assumes nb_req > 0 && (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) >= (uint64_t) nb_req && has_mem;
+      @     ensures \forall integer i; 0 <= i < nb_req ==> msg_write_resp->Results[i] == (arr_StatusCode + 1)[i];
+      @        ensures msg_write_resp->NoOfResults == nb_req;
       @
       @ behavior B:
-      @ 	assumes nb_req <= 0 || (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) < (uint64_t) nb_req || !has_mem;
-      @ 	ensures msg_write_resp->Results == \null;
-      @ 	ensures msg_write_resp->NoOfResults == 0;
+      @     assumes nb_req <= 0 || (uint64_t) SIZE_MAX / sizeof(SOPC_StatusCode) < (uint64_t) nb_req || !has_mem;
+      @     ensures msg_write_resp->Results == \null;
+      @     ensures msg_write_resp->NoOfResults == 0;
       @
       @ complete behaviors;
       @ disjoint behaviors;
      */
     if (NULL != msg_write_resp->Results)
     {
-        statuscode_memcpy(msg_write_resp->Results, (arr_StatusCode + 1), sizeof(SOPC_StatusCode), nb_req);
+        statuscode_memcpy(msg_write_resp->Results, (arr_StatusCode + 1), sizeof(SOPC_StatusCode), (size_t) nb_req);
         msg_write_resp->NoOfResults = nb_req;
     }
     else
