@@ -19,7 +19,15 @@
 
 # Script to check wp verification
 
-ENV="/home/simon/Systerel/S2OPC"
+if [[ -z $ENV ]]
+then
+    echo "Environnement variable ENV not set, assuming at root of project."
+    ENV=$(pwd)
+fi
+
+HEADERDIR=$(find $ENV -type f -name '*.h' | sed -r 's|/[^/]+$||' | sort -u | sed -r "s|^|-I|" | tr '\n' ' ')
+
+CPPCOMMAND="gcc -C -E $HEADERDIR"
 
 if [[ -n $1 && $1 == "-gui" ]]
 then
@@ -34,22 +42,42 @@ fi
 
 FRAMACARGS='-wp -wp-rte -cpp-command'
 
-CPPCOMMAND="gcc -C -E -I$ENV/csrc/services/b2c -I$ENV/csrc/services/bgenc -I$ENV/csrc/services -I$ENV/install/include -I$ENV/tests/wp"
-
 WPFUNC='-wp-fct'
 
-FILESWCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
+BSFILEPATH="/csrc/services/b2c/"
 
-if [[ -z $SOURCEFILE || $SOURCEFILE == 'all' ]]
+FILESWITHCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
+
+if [[ -r $SOURCEFILE ]]
 then
-    echo "WP verification for all annotated files."
-    $FRAMAC $FRAMACARGS "$CPPCOMMAND" $FILESWCONTRACTS
+    FILESTOPROVE=$SOURCEFILE
+    echo "WP verification of $SOURCEFILE."
 else
-    if [[ -r $SOURCEFILE && -z $FUNC ]]
-    then
-        echo "WP verification on file $SOURCEFILE"
-        $FRAMAC $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE
-    else
-        $FRAMAC $FRAMACARGS "$CPPCOMMAND" $SOURCEFILE $WPFUNC $FUNC
-    fi
+    for i in $FILESWITHCONTRACTS
+    do
+        FILESTOPROVE=$FILESTOPROVE" "$ENV$BSFILEPATH$i
+    done
+    echo "WP verification for all annotated files."
 fi
+EXITCODE=0
+
+for f in $FILESTOPROVE
+do
+    name=$(basename $f)
+    $FRAMAC $FRAMACARGS "$CPPCOMMAND" $f -then -report > "$name.log"
+    if [[ -z $(grep "Status Report Summary" "$name.log") ]]
+    then
+        echo -e "\033[0;31mError   \033[0;0m:" $f
+        EXITCODE=2
+    else
+        if [[ -z $(grep "To be validated" "$name.log") ]]
+        then
+            echo -e "\033[0;32mProved  \033[0;0m:" $f
+        else
+            echo "Unproved:" $f
+            EXITCODE=1
+        fi
+    fi
+done
+
+exit $EXITCODE

@@ -33,10 +33,6 @@
 #include "sopc_logger.h"
 #include "sopc_types.h"
 
-#ifdef __FRAMAC__
-#include "frama_c_assert.h"
-#endif //__FRAMAC__
-
 /*------------------------
    INITIALISATION Clause
   ------------------------*/

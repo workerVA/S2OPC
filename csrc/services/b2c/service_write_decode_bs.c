@@ -31,10 +31,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#ifdef __FRAMAC__
-#include "frama_c_assert.h"
-#endif //__FRAMAC__
-
 /* Globals */
 static OpcUa_WriteRequest* request;
 
