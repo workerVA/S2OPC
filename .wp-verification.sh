@@ -48,10 +48,16 @@ BSFILEPATH="/csrc/services/b2c/"
 
 FILESWITHCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
 
-if [[ -r $SOURCEFILE ]]
+if [[ -n $SOURCEFILE ]]
 then
-    FILESTOPROVE=$SOURCEFILE
-    echo "WP verification of $SOURCEFILE."
+    if [[ -r $SOURCEFILE ]]
+    then
+        FILESTOPROVE=$SOURCEFILE
+        echo "WP verification of $SOURCEFILE."
+    else
+        echo "No files to prove."
+        exit 0
+    fi
 else
     for i in $FILESWITHCONTRACTS
     do
@@ -59,25 +65,38 @@ else
     done
     echo "WP verification for all annotated files."
 fi
+
 EXITCODE=0
+
+rm "wp-verification.tap"
+
+num=0
 
 for f in $FILESTOPROVE
 do
+    let num=$num+1
     name=$(basename $f)
     $FRAMAC $FRAMACARGS "$CPPCOMMAND" $f -then -report > "$name.log"
     if [[ -z $(grep "Status Report Summary" "$name.log") ]]
     then
         echo -e "\033[0;31mError   \033[0;0m:" $f
+        echo not ok $num - $f : Error on file >> "wp-verification.tap"
         EXITCODE=2
     else
         if [[ -z $(grep "To be validated" "$name.log") ]]
         then
             echo -e "\033[0;32mProved  \033[0;0m:" $f
+            echo ok $num - $f : Passed >> "wp-verification.tap"
         else
             echo "Unproved:" $f
+            echo not ok $num - $f : Unproved contracts >> "wp-verification.tap"
             EXITCODE=1
         fi
     fi
 done
+if [[ $num -gt 0 ]]
+then
+    echo "1..$num" >> "wp-verification.tap"
+fi
 
 exit $EXITCODE

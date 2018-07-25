@@ -185,6 +185,21 @@ test-uactt:
     when: on_failure
     expire_in: '1 month'
 
+
+test-framac:
+  image: registry.gitlab.com/systerel/s2opc/framac@sha256:d97bef040b20808dc05e379e8882bd52ac475a453dfc4b5b08048680b277aeb6 # framac 1.0
+  stage: test
+  script:
+    - '.wp-verification.sh'
+  artifacts:
+    name: 'framac-logs-${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHA}'
+    paths:
+      - '*.log'
+    when: on_failure
+    expire_in: '1 month'
+  only:
+    - simon
+
 ###
 # Analysis jobs
 ###
