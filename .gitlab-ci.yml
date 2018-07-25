@@ -198,7 +198,7 @@ test-framac:
     when: on_failure
     expire_in: '1 month'
   only:
-    - simon
+    - simon-framac-verification
 
 ###
 # Analysis jobs
