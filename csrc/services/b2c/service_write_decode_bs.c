@@ -48,23 +48,22 @@ void service_write_decode_bs__INITIALISATION(void)
 
 /*@ requires \valid(req);
   @ requires \valid(service_write_decode_bs__StatusCode_service);
+  @ requires (0 < req->NoOfNodesToWrite && req->NoOfNodesToWrite <= constants__k_n_WriteResponse_max) ==>
+  \valid(request);
+  @ assigns request;
+  @ assigns *service_write_decode_bs__StatusCode_service;
   @
   @ behavior e_sc_ok:
-  @        assumes 0 < req->NoOfNodesToWrite && req->NoOfNodesToWrite <= constants__k_n_WriteResponse_max;
-  @     requires \valid(request);
-  @     assigns request;
-  @     assigns *service_write_decode_bs__StatusCode_service;
+  @     assumes 0 < req->NoOfNodesToWrite && req->NoOfNodesToWrite <= constants__k_n_WriteResponse_max;
   @     ensures request == req;
   @     ensures *service_write_decode_bs__StatusCode_service == constants__e_sc_ok;
   @
   @ behavior e_sc_bad_nothing_to_do:
-  @        assumes 0 >= req->NoOfNodesToWrite;
-  @     assigns *service_write_decode_bs__StatusCode_service;
+  @     assumes 0 >= req->NoOfNodesToWrite;
   @     ensures *service_write_decode_bs__StatusCode_service == constants__e_sc_bad_nothing_to_do;
   @
   @ behavior e_sc_bad_too_many_ops:
   @     assumes req->NoOfNodesToWrite > constants__k_n_WriteResponse_max;
-  @     assigns *service_write_decode_bs__StatusCode_service;
   @     ensures *service_write_decode_bs__StatusCode_service == constants__e_sc_bad_too_many_ops;
   @
   @ disjoint behaviors;
@@ -90,6 +89,7 @@ static void s_decode_write_request(OpcUa_WriteRequest* req,
     }
 }
 
+#ifndef __FRAMAC__
 void service_write_decode_bs__decode_write_request(
     const constants__t_msg_i service_write_decode_bs__write_msg,
     constants__t_StatusCode_i* const service_write_decode_bs__StatusCode_service)
@@ -100,6 +100,7 @@ void service_write_decode_bs__decode_write_request(
 
     s_decode_write_request(req, service_write_decode_bs__StatusCode_service);
 }
+#endif //__FRAMAC__
 
 /*@ requires \valid(request);
   @ assigns request;
@@ -141,9 +142,9 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @ requires \separated(service_write_decode_bs__status, service_write_decode_bs__nid,
   service_write_decode_bs__aid, service_write_decode_bs__value, service_write_decode_bs__isvalid,
   request, request->NodesToWrite+(service_write_decode_bs__wvi - 1));
+  @ requires 1 <= service_write_decode_bs__wvi <= request->NoOfNodesToWrite;
   @ requires \valid(request);
   @ requires \valid(request->NodesToWrite+(service_write_decode_bs__wvi - 1));
-  @ requires 1 <= service_write_decode_bs__wvi <= request->NoOfNodesToWrite;
   @ assigns *service_write_decode_bs__isvalid;
   @ assigns *service_write_decode_bs__status;
   @ assigns *service_write_decode_bs__aid;
@@ -220,11 +221,11 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
 /*@ ghost int has_mem; */
 
 /*@ requires \true;
-  @ assigns \result;
-  @ assigns \result \from size, nb;
+  @ assigns \nothing;
   @ behavior allocated:
   @     assumes has_mem;
   @     ensures \valid(\result + (0 .. nb-1));
+  @ 	//ensures \separated(\result, ptr, ptr2, ptr3);
   @
   @ behavior not_allocated:
   @     assumes !has_mem;
@@ -238,7 +239,7 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
 static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb);
 
 #ifndef __FRAMAC__
-static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb)
+static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb);
 {
     return (OpcUa_WriteValue*) malloc(size * nb);
 }
