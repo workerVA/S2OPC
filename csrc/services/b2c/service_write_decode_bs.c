@@ -239,7 +239,7 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
 static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb);
 
 #ifndef __FRAMAC__
-static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb);
+static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb)
 {
     return (OpcUa_WriteValue*) malloc(size * nb);
 }
