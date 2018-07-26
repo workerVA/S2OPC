@@ -225,7 +225,7 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
   @ behavior allocated:
   @     assumes has_mem;
   @     ensures \valid(\result + (0 .. nb-1));
-  @ 	//ensures \separated(\result, ptr, ptr2, ptr3);
+  @     //ensures \separated(\result, ptr, ptr2, ptr3);
   @
   @ behavior not_allocated:
   @     assumes !has_mem;
