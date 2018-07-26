@@ -279,7 +279,7 @@ static void s_write_WriteResponse_msg_out(OpcUa_WriteResponse* msg_write_resp)
 #ifndef __FRAMAC__
 void response_write_bs__write_WriteResponse_msg_out(const constants__t_msg_i response_write_bs__msg_out)
 {
-    assert(*(SOPC_EncodeableType**) response_write_bs__msg_out == &OpcUa_WriteRequest_EncodeableType);
+    assert(*(SOPC_EncodeableType**) response_write_bs__msg_out == &OpcUa_WriteResponse_EncodeableType);
 
     OpcUa_WriteResponse* msg_write_resp = (OpcUa_WriteResponse*) response_write_bs__msg_out;
 
