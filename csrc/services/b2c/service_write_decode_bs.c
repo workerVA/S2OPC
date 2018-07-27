@@ -225,7 +225,6 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
   @ behavior allocated:
   @     assumes has_mem;
   @     ensures \valid(\result + (0 .. nb-1));
-  @     //ensures \separated(\result, ptr, ptr2, ptr3);
   @
   @ behavior not_allocated:
   @     assumes !has_mem;
@@ -245,9 +244,88 @@ static OpcUa_WriteValue* writevalue_malloc(size_t size, size_t nb)
 }
 #endif // __FRAMAC__
 
+<<<<<<< cc06b6239f22880b0de6c7ddab891fd2caba1925
 void service_write_decode_bs__getall_WriteValuePointer(
     const constants__t_WriteValue_i service_write_decode_bs__wvi,
     constants__t_WriteValuePointer_i* const service_write_decode_bs__wvPointer)
 {
     *service_write_decode_bs__wvPointer = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
+=======
+/*@ predicate is_clean_NodeId(SOPC_NodeId a_NodeId) =
+  @ a_NodeId.IdentifierType == 0 &&
+  @ a_NodeId.Namespace == 0 &&
+  @ a_NodeId.Data.Numeric == 0;
+  @
+  @ predicate is_clean_AttribueId(uint32_t a_AttributeId) =
+  @ a_AttributeId == 0;
+  @
+  @ predicate is_clean_IndexRange(SOPC_String a_IndexRange) =
+  @ a_IndexRange.Length == -1 &&
+  @ a_IndexRange.DoNotClear == false &&
+  @ a_IndexRange.Data == \null;
+  @
+  @ predicate is_clean_DataValue(SOPC_DataValue a_Value) =
+  @ a_Value.Value.DoNotClear == 0 &&
+  @ a_Value.Value.BuiltInTypeId == 0 &&
+  @ a_Value.Value.ArrayType == 0x0 &&
+  @ a_Value.Value.Value.Boolean == 0 &&
+  @ a_Value.Status == 0 &&
+  @ a_Value.SourceTimestamp == 0 &&
+  @ a_Value.ServerTimestamp == 0 &&
+  @ a_Value.SourcePicoSeconds == 0 &&
+  @ a_Value.ServerPicoSeconds == 0;
+  @
+  @ predicate is_clean_wv(OpcUa_WriteValue a_wv) =
+  @ (a_wv.encodeableType) == &OpcUa_WriteValue_EncodeableType &&
+  @ is_clean_NodeId(a_wv.NodeId) &&
+  @ is_clean_AttribueId(a_wv.AttributeId) &&
+  @ is_clean_IndexRange(a_wv.IndexRange) &&
+  @ is_clean_DataValue(a_wv.Value);
+ */
+
+/*@ requires \valid(write_value);
+  @ assigns *write_value;
+  @ ensures is_clean_wv(*write_value);
+ */
+
+static void writevalue_initialize(OpcUa_WriteValue* write_value);
+
+#ifndef __FRAMAC__
+static void writevalue_initialize(OpcUa_WriteValue* write_value)
+{
+    OpcUa_WriteValue_Initialize(write_value);
+}
+#endif
+
+/*@ requires service_write_decode_bs__wvi >= 1;
+  @ requires \valid(request);
+  @ requires \valid(request->NodesToWrite + (service_write_decode_bs__wvi - 1));
+  @ requires \valid(service_write_decode_bs__wvPointer);
+  @ requires \separated(service_write_decode_bs__wvPointer, *service_write_decode_bs__wvPointer,
+  request->NodesToWrite+(service_write_decode_bs__wvi - 1));
+  @ assigns *service_write_decode_bs__wvPointer;
+  @ assigns \at(**service_write_decode_bs__wvPointer, Post);
+  @ assigns request->NodesToWrite[service_write_decode_bs__wvi - 1];
+  @
+  @ ensures has_mem ==> \at(**service_write_decode_bs__wvPointer, Post) ==
+  \at(request->NodesToWrite[service_write_decode_bs__wvi - 1], Pre);
+  @ ensures !has_mem ==> \null == *service_write_decode_bs__wvPointer;
+  @ ensures is_clean_wv(\at(request->NodesToWrite[service_write_decode_bs__wvi - 1], Post));
+ */
+
+void service_write_decode_bs__getAndClean_WriteValuePointer(
+    const constants__t_WriteValue_i service_write_decode_bs__wvi,
+    constants__t_WriteValuePointer_i* const service_write_decode_bs__wvPointer)
+{
+    OpcUa_WriteValue tmp = request->NodesToWrite[service_write_decode_bs__wvi - 1];
+
+    *service_write_decode_bs__wvPointer = writevalue_malloc(sizeof(OpcUa_WriteValue), 1);
+    writevalue_initialize(&request->NodesToWrite[service_write_decode_bs__wvi - 1]);
+    if (NULL != *service_write_decode_bs__wvPointer)
+    {
+        **service_write_decode_bs__wvPointer = tmp;
+        /* Re-Init the WriteValue to avoid deallocation of its content now copied in new WriteValue */
+    }
+    //*service_write_decode_bs__wvPointer = wv;
+>>>>>>> Ticket #000: Proved msg_read_request_bs.c
 }

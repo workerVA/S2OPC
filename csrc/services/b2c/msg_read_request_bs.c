@@ -42,26 +42,81 @@ void msg_read_request_bs__INITIALISATION(void) {}
    OPERATIONS Clause
   --------------------*/
 
+static bool bWarned = false;
+
+/*@ requires pbaid == \null || \valid(pbaid);
+  @ assigns *pbaid;
+  @
+  @ behavior valid_ptr:
+  @ 	assumes pbaid != \null;
+  @ 	ensures caid == e_aid_NodeId ==> *pbaid == constants__e_aid_NodeId;
+  @ 	ensures caid == e_aid_NodeClass ==> *pbaid == constants__e_aid_NodeClass;
+  @ 	ensures caid == e_aid_BrowseName ==> *pbaid == constants__e_aid_BrowseName;
+  @ 	ensures caid == e_aid_DisplayName ==> *pbaid == constants__e_aid_DisplayName;
+  @ 	ensures caid == e_aid_Value ==> *pbaid == constants__e_aid_Value;
+  @ 	ensures caid == e_aid_AccessLevel ==> *pbaid == constants__e_aid_AccessLevel;
+  @ 	ensures \result <==> caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
+  e_aid_AccessLevel};
+  @ 	ensures !(caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
+  e_aid_AccessLevel}) ==> *pbaid == \at(*pbaid, Pre);
+  @
+  @ behavior invalid_ptr:
+  @ 	assumes pbaid == \null;
+  @ 	ensures \result == \false;
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
+ */
+
+static bool s_AttributeId(uint32_t caid, constants__t_AttributeId_i* pbaid);
+
+#ifndef __FRAMAC__
+static bool s_AttributeId(uint32_t caid, constants__t_AttributeId_i* pbaid)
+{
+    return util_AttributeId__C_to_B(caid, pbaid);
+}
+#endif
+
+#ifdef __FRAMAC__
+//@ assigns \nothing;
+void SOPC_Logger_TraceWarning(const char* format, ...);
+#endif // __FRAMAC__
+
+/*@ predicate is_correct_AttributeId(uint32_t caid, constants__t_AttributeId_i baid) =
+  @ (caid == e_aid_NodeId && baid == constants__e_aid_NodeId) ||
+  @ (caid == e_aid_NodeClass && baid == constants__e_aid_NodeClass) ||
+  @ (caid == e_aid_BrowseName && baid == constants__e_aid_BrowseName) ||
+  @ (caid == e_aid_DisplayName && baid == constants__e_aid_DisplayName) ||
+  @ (caid == e_aid_Value && baid == constants__e_aid_Value) ||
+  @ (caid == e_aid_AccessLevel && baid == constants__e_aid_AccessLevel) ||
+  @ (!(caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel})
+  && baid == constants__c_AttributeId_indet);
+ */
+
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__isvalid);
   @ requires \valid(msg_read_request_bs__aid);
   @ requires msg_read_request_bs__rvi >= 1;
   @ requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
-  @
+  @ requires \separated(msg_read_request_bs__aid, msg_read_request_bs__isvalid, msg_read_req,
+  msg_read_req->NodesToRead, msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
   @ assigns *msg_read_request_bs__aid;
   @ assigns *msg_read_request_bs__isvalid;
-  @ ensures (\null != msg_read_req &&
-      msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
-      NULL != msg_read_req->NodesToRead &&
-      \null != msg_read_request_bs__aid &&
-      msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in {e_aid_NodeId, e_aid_NodeClass,
-      e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel})
-      <==> *msg_read_request_bs__isvalid;
-  @ ensures (\null != msg_read_req &&
-      msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
-      NULL != msg_read_req->NodesToRead) ==> *msg_read_request_bs__aid \in {\old(*msg_read_request_bs__aid),
-      constants__e_aid_NodeId, constants__e_aid_NodeClass, constants__e_aid_BrowseName, constants__e_aid_DisplayName,
-      constants__e_aid_Value, constants__e_aid_AccessLevel};
+  @ assigns bWarned;
+  @
+  @ ensures (\null != msg_read_req && msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
+  \null != msg_read_req->NodesToRead && \null != msg_read_request_bs__aid &&
+  msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in {e_aid_NodeId, e_aid_NodeClass,
+  e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel}) <==> *msg_read_request_bs__isvalid;
+  @ ensures (\null != msg_read_req && msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
+  \null != msg_read_req->NodesToRead) ==>
+  is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi-1].AttributeId, *msg_read_request_bs__aid);
+  @ ensures (\null == msg_read_req || msg_read_request_bs__rvi > msg_read_req->NoOfNodesToRead || \null ==
+  msg_read_req->NodesToRead) ==> *msg_read_request_bs__aid == constants__c_AttributeId_indet;
+  @ ensures (\null == msg_read_req || msg_read_request_bs__rvi > msg_read_req->NoOfNodesToRead || \null ==
+  msg_read_req->NodesToRead ||
+  !is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi-1].AttributeId, *msg_read_request_bs__aid))
+  && bWarned == false ==> bWarned == true;
  */
 
 static void s_getall_req_ReadValue_AttributeId(OpcUa_ReadRequest* msg_read_req,
@@ -69,12 +124,11 @@ static void s_getall_req_ReadValue_AttributeId(OpcUa_ReadRequest* msg_read_req,
                                                constants__t_StatusCode_i* const msg_read_request_bs__sc,
                                                constants__t_AttributeId_i* const msg_read_request_bs__aid)
 {
-    static bool bWarned = false;
     *msg_read_request_bs__sc = constants__e_sc_ok;
 
     *msg_read_request_bs__aid = constants__c_AttributeId_indet;
-    bool isvalid = util_AttributeId__C_to_B(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
-                                            msg_read_request_bs__aid);
+    bool isvalid =
+        s_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId, msg_read_request_bs__aid);
 
     if (!isvalid)
     {
@@ -93,6 +147,7 @@ static void s_getall_req_ReadValue_AttributeId(OpcUa_ReadRequest* msg_read_req,
     }
 }
 
+#ifndef __FRAMAC__
 void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_msg_i msg_read_request_bs__msg,
                                                            const constants__t_ReadValue_i msg_read_request_bs__rvi,
                                                            constants__t_StatusCode_i* const msg_read_request_bs__sc,
@@ -107,11 +162,16 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
     s_getall_req_ReadValue_AttributeId(msg_read_req, msg_read_request_bs__rvi, msg_read_request_bs__sc,
                                        msg_read_request_bs__aid);
 }
+#endif // __FRAMAC__
 
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__isvalid);
   @ requires \valid(msg_read_request_bs__nid);
   @ requires msg_read_request_bs__rvi >= 1;
+  @ requires msg_read_req != \null && msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead &&
+  msg_read_req->NodesToRead != \null ==> \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
+  @ requires \separated(msg_read_request_bs__isvalid, msg_read_request_bs__nid, *msg_read_request_bs__nid, msg_read_req,
+  msg_read_req->NodesToRead, msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
   @ assigns *msg_read_request_bs__isvalid;
   @ assigns *msg_read_request_bs__nid;
   @
@@ -119,7 +179,6 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
   @     assumes msg_read_req != \null;
   @     assumes msg_read_request_bs__rvi <= msg_read_req->NoOfNodesToRead;
   @     assumes msg_read_req->NodesToRead != \null;
-  @     requires \valid(msg_read_req->NodesToRead+(msg_read_request_bs__rvi - 1));
   @     ensures *msg_read_request_bs__isvalid == true;
   @     ensures *msg_read_request_bs__nid == &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
   @
@@ -140,6 +199,7 @@ static void s_getall_req_ReadValue_NodeId(OpcUa_ReadRequest* msg_read_req,
     *msg_read_request_bs__nid = &msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].NodeId;
 }
 
+#ifndef __FRAMAC__
 void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i msg_read_request_bs__msg,
                                                       const constants__t_ReadValue_i msg_read_request_bs__rvi,
                                                       constants__t_NodeId_i* const msg_read_request_bs__nid)
@@ -148,27 +208,61 @@ void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i m
 
     s_getall_req_ReadValue_NodeId(msg_read_req, msg_read_request_bs__rvi, msg_read_request_bs__nid);
 }
+#endif // __FRAMAC__
+
+/*@ requires pbttr == \null || \valid(pbttr);
+  @ assigns *pbttr;
+  @
+  @ behavior valid_ptr:
+  @ 	assumes pbttr != \null;
+  @ 	ensures cttr == OpcUa_TimestampsToReturn_Source ==> *pbttr == constants__e_ttr_source;
+  @ 	ensures cttr == OpcUa_TimestampsToReturn_Server ==> *pbttr == constants__e_ttr_server;
+  @ 	ensures cttr == OpcUa_TimestampsToReturn_Both ==> *pbttr == constants__e_ttr_both;
+  @ 	ensures cttr == OpcUa_TimestampsToReturn_Neither ==> *pbttr == constants__e_ttr_neither;
+  @ 	ensures \result <==> (cttr \in {OpcUa_TimestampsToReturn_Source, OpcUa_TimestampsToReturn_Server,
+  OpcUa_TimestampsToReturn_Both, OpcUa_TimestampsToReturn_Neither});
+  @
+  @ behavior invalid_ptr:
+  @ 	assumes pbttr == \null;
+  @ 	ensures \result == \false;
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
+ */
+
+static bool s_TimestampsToReturn(OpcUa_TimestampsToReturn cttr, constants__t_TimestampsToReturn_i* pbttr);
+
+#ifndef __FRAMAC__
+static bool s_TimestampsToReturn(OpcUa_TimestampsToReturn cttr, constants__t_TimestampsToReturn_i* pbttr)
+{
+    return util_TimestampsToReturn__C_to_B(cttr, pbttr);
+}
+#endif
 
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__p_tsToReturn);
+  @ requires \separated(msg_read_req, msg_read_request_bs__p_tsToReturn);
   @ assigns *msg_read_request_bs__p_tsToReturn;
   @ ensures \null == msg_read_req ==> *msg_read_request_bs__p_tsToReturn == constants__c_TimestampsToReturn_indet;
-  @ ensures \null != msg_read_req && \null != msg_read_request_bs__p_tsToReturn && msg_read_req->TimestampsToReturn \in
-  {OpcUa_TimestampsToReturn_Source, OpcUa_TimestampsToReturn_Server, OpcUa_TimestampsToReturn_Both,
-  OpcUa_TimestampsToReturn_Neither} ==>
-  *msg_read_request_bs__p_tsToReturn \in {constants__e_ttr_source, constants__e_ttr_server, constants__e_ttr_both,
-  constants__e_ttr_neither};
-  @ ensures \null == msg_read_req || !(msg_read_req->TimestampsToReturn \in {OpcUa_TimestampsToReturn_Source,
+  @ ensures \null != msg_read_req && msg_read_req->TimestampsToReturn == OpcUa_TimestampsToReturn_Source ==>
+  *msg_read_request_bs__p_tsToReturn == constants__e_ttr_source;
+  @ ensures \null != msg_read_req && msg_read_req->TimestampsToReturn == OpcUa_TimestampsToReturn_Server ==>
+  *msg_read_request_bs__p_tsToReturn == constants__e_ttr_server;
+  @ ensures \null != msg_read_req && msg_read_req->TimestampsToReturn == OpcUa_TimestampsToReturn_Both ==>
+  *msg_read_request_bs__p_tsToReturn == constants__e_ttr_both;
+  @ ensures \null != msg_read_req && msg_read_req->TimestampsToReturn == OpcUa_TimestampsToReturn_Neither ==>
+  *msg_read_request_bs__p_tsToReturn == constants__e_ttr_neither;
+  @ ensures \null != msg_read_req && !(msg_read_req->TimestampsToReturn \in {OpcUa_TimestampsToReturn_Source,
   OpcUa_TimestampsToReturn_Server, OpcUa_TimestampsToReturn_Both, OpcUa_TimestampsToReturn_Neither}) ==>
   *msg_read_request_bs__p_tsToReturn == constants__c_TimestampsToReturn_indet;
- */
-
+  */
 static void s_read_req_TimestampsToReturn(OpcUa_ReadRequest* msg_read_req,
                                           constants__t_TimestampsToReturn_i* const msg_read_request_bs__p_tsToReturn)
 {
     *msg_read_request_bs__p_tsToReturn = util_TimestampsToReturn__C_to_B(msg_read_req->TimestampsToReturn);
 }
 
+#ifndef __FRAMAC__
 void msg_read_request_bs__read_req_TimestampsToReturn(
     const constants__t_msg_i msg_read_request_bs__p_msg,
     constants__t_TimestampsToReturn_i* const msg_read_request_bs__p_tsToReturn)
@@ -176,6 +270,7 @@ void msg_read_request_bs__read_req_TimestampsToReturn(
     OpcUa_ReadRequest* msg_read_req = (OpcUa_ReadRequest*) msg_read_request_bs__p_msg;
     s_read_req_TimestampsToReturn(msg_read_req, msg_read_request_bs__p_tsToReturn);
 }
+#endif // __FRAMAC__
 
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__p_maxAge_valid);
@@ -189,6 +284,7 @@ static void s_read_req_MaxAge(OpcUa_ReadRequest* msg_read_req, t_bool* const msg
     *msg_read_request_bs__p_maxAge_valid = msg_read_req->MaxAge >= 0;
 }
 
+#ifndef __FRAMAC__
 void msg_read_request_bs__read_req_MaxAge(const constants__t_msg_i msg_read_request_bs__p_msg,
                                           t_bool* const msg_read_request_bs__p_maxAge_valid)
 {
@@ -196,6 +292,7 @@ void msg_read_request_bs__read_req_MaxAge(const constants__t_msg_i msg_read_requ
 
     s_read_req_MaxAge(msg_read_req, msg_read_request_bs__p_maxAge_valid);
 }
+#endif // __FRAMAC__
 
 /*@ requires \valid(msg_read_req);
   @ requires \valid(msg_read_request_bs__nb);
@@ -209,6 +306,7 @@ static void s_read_req_nb_ReadValue(OpcUa_ReadRequest* msg_read_req, t_entier4* 
     *msg_read_request_bs__nb = msg_read_req->NoOfNodesToRead;
 }
 
+#ifndef __FRAMAC__
 void msg_read_request_bs__read_req_nb_ReadValue(const constants__t_msg_i msg_read_request_bs__msg,
                                                 t_entier4* const msg_read_request_bs__nb)
 {
@@ -216,3 +314,4 @@ void msg_read_request_bs__read_req_nb_ReadValue(const constants__t_msg_i msg_rea
 
     s_read_req_nb_ReadValue(msg_read_req, msg_read_request_bs__nb);
 }
+#endif // __FRAMAC__

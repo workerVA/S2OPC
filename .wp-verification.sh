@@ -68,7 +68,7 @@ fi
 
 EXITCODE=0
 
-rm "wp-verification.tap"
+rm -f "wp-verification.tap"
 
 num=0
 
@@ -87,6 +87,7 @@ do
         then
             echo -e "\033[0;32mProved  \033[0;0m:" $f
             echo ok $num - $f : Passed >> "wp-verification.tap"
+            rm $name.log
         else
             echo "Unproved:" $f
             echo not ok $num - $f : Unproved contracts >> "wp-verification.tap"
