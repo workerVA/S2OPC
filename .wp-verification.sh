@@ -32,15 +32,14 @@ CPPCOMMAND="gcc -C -E $HEADERDIR"
 if [[ -n $1 && $1 == "-gui" ]]
 then
     FRAMAC="frama-c-gui"
-    SOURCEFILE=$2
-    FUNC=$3
+    shift
 else
     FRAMAC="frama-c"
-    SOURCEFILE=$1
-    FUNC=$2
 fi
+SOURCEFILE=$1
+FUNC=$2
 
-FRAMACARGS='-wp -wp-rte -cpp-command'
+WPARGS='-wp -wp-rte -wp-timeout=30 -cpp-command'
 
 WPFUNC='-wp-fct'
 
@@ -75,7 +74,7 @@ for f in $FILESTOPROVE
 do
     let num=$num+1
     name=$(basename $f)
-    $FRAMAC $FRAMACARGS "$CPPCOMMAND" $f -then -report > "$name.log"
+    $FRAMAC $WPARGS "$CPPCOMMAND" $f -then -report > "$name.log"
     if [[ -z $(grep "Status Report Summary" "$name.log") ]]
     then
         echo -e "\033[0;31mError   \033[0;0m:" $f

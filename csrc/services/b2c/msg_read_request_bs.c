@@ -75,7 +75,7 @@ static bool s_AttributeId(uint32_t caid, constants__t_AttributeId_i* pbaid)
 {
     return util_AttributeId__C_to_B(caid, pbaid);
 }
-#endif
+#endif // __FRAMAC__
 
 #ifdef __FRAMAC__
 //@ assigns \nothing;
