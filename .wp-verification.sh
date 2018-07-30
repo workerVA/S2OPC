@@ -44,9 +44,8 @@ FRAMACARGS='-wp -wp-rte -cpp-command'
 
 WPFUNC='-wp-fct'
 
-BSFILEPATH="/csrc/services/b2c/"
-
-FILESWITHCONTRACTS="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c msg_read_request_bs.c"
+FILESWITHCONTRACTSBCK="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c"
+FILESWITHCONTRACTS=$(grep -I -r -ls -e "/\*@" -e "//@" csrc/ | sort | sed '/^.*\.h/d')
 
 if [[ -n $SOURCEFILE ]]
 then
@@ -61,7 +60,7 @@ then
 else
     for i in $FILESWITHCONTRACTS
     do
-        FILESTOPROVE=$FILESTOPROVE" "$ENV$BSFILEPATH$i
+        FILESTOPROVE=$FILESTOPROVE" "$ENV/$i
     done
     echo "WP verification for all annotated files."
 fi

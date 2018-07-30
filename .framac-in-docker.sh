@@ -23,7 +23,7 @@
 #
 set -e
 
-DOCKER_IMAGE=sha256:d97bef040b20808dc05e379e8882bd52ac475a453dfc4b5b08048680b277aeb6 # framac 1.0
+DOCKER_IMAGE=sha256:a462dcc5a755e66e4047715c34ded8fecd795b37b0e25e5f648428f7b10ee4fc # framac 1.0
 
 if [[ -z $SOPC_DOCKER_NEEDS_SUDO ]]; then
     /etc/scripts/run-in-docker $DOCKER_IMAGE "$@"
