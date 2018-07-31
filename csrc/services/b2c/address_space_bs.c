@@ -267,6 +267,12 @@ void address_space_bs__get_NodeClass(const constants__t_Node_i address_space_bs_
     }
 }
 
+/*@ requires \valid(ref);
+  @ assigns \nothing;
+  @ ensures \result <==> (!ref->IsInverse && ref->ReferenceTypeId.IdentifierType == SOPC_IdentifierType_Numeric &&
+  ref->ReferenceTypeId.Data.Numeric == 61);
+ */
+
 static bool is_type_definition(const OpcUa_ReferenceNode* ref)
 {
     if (ref->IsInverse)
@@ -299,12 +305,26 @@ void address_space_bs__get_TypeDefinition(const constants__t_Node_i address_spac
     }
 }
 
+/*@ requires \valid(address_space_bs__p_ref);
+  @ requires \valid(address_space_bs__p_RefType);
+  @ requires \separated(address_space_bs__p_RefType, address_space_bs__p_ref);
+  @ assigns *address_space_bs__p_RefType;
+  @ ensures *address_space_bs__p_RefType == &address_space_bs__p_ref->ReferenceTypeId;
+ */
+
 void address_space_bs__get_Reference_ReferenceType(const constants__t_Reference_i address_space_bs__p_ref,
                                                    constants__t_NodeId_i* const address_space_bs__p_RefType)
 {
     OpcUa_ReferenceNode* ref = address_space_bs__p_ref;
     *address_space_bs__p_RefType = &ref->ReferenceTypeId;
 }
+
+/*@ requires \valid(address_space_bs__p_ref);
+  @ requires \valid(address_space_bs__p_TargetNode);
+  @ requires \separated(address_space_bs__p_TargetNode, address_space_bs__p_ref);
+  @ assigns *address_space_bs__p_TargetNode;
+  @ ensures *address_space_bs__p_TargetNode == &address_space_bs__p_ref->TargetId;
+ */
 
 void address_space_bs__get_Reference_TargetNode(const constants__t_Reference_i address_space_bs__p_ref,
                                                 constants__t_ExpandedNodeId_i* const address_space_bs__p_TargetNode)
@@ -313,12 +333,25 @@ void address_space_bs__get_Reference_TargetNode(const constants__t_Reference_i a
     *address_space_bs__p_TargetNode = &ref->TargetId;
 }
 
+/*@ requires \valid(address_space_bs__p_ref);
+  @ requires \valid(address_space_bs__p_IsForward);
+  @ requires \separated(address_space_bs__p_IsForward, address_space_bs__p_ref);
+  @ assigns *address_space_bs__p_IsForward;
+  @ ensures *address_space_bs__p_IsForward == !address_space_bs__p_ref->IsInverse;
+ */
+
 void address_space_bs__get_Reference_IsForward(const constants__t_Reference_i address_space_bs__p_ref,
                                                t_bool* const address_space_bs__p_IsForward)
 {
     OpcUa_ReferenceNode* ref = address_space_bs__p_ref;
     *address_space_bs__p_IsForward = !ref->IsInverse;
 }
+
+/*@ requires \valid(address_space_bs__p_node);
+  @ requires \valid(address_space_bs__p_ref_index);
+  @ requires \separated(address_space_bs__p_ref_index, address_space_bs__p_node);
+  @ assigns *address_space_bs__p_ref_index;
+ */
 
 void address_space_bs__get_Node_RefIndexEnd(const constants__t_Node_i address_space_bs__p_node,
                                             t_entier4* const address_space_bs__p_ref_index)
@@ -328,6 +361,13 @@ void address_space_bs__get_Node_RefIndexEnd(const constants__t_Node_i address_sp
     int32_t* n_refs = SOPC_AddressSpace_Item_Get_NoOfReferences(item);
     *address_space_bs__p_ref_index = *n_refs - 1;
 }
+
+/*@ requires \valid(address_space_bs__p_node);
+  @ requires \valid(address_space_bs__p_ref);
+  @ requires \valid(*address_space_bs__p_ref);
+  @ requires \separated(address_space_bs__p_node, address_space_bs__p_ref, *address_space_bs__p_ref);
+  @ assigns *address_space_bs__p_ref;
+ */
 
 void address_space_bs__get_RefIndex_Reference(const constants__t_Node_i address_space_bs__p_node,
                                               const t_entier4 address_space_bs__p_ref_index,

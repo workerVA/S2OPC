@@ -224,8 +224,7 @@ static bool s_BrowseDirection(OpcUa_BrowseDirection cdir, constants__t_BrowseDir
   @ requires \valid(request->NodesToBrowse+(service_browse_decode_bs__p_bvi - 1));
   @ requires \separated(service_browse_decode_bs__p_isvalid, service_browse_decode_bs__p_NodeId,
   service_browse_decode_bs__p_dir, service_browse_decode_bs__p_isreftype, service_browse_decode_bs__p_reftype,
-  service_browse_decode_bs__p_inc_subtype, request, request->NodesToBrowse,
-  request->NodesToBrowse+(service_browse_decode_bs__p_bvi - 1));
+  service_browse_decode_bs__p_inc_subtype, request, request->NodesToBrowse+(service_browse_decode_bs__p_bvi - 1));
   @ assigns *service_browse_decode_bs__p_isvalid;
   @ assigns *service_browse_decode_bs__p_NodeId;
   @ assigns *service_browse_decode_bs__p_dir;
@@ -255,8 +254,8 @@ static bool s_BrowseDirection(OpcUa_BrowseDirection cdir, constants__t_BrowseDir
   @     ensures *service_browse_decode_bs__p_isreftype == true;
   @     ensures *service_browse_decode_bs__p_reftype == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].ReferenceTypeId;
-  @     ensures *service_browse_decode_bs__p_inc_subtype == request->NodesToBrowse[service_browse_decode_bs__p_bvi -
-  1].IncludeSubtypes;
+  @     ensures *service_browse_decode_bs__p_inc_subtype ==
+  (t_bool)(request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].IncludeSubtypes != 0);
 
   @
   @ behavior empty_browse_request:
@@ -308,13 +307,41 @@ request->NoOfNodesToBrowse) These are already verified by PRE */
         s_BrowseDirection(pBwseDesc->BrowseDirection, service_browse_decode_bs__p_dir);
 
         /* TODO: Have a clearer definition of what a "not specified ReferenceType" is... */
-        pNid = &pBwseDesc->ReferenceTypeId;
+        pNid = &request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId;
+
+        /*@ requires \valid(pNid);
+          @ requires \valid(pBwseDesc);
+          @ requires \separated(service_browse_decode_bs__p_isreftype, service_browse_decode_bs__p_reftype,
+          service_browse_decode_bs__p_inc_subtype);
+          @ assigns *service_browse_decode_bs__p_isreftype;
+          @ assigns *service_browse_decode_bs__p_reftype;
+          @ assigns *service_browse_decode_bs__p_inc_subtype;
+          @ ensures !(request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+          SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+          1].ReferenceTypeId.Data.Numeric == 0) ==> *service_browse_decode_bs__p_isreftype == true;
+          @ ensures !(pNid->IdentifierType == SOPC_IdentifierType_Numeric && pNid->Data.Numeric == 0) ==>
+          *service_browse_decode_bs__p_reftype == &request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+          1].ReferenceTypeId;
+          @ ensures !(pNid->IdentifierType == SOPC_IdentifierType_Numeric && pNid->Data.Numeric == 0) ==>
+          *service_browse_decode_bs__p_inc_subtype == (t_bool) (pBwseDesc->IncludeSubtypes != 0);
+          @ ensures request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+          SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+          1].ReferenceTypeId.Data.Numeric == 0 ==> *service_browse_decode_bs__p_isreftype == false;
+          @ ensures request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+          SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+          1].ReferenceTypeId.Data.Numeric == 0 ==> *service_browse_decode_bs__p_reftype == constants__c_NodeId_indet;
+          @ ensures request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+          SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
+          1].ReferenceTypeId.Data.Numeric == 0 ==> *service_browse_decode_bs__p_inc_subtype == false;
+         */
         if (!(pNid->IdentifierType == SOPC_IdentifierType_Numeric && pNid->Data.Numeric == 0))
         {
             *service_browse_decode_bs__p_isreftype = true;
             //@ assert *service_browse_decode_bs__p_isreftype == true;
             *service_browse_decode_bs__p_reftype = pNid;
-            *service_browse_decode_bs__p_inc_subtype = pBwseDesc->IncludeSubtypes;
+            *service_browse_decode_bs__p_inc_subtype = (t_bool) pBwseDesc->IncludeSubtypes;
+            /*@ assert *service_browse_decode_bs__p_inc_subtype == (t_bool)
+  (request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].IncludeSubtypes != 0);*/
         }
 
         *service_browse_decode_bs__p_isvalid = true;
