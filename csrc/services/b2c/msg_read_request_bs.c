@@ -48,21 +48,21 @@ static bool bWarned = false;
   @ assigns *pbaid;
   @
   @ behavior valid_ptr:
-  @ 	assumes pbaid != \null;
-  @ 	ensures caid == e_aid_NodeId ==> *pbaid == constants__e_aid_NodeId;
-  @ 	ensures caid == e_aid_NodeClass ==> *pbaid == constants__e_aid_NodeClass;
-  @ 	ensures caid == e_aid_BrowseName ==> *pbaid == constants__e_aid_BrowseName;
-  @ 	ensures caid == e_aid_DisplayName ==> *pbaid == constants__e_aid_DisplayName;
-  @ 	ensures caid == e_aid_Value ==> *pbaid == constants__e_aid_Value;
-  @ 	ensures caid == e_aid_AccessLevel ==> *pbaid == constants__e_aid_AccessLevel;
-  @ 	ensures \result <==> caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
+  @     assumes pbaid != \null;
+  @     ensures caid == e_aid_NodeId ==> *pbaid == constants__e_aid_NodeId;
+  @     ensures caid == e_aid_NodeClass ==> *pbaid == constants__e_aid_NodeClass;
+  @     ensures caid == e_aid_BrowseName ==> *pbaid == constants__e_aid_BrowseName;
+  @     ensures caid == e_aid_DisplayName ==> *pbaid == constants__e_aid_DisplayName;
+  @     ensures caid == e_aid_Value ==> *pbaid == constants__e_aid_Value;
+  @     ensures caid == e_aid_AccessLevel ==> *pbaid == constants__e_aid_AccessLevel;
+  @     ensures \result <==> caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
   e_aid_AccessLevel};
-  @ 	ensures !(caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
+  @     ensures !(caid \in {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value,
   e_aid_AccessLevel}) ==> *pbaid == \at(*pbaid, Pre);
   @
   @ behavior invalid_ptr:
-  @ 	assumes pbaid == \null;
-  @ 	ensures \result == \false;
+  @     assumes pbaid == \null;
+  @     ensures \result == \false;
   @
   @ complete behaviors;
   @ disjoint behaviors;
@@ -214,17 +214,17 @@ void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i m
   @ assigns *pbttr;
   @
   @ behavior valid_ptr:
-  @ 	assumes pbttr != \null;
-  @ 	ensures cttr == OpcUa_TimestampsToReturn_Source ==> *pbttr == constants__e_ttr_source;
-  @ 	ensures cttr == OpcUa_TimestampsToReturn_Server ==> *pbttr == constants__e_ttr_server;
-  @ 	ensures cttr == OpcUa_TimestampsToReturn_Both ==> *pbttr == constants__e_ttr_both;
-  @ 	ensures cttr == OpcUa_TimestampsToReturn_Neither ==> *pbttr == constants__e_ttr_neither;
-  @ 	ensures \result <==> (cttr \in {OpcUa_TimestampsToReturn_Source, OpcUa_TimestampsToReturn_Server,
+  @     assumes pbttr != \null;
+  @     ensures cttr == OpcUa_TimestampsToReturn_Source ==> *pbttr == constants__e_ttr_source;
+  @     ensures cttr == OpcUa_TimestampsToReturn_Server ==> *pbttr == constants__e_ttr_server;
+  @     ensures cttr == OpcUa_TimestampsToReturn_Both ==> *pbttr == constants__e_ttr_both;
+  @     ensures cttr == OpcUa_TimestampsToReturn_Neither ==> *pbttr == constants__e_ttr_neither;
+  @     ensures \result <==> (cttr \in {OpcUa_TimestampsToReturn_Source, OpcUa_TimestampsToReturn_Server,
   OpcUa_TimestampsToReturn_Both, OpcUa_TimestampsToReturn_Neither});
   @
   @ behavior invalid_ptr:
-  @ 	assumes pbttr == \null;
-  @ 	ensures \result == \false;
+  @     assumes pbttr == \null;
+  @     ensures \result == \false;
   @
   @ complete behaviors;
   @ disjoint behaviors;

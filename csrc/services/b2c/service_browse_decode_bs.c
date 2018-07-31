@@ -187,18 +187,18 @@ extern void service_browse_decode_bs__get_BrowseView(constants__t_NodeId_i* cons
   @ assigns *bdir;
   @
   @ behavior valid_ptr:
-  @ 	assumes bdir != \null;
-  @ 	ensures cdir == OpcUa_BrowseDirection_Forward ==> *bdir == constants__e_bd_forward;
-  @ 	ensures cdir == OpcUa_BrowseDirection_Inverse ==> *bdir == constants__e_bd_inverse;
-  @ 	ensures cdir == OpcUa_BrowseDirection_Both ==> *bdir == constants__e_bd_both;
-  @ 	ensures \result <==> (cdir \in {OpcUa_BrowseDirection_Forward, OpcUa_BrowseDirection_Inverse,
+  @     assumes bdir != \null;
+  @     ensures cdir == OpcUa_BrowseDirection_Forward ==> *bdir == constants__e_bd_forward;
+  @     ensures cdir == OpcUa_BrowseDirection_Inverse ==> *bdir == constants__e_bd_inverse;
+  @     ensures cdir == OpcUa_BrowseDirection_Both ==> *bdir == constants__e_bd_both;
+  @     ensures \result <==> (cdir \in {OpcUa_BrowseDirection_Forward, OpcUa_BrowseDirection_Inverse,
   OpcUa_BrowseDirection_Both});
-  @ 	ensures !(cdir \in {OpcUa_BrowseDirection_Forward, OpcUa_BrowseDirection_Inverse,
+  @     ensures !(cdir \in {OpcUa_BrowseDirection_Forward, OpcUa_BrowseDirection_Inverse,
   OpcUa_BrowseDirection_Both}) ==> *bdir == \at(*bdir, Pre);
   @
   @ behavior invalid_ptr:
-  @ 	assumes bdir == \null;
-  @ 	ensures \result == \false;
+  @     assumes bdir == \null;
+  @     ensures \result == \false;
   @
   @ complete behaviors;
   @ disjoint behaviors;
@@ -243,8 +243,8 @@ static bool s_BrowseDirection(OpcUa_BrowseDirection cdir, constants__t_BrowseDir
   @     ensures *service_browse_decode_bs__p_inc_subtype == false;
   @
   @ behavior correct_browse_request:
-  @ 	assumes (\null != request && service_browse_decode_bs__p_bvi > 0);
-  @ 	assumes (request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType !=
+  @     assumes (\null != request && service_browse_decode_bs__p_bvi > 0);
+  @     assumes (request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType !=
   SOPC_IdentifierType_Numeric || request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].ReferenceTypeId.Data.Numeric != 0);
   @     ensures *service_browse_decode_bs__p_isvalid == true;
@@ -260,8 +260,8 @@ static bool s_BrowseDirection(OpcUa_BrowseDirection cdir, constants__t_BrowseDir
 
   @
   @ behavior empty_browse_request:
-  @ 	assumes (\null != request && service_browse_decode_bs__p_bvi > 0);
-  @ 	assumes request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
+  @     assumes (\null != request && service_browse_decode_bs__p_bvi > 0);
+  @     assumes request->NodesToBrowse[service_browse_decode_bs__p_bvi - 1].ReferenceTypeId.IdentifierType ==
   SOPC_IdentifierType_Numeric && request->NodesToBrowse[service_browse_decode_bs__p_bvi -
   1].ReferenceTypeId.Data.Numeric == 0;
   @     ensures *service_browse_decode_bs__p_isvalid == true;
