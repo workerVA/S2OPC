@@ -41,6 +41,10 @@ void util_message__get_message_type(SOPC_EncodeableType* encType, constants__t_m
 
 void util_status_code__B_to_C(constants__t_StatusCode_i bstatus, SOPC_StatusCode* status);
 
+/*@ requires \valid(bstatus);
+  @ assigns *bstatus;
+ */
+
 void util_status_code__C_to_B(SOPC_StatusCode status, constants__t_StatusCode_i* bstatus);
 
 SOPC_ReturnStatus util_status_code__B_to_return_status_C(constants__t_StatusCode_i bstatus);

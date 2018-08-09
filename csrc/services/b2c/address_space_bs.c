@@ -87,6 +87,22 @@ void address_space_bs__readall_AddressSpace_Node(const constants__t_NodeId_i add
     }
 }
 
+/*@ requires \valid(item);
+  @ assigns \nothing;
+  @ ensures item->node_class == OpcUa_NodeClass_Variable ==> \result == &item->data.variable.Value;
+  @ ensures item->node_class == OpcUa_NodeClass_VariableType ==> \result == &item->data.variable_type.Value;
+  @ ensures !(item->node_class \in {OpcUa_NodeClass_Variable, OpcUa_NodeClass_VariableType}) ==> \result == \null;
+ */
+
+static SOPC_Variant* s_AddressSpace_Item_Get_Value(SOPC_AddressSpace_Item* item);
+
+#ifndef __FRAMAC__
+static SOPC_Variant* s_AddressSpace_Item_Get_Value(SOPC_AddressSpace_Item* item)
+{
+    return SOPC_AddressSpace_Item_Get_Value(item);
+}
+#endif // __FRAMAC__
+
 /*@ predicate is_correct_variant(constants__t_AttributeId_i address_space_bs__aid, constants__t_NodeClass_i
   address_space_bs__ncl, constants__t_Node_i address_space_bs__node,constants__t_Variant_i* address_space_bs__variant)=
   @ (address_space_bs__aid == constants__e_aid_NodeId &&
@@ -186,7 +202,7 @@ void address_space_bs__read_AddressSpace_Attribute_value(const constants__t_Node
         if (constants__e_ncl_Variable == address_space_bs__ncl ||
             constants__e_ncl_VariableType == address_space_bs__ncl)
         {
-            *address_space_bs__variant = util_variant__new_Variant_from_Variant(SOPC_AddressSpace_Item_Get_Value(item));
+            *address_space_bs__variant = util_variant__new_Variant_from_Variant(s_AddressSpace_Item_Get_Value(item));
         }
         else
         {
@@ -214,7 +230,7 @@ void address_space_bs__set_Value(const constants__t_Node_i address_space_bs__nod
     *address_space_bs__serviceStatusCode = constants__e_sc_bad_out_of_memory;
     SOPC_AddressSpace_Item* item = address_space_bs__node;
     SOPC_ReturnStatus status = SOPC_STATUS_NOK;
-    SOPC_Variant* pvar = SOPC_AddressSpace_Item_Get_Value(item);
+    SOPC_Variant* pvar = s_AddressSpace_Item_Get_Value(item);
     *address_space_bs__prev_value = malloc(sizeof(SOPC_Variant));
     if (NULL == *address_space_bs__prev_value)
     {
@@ -235,10 +251,19 @@ void address_space_bs__get_Value_StatusCode(const constants__t_Node_i address_sp
     util_status_code__C_to_B(item->value_status, address_space_bs__sc);
 }
 
+/*@ requires \valid(address_space_bs__val);
+  @ assigns \nothing;
+  @ ensures \true;
+ */
+
 void address_space_bs__read_AddressSpace_free_value(const constants__t_Variant_i address_space_bs__val)
 {
     free(address_space_bs__val);
 }
+
+/*@ requires \valid(address_space_bs__p_browse_name);
+  @ assigns *address_space_bs__p_browse_name;
+ */
 
 void address_space_bs__get_BrowseName(const constants__t_Node_i address_space_bs__p_node,
                                       constants__t_QualifiedName_i* const address_space_bs__p_browse_name)
@@ -247,6 +272,10 @@ void address_space_bs__get_BrowseName(const constants__t_Node_i address_space_bs
     *address_space_bs__p_browse_name = SOPC_AddressSpace_Item_Get_BrowseName(item);
 }
 
+/*@ requires \valid(address_space_bs__p_display_name);
+  @ assigns *address_space_bs__p_display_name;
+ */
+
 void address_space_bs__get_DisplayName(const constants__t_Node_i address_space_bs__p_node,
                                        constants__t_LocalizedText_i* const address_space_bs__p_display_name)
 {
@@ -254,13 +283,58 @@ void address_space_bs__get_DisplayName(const constants__t_Node_i address_space_b
     *address_space_bs__p_display_name = SOPC_AddressSpace_Item_Get_DisplayName(item);
 }
 
+/*@ requires bncl == \null || \valid(bncl);
+  @ assigns *bncl;
+  @
+  @ behavior valid_ptr:
+  @     assumes bncl != \null;
+  @     ensures cncl == OpcUa_NodeClass_Object ==> *bncl == constants__e_ncl_Object;
+  @     ensures cncl == OpcUa_NodeClass_Variable ==> *bncl == constants__e_ncl_Variable;
+  @     ensures cncl == OpcUa_NodeClass_Method ==> *bncl == constants__e_ncl_Method;
+  @     ensures cncl == OpcUa_NodeClass_ObjectType ==> *bncl == constants__e_ncl_ObjectType;
+  @     ensures cncl == OpcUa_NodeClass_VariableType ==> *bncl == constants__e_ncl_VariableType;
+  @     ensures cncl == OpcUa_NodeClass_ReferenceType ==> *bncl == constants__e_ncl_ReferenceType;
+  @     ensures cncl == OpcUa_NodeClass_DataType ==> *bncl == constants__e_ncl_DataType;
+  @     ensures cncl == OpcUa_NodeClass_View ==> *bncl == constants__e_ncl_View;
+  @     ensures \result <==> (cncl \in {OpcUa_NodeClass_Object,OpcUa_NodeClass_Variable, OpcUa_NodeClass_Method,
+  OpcUa_NodeClass_ObjectType, OpcUa_NodeClass_VariableType, OpcUa_NodeClass_ReferenceType, OpcUa_NodeClass_DataType,
+  OpcUa_NodeClass_View});
+  @     ensures !(cncl \in {OpcUa_NodeClass_Object,OpcUa_NodeClass_Variable, OpcUa_NodeClass_Method,
+  OpcUa_NodeClass_ObjectType, OpcUa_NodeClass_VariableType, OpcUa_NodeClass_ReferenceType, OpcUa_NodeClass_DataType,
+  OpcUa_NodeClass_View}) ==> *bncl == \at(*bncl, Pre);
+  @
+  @ behavior invalid_ptr:
+  @     assumes bncl == \null;
+  @     ensures \result == \false;
+  @
+  @ complete behaviors;
+  @ disjoint behaviors;
+ */
+
+static bool s_NodeClass__C_to_B(OpcUa_NodeClass cncl, constants__t_NodeClass_i* bncl);
+
+#ifndef __FRAMAC__
+static bool s_NodeClass__C_to_B(OpcUa_NodeClass cncl, constants__t_NodeClass_i* bncl)
+{
+    return util_NodeClass__C_to_B(cncl, bncl);
+}
+#endif // __FRAMAC__
+
+/*@ requires \valid(address_space_bs__p_node);
+  @ requires \valid(address_space_bs__p_node_class);
+  @ assigns *address_space_bs__p_node_class;
+  @ ensures *address_space_bs__p_node_class \in {constants__e_ncl_Object, constants__e_ncl_Variable,
+  constants__e_ncl_Method, constants__e_ncl_ObjectType, constants__e_ncl_VariableType, constants__e_ncl_ReferenceType,
+  constants__e_ncl_DataType, constants__e_ncl_View, constants__c_NodeClass_indet};
+ */
+
 void address_space_bs__get_NodeClass(const constants__t_Node_i address_space_bs__p_node,
                                      constants__t_NodeClass_i* const address_space_bs__p_node_class)
 {
     assert(NULL != address_space_bs__p_node);
     SOPC_AddressSpace_Item* item = address_space_bs__p_node;
 
-    bool res = util_NodeClass__C_to_B(item->node_class, address_space_bs__p_node_class);
+    bool res = s_NodeClass__C_to_B(item->node_class, address_space_bs__p_node_class);
     if (false == res)
     {
         *address_space_bs__p_node_class = constants__c_NodeClass_indet;
@@ -284,23 +358,92 @@ static bool is_type_definition(const OpcUa_ReferenceNode* ref)
            ref->ReferenceTypeId.Data.Numeric == 61;
 }
 
+/*@ requires \valid(item);
+  @ assigns \nothing;
+  @ ensures \valid(\result);
+  @ ensures *\result >= 2;
+ */
+
+static int32_t* s_Get_NoOfReferences(SOPC_AddressSpace_Item* item);
+
+#ifndef __FRAMAC__
+static int32_t** s_Get_NoOfReferences(SOPC_AddressSpace_Item* item)
+{
+    return SOPC_AddressSpace_Item_Get_NoOfReferences(item);
+}
+#endif
+
+/*@ axiomatic AddressSpace {
+  @
+  @ predicate is_separated(OpcUa_ReferenceNode** r1, OpcUa_ReferenceNode* r2, constants__t_Node_i ptr1,
+  constants__t_ExpandedNodeId_i* ptr2, int32_t nb);
+  @
+  @ axiom S : \forall OpcUa_ReferenceNode** r1, OpcUa_ReferenceNode* r2, int32_t nb, constants__t_Node_i ptr1,
+  constants__t_ExpandedNodeId_i* ptr2; is_separated(r1, r2, ptr1, ptr2, nb) ==> \separated(r1, r2 + (0 .. nb - 1), ptr1,
+  ptr2);
+  @ }
+ */
+
+/*@ requires \valid(item);
+  @ assigns \nothing;
+  @ ensures \valid(\result);
+  @ ensures \valid(*\result);
+  @ ensures \valid((*\result) + (0 .. nb - 1));
+  @ ensures is_separated(\result, *(\result), address_space_bs__p_node, address_space_bs__p_type_def, nb);
+  @ //ensures \separated(\result, (*\result) + (0 .. nb - 1), address_space_bs__p_node, address_space_bs__p_type_def);
+ */
+static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item,
+                                              int32_t nb,
+                                              constants__t_Node_i address_space_bs__p_node,
+                                              constants__t_ExpandedNodeId_i* address_space_bs__p_type_def);
+
+#ifndef __FRAMAC__
+static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item,
+                                              int32_t nb,
+                                              constants__t_Node_i address_space_bs__p_node,
+                                              constants__t_ExpandedNodeId_i* address_space_bs__p_type_def)
+{
+    return SOPC_AddressSpace_Item_Get_References(item);
+}
+#endif
+
+/*@ requires \valid(address_space_bs__p_type_def);
+  @ requires \valid(address_space_bs__p_node);
+  @ requires \separated(address_space_bs__p_type_def, address_space_bs__p_node);
+  @ assigns *address_space_bs__p_type_def;
+ */
+
 void address_space_bs__get_TypeDefinition(const constants__t_Node_i address_space_bs__p_node,
                                           constants__t_ExpandedNodeId_i* const address_space_bs__p_type_def)
 {
     assert(NULL != address_space_bs__p_node);
     SOPC_AddressSpace_Item* item = address_space_bs__p_node;
-    int32_t* n_refs = SOPC_AddressSpace_Item_Get_NoOfReferences(item);
-    OpcUa_ReferenceNode** refs = SOPC_AddressSpace_Item_Get_References(item);
+    int32_t* n_refs = s_Get_NoOfReferences(item);
+    OpcUa_ReferenceNode** refs =
+        s_Get_References(item, *n_refs, address_space_bs__p_node, address_space_bs__p_type_def);
     *address_space_bs__p_type_def = constants__c_ExpandedNodeId_indet;
 
-    for (int32_t i = 0; i < *n_refs; ++i)
+    /*@ loop invariant 0 <= i <= *n_refs;
+      @ loop assigns i, *address_space_bs__p_type_def;
+      @ loop variant *n_refs - i;
+     */
+    for (int i = 0; i < *n_refs; ++i)
     {
         OpcUa_ReferenceNode* ref = &(*refs)[i];
 
         if (is_type_definition(ref))
         {
+            //@ assert ref->IsInverse == 0;
+            //@ assert ref->ReferenceTypeId.IdentifierType == SOPC_IdentifierType_Numeric;
+            //@ assert ref->ReferenceTypeId.Data.Numeric == 61;
             *address_space_bs__p_type_def = &ref->TargetId;
             break;
+        }
+        else
+        {
+            /*@ assert ref->IsInverse ||
+             ref->ReferenceTypeId.IdentifierType != SOPC_IdentifierType_Numeric ||
+             ref->ReferenceTypeId.Data.Numeric != 61; */
         }
     }
 }
