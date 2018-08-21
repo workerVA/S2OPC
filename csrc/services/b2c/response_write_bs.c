@@ -98,6 +98,7 @@ static SOPC_StatusCode* statuscode_malloc(size_t size, size_t nb)
 
 /*@ requires \valid(response_write_bs__ResponseWrite_allocated);
   @ requires response_write_bs__nb_req >= 0;
+  @ requires response_write_bs__nb_req <= constants_bs__k_n_WriteResponse_max;
   @ assigns nb_req;
   @ assigns arr_StatusCode;
   @ assigns \at(arr_StatusCode[0 .. response_write_bs__nb_req], Post);
@@ -186,7 +187,8 @@ void response_write_bs__reset_ResponseWrite(void)
 }
 
 /*@ requires \valid(arr_StatusCode + (response_write_bs__wvi));
-  @ requires response_write_bs__wvi >= 0;
+  @ requires nb_req >= response_write_bs__wvi >= 0;
+  @ requires response_write_bs__wvi != constants__c_WriteValue_indet;
   @ assigns arr_StatusCode[response_write_bs__wvi];
  */
 

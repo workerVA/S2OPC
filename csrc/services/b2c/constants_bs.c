@@ -100,11 +100,19 @@ void constants_bs__get_card_t_session(t_entier4* const constants_bs__p_card_sess
     *constants_bs__p_card_session = constants_bs__t_session_i_max;
 }
 
+/*@ requires \valid(constants_bs__p_card_subscription);
+  @ assigns *constants_bs__p_card_subscription;
+  @ ensures *constants_bs__p_card_subscription == constants_bs__t_subscription_i_max;
+ */
+
 void constants_bs__get_card_t_subscription(t_entier4* const constants_bs__p_card_subscription)
 {
     *constants_bs__p_card_subscription = constants_bs__t_subscription_i_max;
 }
+
 /*@ requires \valid(constants_bs__p_channel);
+  @ requires constants_bs__p_ind != constants_bs__c_channel_indet;
+  @ requires constants_bs__p_ind >= 0;
   @ assigns *constants_bs__p_channel;
   @ ensures *constants_bs__p_channel == (uint32_t) constants_bs__p_ind;
  */
@@ -112,10 +120,12 @@ void constants_bs__get_card_t_subscription(t_entier4* const constants_bs__p_card
 void constants_bs__get_cast_t_channel(const t_entier4 constants_bs__p_ind,
                                       constants_bs__t_channel_i* const constants_bs__p_channel)
 {
-    *constants_bs__p_channel = (uint32_t) constants_bs__p_ind; // TODO: add precondition in B model
+    *constants_bs__p_channel = (uint32_t) constants_bs__p_ind;
 }
 
 /*@ requires \valid(constants_bs__p_session);
+  @ requires constants_bs__p_ind != constants_bs__c_session_indet;
+  @ requires constants_bs__p_ind >= 0;
   @ assigns *constants_bs__p_session;
   @ ensures *constants_bs__p_session == (uint32_t) constants_bs__p_ind;
  */
@@ -123,13 +133,20 @@ void constants_bs__get_cast_t_channel(const t_entier4 constants_bs__p_ind,
 void constants_bs__get_cast_t_session(const t_entier4 constants_bs__p_ind,
                                       constants_bs__t_session_i* const constants_bs__p_session)
 {
-    *constants_bs__p_session = (uint32_t) constants_bs__p_ind; // TODO: add precondition in B model
+    *constants_bs__p_session = (uint32_t) constants_bs__p_ind;
 }
+
+/*@ requires \valid(constants_bs__p_subscription);
+  @ requires constants_bs__p_ind != constants_bs__c_subscription_indet;
+  @ requires constants_bs__p_ind >= 0;
+  @ assigns *constants_bs__p_subscription;
+  @ ensures *constants_bs__p_subscription == (uint32_t) constants_bs__p_ind;
+ */
 
 void constants_bs__get_cast_t_subscription(const t_entier4 constants_bs__p_ind,
                                            constants_bs__t_subscription_i* const constants_bs__p_subscription)
 {
-    *constants_bs__p_subscription = (uint32_t) constants_bs__p_ind; // TODO: add precondition in B model
+    *constants_bs__p_subscription = (uint32_t) constants_bs__p_ind;
 }
 
 /*@ requires \valid(constants_bs__p_res);
