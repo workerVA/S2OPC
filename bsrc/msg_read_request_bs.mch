@@ -27,22 +27,26 @@ SEES
 ABSTRACT_VARIABLES
     ReadValue_NodeId,
     ReadValue_AttributeId,
-    ReadValue_HasIndexRange
+    ReadValue_HasIndexRange,
+    ReadValue_MaxAge
 
 INVARIANT
     ReadValue_NodeId      : t_ReadValue +-> t_NodeId &
     ReadValue_AttributeId : t_ReadValue +-> t_AttributeId_i &
-    ReadValue_HasIndexRange : t_ReadValue +-> BOOL
+    ReadValue_HasIndexRange : t_ReadValue +-> BOOL &
+    ReadValue_MaxAge : INT
 
 INITIALISATION
     ReadValue_NodeId,
     ReadValue_AttributeId,
-    ReadValue_HasIndexRange
+    ReadValue_HasIndexRange,
+    ReadValue_MaxAge
     :(
         ReadValue_NodeId      = {} &
         ReadValue_AttributeId = {} &
-        ReadValue_HasIndexRange = {}
-     )
+        ReadValue_HasIndexRange = {} &
+        ReadValue_MaxAge < 0
+    )
 
 OPERATIONS
     nb <-- read_req_nb_ReadValue(msg) =
@@ -52,15 +56,21 @@ OPERATIONS
         c_msg_in : t_msg &
         a_msg_in_type = e_msg_attribute_read_req
     THEN
-        nb :(nb : INT &
+        nb,
+        ReadValue_NodeId,
+        ReadValue_AttributeId,
+        ReadValue_HasIndexRange,
+        ReadValue_MaxAge
+         :(nb : INT &
              (nb > 0 =>
                ReadValue_NodeId      : cast_t_ReadValue[1..nb] --> t_NodeId &
                ReadValue_AttributeId : cast_t_ReadValue[1..nb] --> t_AttributeId_i &
-               ReadValue_HasIndexRange : t_ReadValue --> BOOL) &
+               ReadValue_HasIndexRange : cast_t_ReadValue[1..nb] --> BOOL) &
              (nb <= 0 =>
                ReadValue_NodeId      = {} &
                ReadValue_AttributeId = {} &
-               ReadValue_HasIndexRange = {}))
+               ReadValue_HasIndexRange = {}) &
+        ReadValue_MaxAge : INT)
     END
     ;
 
@@ -82,7 +92,7 @@ OPERATIONS
         c_msg_in : t_msg &
         a_msg_in_type = e_msg_attribute_read_req
     THEN
-        p_maxAge_valid :: BOOL
+        p_maxAge_valid := bool(ReadValue_MaxAge >= 0)
     END
     ;
 
