@@ -53,15 +53,10 @@ void constants_bs__get_Is_SubType(const constants_bs__t_NodeId_i constants_bs__p
     *constants_bs__p_res = true;
 }
 
-/*@ requires \valid(constants_bs__p_isvalid);
-  @ requires \valid(constants_bs__p_nid);
+/*@ requires \valid(constants_bs__p_nid);
   @ requires \valid_read(constants_bs__p_expnid);
-  @ assigns *constants_bs__p_isvalid;
   @ assigns *constants_bs__p_nid;
-  @ ensures (constants_bs__p_expnid != constants_bs__c_ExpandedNodeId_indet) ==>
-  *constants_bs__p_nid == &constants_bs__p_expnid->NodeId && *constants_bs__p_isvalid == true;
-  @ ensures (constants_bs__p_expnid == constants_bs__c_ExpandedNodeId_indet) ==>
-  *constants_bs__p_nid == constants_bs__c_NodeId_indet && *constants_bs__p_isvalid == false;
+  @ ensures *constants_bs__p_nid == &constants_bs__p_expnid->NodeId;
  */
 void constants_bs__getall_conv_ExpandedNodeId_NodeId(const constants_bs__t_ExpandedNodeId_i constants_bs__p_expnid,
                                                      constants_bs__t_NodeId_i* const constants_bs__p_nid)
