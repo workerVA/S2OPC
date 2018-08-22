@@ -94,7 +94,8 @@ void request_handle_bs__client_validate_response_request_handle(
   @ assigns cpt;
   @ ensures request_handle_bs__resp_typ == constants__c_msg_type_indet ==>
   *request_handle_bs__request_handle == constants__c_client_request_handle_indet;
-  @ ensures *request_handle_bs__request_handle != constants__c_client_request_handle_indet ==>
+  @ ensures *request_handle_bs__request_handle != constants__c_client_request_handle_indet &&
+  request_handle_bs__resp_typ != constants__c_msg_type_indet ==>
   (client_requests_context[*request_handle_bs__request_handle].request == request_handle_bs__req_typ &&
    client_requests_context[*request_handle_bs__request_handle].response == request_handle_bs__resp_typ &&
    client_requests_context[*request_handle_bs__request_handle].hasAppContext == request_handle_bs__is_applicative &&
@@ -114,12 +115,16 @@ void request_handle_bs__client_fresh_req_handle(
     if (request_handle_bs__resp_typ != constants__c_msg_type_indet)
     {
         /*@ loop invariant 0 <= cpt <= SOPC_MAX_PENDING_REQUESTS;
+          @ loop invariant cpt > startedIdx ==> \forall integer i; startedIdx < i < cpt ==>
+          *request_handle_bs__request_handle == constants__c_client_request_handle_indet;
+          @ loop invariant cpt <= startedIdx ==> \forall integer i; startedIdx < i <= SOPC_MAX_PENDING_REQUESTS ||
+          0 < i < cpt ==> *request_handle_bs__request_handle == constants__c_client_request_handle_indet;
           @ loop assigns cpt;
           @ loop assigns *request_handle_bs__request_handle;
           @ loop assigns noHandleAvailable;
           @ loop assigns client_requests_context[1 .. SOPC_MAX_PENDING_REQUESTS];
-          @ loop variant SOPC_MAX_PENDING_REQUESTS - ((cpt - startedIdx) % (SOPC_MAX_PENDING_REQUESTS + 1));
-         */
+          */ /* loop variant SOPC_MAX_PENDING_REQUESTS - ((cpt - startedIdx) % (SOPC_MAX_PENDING_REQUESTS + 1));
+              */
         while (false == noHandleAvailable &&
                *request_handle_bs__request_handle == constants__c_client_request_handle_indet)
         {

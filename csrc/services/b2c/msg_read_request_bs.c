@@ -76,28 +76,28 @@ void SOPC_Logger_TraceWarning(const char* format, ...);
   @ assigns bWarned;
   @
   @ behavior invalid_id:
-  @ 	assumes !(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
+  @     assumes !(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
   {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel});
-  @ 	ensures *msg_read_request_bs__sc == constants__e_sc_bad_attribute_id_invalid;
-  @ 	ensures *msg_read_request_bs__aid == constants__c_AttributeId_indet;
-  @ 	ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
+  @     ensures *msg_read_request_bs__sc == constants__e_sc_bad_attribute_id_invalid;
+  @     ensures *msg_read_request_bs__aid == constants__c_AttributeId_indet;
+  @     ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
                                        *msg_read_request_bs__aid);
-  @ 	ensures !\old(bWarned) ==> bWarned;
+  @     ensures !\old(bWarned) ==> bWarned;
   @
   @ behavior has_index_range:
-  @ 	assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
+  @     assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
   {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel};
-  @ 	assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].IndexRange.Length > 0;
-  @ 	ensures *msg_read_request_bs__sc == constants__e_sc_bad_index_range_invalid;
-  @ 	ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
+  @     assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].IndexRange.Length > 0;
+  @     ensures *msg_read_request_bs__sc == constants__e_sc_bad_index_range_invalid;
+  @     ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
                                        *msg_read_request_bs__aid);
   @
   @ behavior ok:
-  @ 	assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
+  @     assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId \in
   {e_aid_NodeId, e_aid_NodeClass, e_aid_BrowseName, e_aid_DisplayName, e_aid_Value, e_aid_AccessLevel};
-  @ 	assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].IndexRange.Length <= 0;
-  @ 	ensures *msg_read_request_bs__sc == constants__e_sc_ok;
-  @ 	ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
+  @     assumes msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].IndexRange.Length <= 0;
+  @     ensures *msg_read_request_bs__sc == constants__e_sc_ok;
+  @     ensures is_correct_AttributeId(msg_read_req->NodesToRead[msg_read_request_bs__rvi - 1].AttributeId,
                                        *msg_read_request_bs__aid);
   @
   @ complete behaviors;

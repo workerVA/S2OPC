@@ -48,30 +48,30 @@ static uint32_t session_pending_requests_nb[SOPC_MAX_SESSIONS + 1];
 
 /*@ axiomatic CountSessionHandle
   @ {
-  @ 	logic integer count_handle(constants__t_session_i* tab, integer start, integer n, constants__t_session_i val);
+  @     logic integer count_handle(constants__t_session_i* tab, integer start, integer n, constants__t_session_i val);
   @
-  @ 	axiom count_zero:
-  @ 		\forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
+  @     axiom count_zero:
+  @         \forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
   n <= start ==> count_handle(tab, start, n, val) == 0;
   @
-  @ 	axiom count_hit:
-  @ 		\forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
+  @     axiom count_hit:
+  @         \forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
   n >= start && tab[n] == val ==> count_handle(tab, start, n, val) + 1 == count_handle(tab, start, n+1, val);
   @
-  @ 	axiom count_miss:
-  @ 		\forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
+  @     axiom count_miss:
+  @         \forall constants__t_session_i* tab, integer start, integer n, constants__t_session_i val;
   n >= start && tab[n] != val ==> count_handle(tab, start, n, val) == count_handle(tab, start, n+1, val);
   @ }
  */
 
 /*@ axiomatic HandleProperties
   @ {
-  @ 	axiom no_handles:
-  @ 		\forall constants__t_session_i val; count_handle((constants__t_session_i*) client_requests, 1,
+  @     axiom no_handles:
+  @         \forall constants__t_session_i val; count_handle((constants__t_session_i*) client_requests, 1,
   SOPC_MAX_PENDING_REQUESTS + 1, val) == session_pending_requests_nb[val];
   @
-  @ 	axiom no_more_handles{L1, L2} :
-  @ 		\forall constants__t_session_i* tab, constants__t_session_i val, integer i;
+  @     axiom no_more_handles{L1, L2} :
+  @         \forall constants__t_session_i* tab, constants__t_session_i val, integer i;
   \at(session_pending_requests_nb[val], L2) == 0 ==> Replaces{L1, L2}(tab, (int) i, val, (constants__t_session_i)
   constants__c_session_indet);
   @

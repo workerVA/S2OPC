@@ -56,6 +56,7 @@ void address_space_bs__INITIALISATION(void)
 /*@ requires \valid(address_space_bs__nid_valid);
   @ requires \valid(address_space_bs__node);
   @ requires \valid(address_space_bs__nodes);
+  @ requires \separated(address_space_bs__nid_valid, address_space_bs__node, address_space_bs__nodes);
   @ assigns *address_space_bs__nid_valid;
   @ assigns *address_space_bs__node;
   @ ensures \null == address_space_bs__nid ==> *address_space_bs__nid_valid == false && *address_space_bs__node ==
@@ -158,6 +159,8 @@ static SOPC_Variant* s_AddressSpace_Item_Get_Value(SOPC_AddressSpace_Item* item)
   @ requires \valid(address_space_bs__sc);
   @ requires \valid(address_space_bs__variant);
   @ requires \valid(address_space_bs__nodes);
+  @ requires \separated(address_space_bs__nodes, address_space_bs__node, address_space_bs__sc,
+  address_space_bs__variant);
   @ ensures address_space_bs__aid == constants__e_aid_Value && (address_space_bs__ncl != constants__e_ncl_Variable &&
   address_space_bs__ncl != constants__e_ncl_VariableType) ==>
   *address_space_bs__sc == constants__e_sc_bad_attribute_id_invalid;
@@ -367,7 +370,7 @@ static bool is_type_definition(const OpcUa_ReferenceNode* ref)
 static int32_t* s_Get_NoOfReferences(SOPC_AddressSpace_Item* item);
 
 #ifndef __FRAMAC__
-static int32_t** s_Get_NoOfReferences(SOPC_AddressSpace_Item* item)
+static int32_t* s_Get_NoOfReferences(SOPC_AddressSpace_Item* item)
 {
     return SOPC_AddressSpace_Item_Get_NoOfReferences(item);
 }
@@ -375,12 +378,10 @@ static int32_t** s_Get_NoOfReferences(SOPC_AddressSpace_Item* item)
 
 /*@ axiomatic AddressSpace {
   @
-  @ predicate is_separated(OpcUa_ReferenceNode** r1, OpcUa_ReferenceNode* r2, constants__t_Node_i ptr1,
-  constants__t_ExpandedNodeId_i* ptr2, int32_t nb);
+  @ predicate is_separated(OpcUa_ReferenceNode* r1, int32_t nb);
   @
-  @ axiom S : \forall OpcUa_ReferenceNode** r1, OpcUa_ReferenceNode* r2, int32_t nb, constants__t_Node_i ptr1,
-  constants__t_ExpandedNodeId_i* ptr2; is_separated(r1, r2, ptr1, ptr2, nb) ==> \separated(r1, r2 + (0 .. nb - 1), ptr1,
-  ptr2);
+  @ axiom S : \forall OpcUa_ReferenceNode* r1, int32_t nb, constants__t_Node_i ptr1,
+  constants__t_ExpandedNodeId_i* ptr2; is_separated(r1, nb) ==> \separated(r1 + (0 .. nb - 1), ptr1, ptr2);
   @ }
  */
 
@@ -389,20 +390,15 @@ static int32_t** s_Get_NoOfReferences(SOPC_AddressSpace_Item* item)
   @ ensures \valid(\result);
   @ ensures \valid(*\result);
   @ ensures \valid((*\result) + (0 .. nb - 1));
-  @ ensures is_separated(\result, *(\result), address_space_bs__p_node, address_space_bs__p_type_def, nb);
-  @ //ensures \separated(\result, (*\result) + (0 .. nb - 1), address_space_bs__p_node, address_space_bs__p_type_def);
+  @ ensures is_separated((*\result), nb);
+  @ //ensures \separated(\result);
  */
-static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item,
-                                              int32_t nb,
-                                              constants__t_Node_i address_space_bs__p_node,
-                                              constants__t_ExpandedNodeId_i* address_space_bs__p_type_def);
+static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item, int32_t nb);
 
 #ifndef __FRAMAC__
-static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item,
-                                              int32_t nb,
-                                              constants__t_Node_i address_space_bs__p_node,
-                                              constants__t_ExpandedNodeId_i* address_space_bs__p_type_def)
+static OpcUa_ReferenceNode** s_Get_References(SOPC_AddressSpace_Item* item, int32_t nb)
 {
+    (void) nb;
     return SOPC_AddressSpace_Item_Get_References(item);
 }
 #endif
@@ -419,8 +415,7 @@ void address_space_bs__get_TypeDefinition(const constants__t_Node_i address_spac
     assert(NULL != address_space_bs__p_node);
     SOPC_AddressSpace_Item* item = address_space_bs__p_node;
     int32_t* n_refs = s_Get_NoOfReferences(item);
-    OpcUa_ReferenceNode** refs =
-        s_Get_References(item, *n_refs, address_space_bs__p_node, address_space_bs__p_type_def);
+    OpcUa_ReferenceNode** refs = s_Get_References(item, *n_refs);
     *address_space_bs__p_type_def = constants__c_ExpandedNodeId_indet;
 
     /*@ loop invariant 0 <= i <= *n_refs;
