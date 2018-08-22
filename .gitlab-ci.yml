@@ -194,7 +194,7 @@ test-framac:
   artifacts:
     name: 'framac-logs-${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHA}'
     paths:
-      - '*.log'
+      - 'wp_log/*.log'
     when: on_failure
     expire_in: '1 month'
   only:

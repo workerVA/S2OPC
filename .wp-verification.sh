@@ -63,39 +63,44 @@ else
     done
     echo "WP verification for all annotated files."
 fi
-
+FRAMACLOG="wp_log"
 EXITCODE=0
 
 rm -f "wp-verification.tap"
+mkdir -p $FRAMACLOG
 
-num=0
-
+NUM=0
 for f in $FILESTOPROVE
 do
-    let num=$num+1
-    name=$(basename $f)
-    $FRAMAC $WPARGS "$CPPCOMMAND" $f -then -report > "$name.log"
-    if [[ -z $(grep "Status Report Summary" "$name.log") ]]
+    let NUM=$NUM+1
+    NAME=$(basename $f)
+    START=$SECONDS
+    $FRAMAC $WPARGS "$CPPCOMMAND" $f -then -report > "$FRAMACLOG/$NAME.log"
+    END=$SECONDS
+    if [[ -z $(grep "Status Report Summary" "$FRAMACLOG/$NAME.log") ]]
     then
         echo -e "\033[0;31mError   \033[0;0m:" $f
-        echo not ok $num - $f : Error on file >> "wp-verification.tap"
+        echo not ok $NUM - $f : Error on file >> "wp-verification.tap"
         EXITCODE=2
     else
-        if [[ -z $(grep "To be validated" "$name.log") ]]
+        NBTOTAL=$(grep "Total" "$FRAMACLOG/$NAME.log" | sed 's/[^0-9]*//g')
+        NBVALID=$(grep "Completely validated" "$FRAMACLOG/$NAME.log" | sed 's/[^0-9]*//g')
+        NBCONSIDERVALID=$(grep "Considered valid" "$FRAMACLOG/$NAME.log" | sed 's/[^0-9]*//g')
+        if [[ -z $(grep "To be validated" "$FRAMACLOG/$NAME.log") ]]
         then
-            echo -e "\033[0;32mProved  \033[0;0m:" $f
-            echo ok $num - $f : Passed >> "wp-verification.tap"
-            rm $name.log
+            echo -e "\033[0;32mProved  \033[0;0m: $f ($(($NBVALID+$NBCONSIDERVALID))/$NBTOTAL) $((END-START))"
+            echo ok $NUM - $f : Passed >> "wp-verification.tap"
+            rm "$FRAMACLOG/$NAME.log"
         else
-            echo "Unproved:" $f
-            echo not ok $num - $f : Unproved contracts >> "wp-verification.tap"
+            echo "Unproved: $f ($(($NBVALID+$NBCONSIDERVALID))/$NBTOTAL) $((END-START))"
+            echo not ok $NUM - $f : Unproved contracts >> "wp-verification.tap"
             EXITCODE=1
         fi
     fi
 done
-if [[ $num -gt 0 ]]
+if [[ $NUM -gt 0 ]]
 then
-    echo "1..$num" >> "wp-verification.tap"
+    echo "1..$NUM" >> "wp-verification.tap"
 fi
 
 exit $EXITCODE
