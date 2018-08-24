@@ -22,8 +22,7 @@
 #  Run the script given parameters in the docker
 #
 set -e
-
-DOCKER_IMAGE=sha256:a462dcc5a755e66e4047715c34ded8fecd795b37b0e25e5f648428f7b10ee4fc # framac 1.0
+DOCKER_IMAGE=sha256:4516a3b4deff470d288f7e8b81a574eea7ca509c179f79f091db5ea7831fd45b # framac 1.1
 
 if [[ -z $SOPC_DOCKER_NEEDS_SUDO ]]; then
     /etc/scripts/run-in-docker $DOCKER_IMAGE "$@"

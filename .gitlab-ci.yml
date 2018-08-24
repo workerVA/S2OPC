@@ -187,7 +187,7 @@ test-uactt:
 
 
 test-framac:
-  image: registry.gitlab.com/systerel/s2opc/framac@sha256:d97bef040b20808dc05e379e8882bd52ac475a453dfc4b5b08048680b277aeb6 # framac 1.0
+  image: registry.gitlab.com/systerel/s2opc/sha256:4516a3b4deff470d288f7e8b81a574eea7ca509c179f79f091db5ea7831fd45b # framac 1.1
   stage: test
   script:
     - './.wp-verification.sh'
