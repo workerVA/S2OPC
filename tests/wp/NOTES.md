@@ -8,17 +8,40 @@ FramaC works better on code that does minimal dynamic memory allocation, and
 that is split in small function. Furthermore, PO using \separation clauses grow
 exponentially with the number of pointers passed in argument. In those case,
 the default time-out value can be too short. To change its value, use the
-"-wp-timeout" argument.
+"-wp-timeout" argument. It seems that Alt-Ergo for now has trouble with those
+POs, and the use of external provers can help prove some of them.
 
 ## Setting up FramaC
 
 FramaC and Alt-Ergo prover has been installed with opam. Particularly, Alt-Ergo
-1.30 version has been installed manually. Other external provers could be used 
-with the Why3 platform, but none of them have been used in this project.
+1.30 version has been installed manually. Other external provers can be used 
+with the Why3 platform, and CVC4 1.6 is been used to prove certain POs that are
+too big for Alt-Ergo. Why3 0.88.3 has also been installed with opam, and CVC4
+has been installed just by taking the compiled binairy and puting it in a bin
+folder.
+To configure Why3 to detect external prover, run:
+"why3 config --detect"
+
+## Using FramaC
+
+FramaC can be invoked with many options. The ones used in this project are :
+-wp -wp-rte
+-wp-timeout
+-wp-prover
+-cpp-command
+-wp and -wp-rte : For using WP to prove the file and automatically generating
+Run-Time Error POs
+-wp-timeout : Set the timeout for the proof of one PO. In this project : '=10'
+-wp-prover : Use the specified class of prover, the binairies for external
+provers must be in a bin folder in the PATH, and why3 has to be configured and
+have detected it beforehand. In this project : 'alt-ergo,CVC4'
+-cpp-command : To specify all the header files needed to link to the c file.
+In this project : '"gcc -C -E -I headerfile1.h -I headerdfile2.h ..."'
+
+An optional command is to use -wp-fct to only prove the specified function name
 
 ## Annotating the code with FramaC
 
-##Frama-c
 ###Problèmes rencontrés
 
 ####`malloc`
@@ -41,7 +64,7 @@ Pour prouver un `assigns` juste, parfois il faut écrire un contrat intermédiai
 Donne trop de problèmes `assigns` pour le prouver. Une solution est d'allouer directement le pointeur de retour, sans passer par une variable locale.
 
 ####`\separated`
-Dans une fonction qui manipule les valeurs de plusieurs pointeurs en même temps, ne pas oublier de préciser que les pointeurs pointent bien vers des objets séparés, même s'ils ne sont pas de même type, avec la clause `\separated( ... )`.
+Dans une fonction qui manipule les valeurs de plusieurs pointeurs en même temps, ne pas oublier de préciser que tout les pointeurs pointent bien vers des objets séparés, même s'ils ne sont pas de même type, avec la clause `\separated( ... )`.
  
 ####`assert.h`
 Frama-c utilise sa propre fonction `assert` dans les commentaires ACSL qui malheureusement n'est pas compatible avec la fonction du même nom en C. Pour résoudre ce problème, j'inclus un header avec une redéfinition de `assert` si c'est Frama-c qui parcourt le fichier pour le rendre invisible à ses yeux.

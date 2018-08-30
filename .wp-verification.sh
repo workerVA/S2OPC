@@ -43,7 +43,6 @@ WPARGS='-wp -wp-rte -wp-timeout=10 -wp-prover alt-ergo,CVC4 -cpp-command'
 
 WPFUNC='-wp-fct'
 
-FILESWITHCONTRACTSBCK="service_write_decode_bs.c response_write_bs.c service_browse_decode_bs.c constants_bs.c msg_read_request_bs.c address_space_bs.c"
 FILESWITHCONTRACTS=$(grep -I -r -ls -e "/\*@" -e "//@" csrc/ | sort | sed '/^.*\.h/d')
 
 if [[ -n $SOURCEFILE ]]
@@ -79,7 +78,7 @@ do
     END=$SECONDS
     if [[ -z $(grep "Status Report Summary" "$FRAMACLOG/$NAME.log") ]]
     then
-        echo -e "\033[0;31mError   \033[0;0m:" $f
+        printf "\033[0;31mError   \033[0;0m: %-80s\n" "$f"
         echo not ok $NUM - $f : Error on file >> "wp-verification.tap"
         EXITCODE=2
     else
@@ -88,11 +87,15 @@ do
         NBCONSIDERVALID=$(grep "Considered valid" "$FRAMACLOG/$NAME.log" | sed 's/[^0-9]*//g')
         if [[ -z $(grep "To be validated" "$FRAMACLOG/$NAME.log") ]]
         then
-            echo -e "\033[0;32mProved  \033[0;0m: $f ($(($NBVALID+$NBCONSIDERVALID))/$NBTOTAL) $((END-START))"
+            printf "\033[0;32mProved  \033[0;0m: %s " "$f"
+            eval "printf '.'%.0s {0..$((80-${#f}))}"
+            printf " (%d/%d) %d sec\n" "$(($NBVALID+$NBCONSIDERVALID))" "$NBTOTAL" "$((END-START))"
             echo ok $NUM - $f : Passed >> "wp-verification.tap"
             rm "$FRAMACLOG/$NAME.log"
         else
-            echo "Unproved: $f ($(($NBVALID+$NBCONSIDERVALID))/$NBTOTAL) $((END-START))"
+            printf "Unproved: %s " "$f"
+            eval "printf '.'%.0s {0..$((80-${#f}))}"
+            printf " (%d/%d) %d sec\n" "$(($NBVALID+$NBCONSIDERVALID))" "$NBTOTAL" "$((END-START))"
             echo not ok $NUM - $f : Unproved contracts >> "wp-verification.tap"
             EXITCODE=1
         fi
