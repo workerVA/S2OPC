@@ -68,7 +68,7 @@ static uint32_t session_pending_requests_nb[SOPC_MAX_SESSIONS + 1];
   @ {
   @     axiom no_handles:
   @         \forall constants__t_session_i val; count_handle((constants__t_session_i*) client_requests, 1,
-  SOPC_MAX_PENDING_REQUESTS + 1, val) == session_pending_requests_nb[val];
+  SOPC_MAX_PENDING_REQUESTS + 1, val) == 0 <==> session_pending_requests_nb[val] == 0;
   @
   @     axiom no_more_handles{L1, L2} :
   @         \forall constants__t_session_i* tab, constants__t_session_i val, integer i;
@@ -136,7 +136,6 @@ void session_request_handle_bs__client_add_session_request_handle(
   SOPC_MAX_PENDING_REQUESTS;
   @ // assert requirements, which are supposedly proven by B model
   @ requires session_request_handle_bs__req_handle != constants__c_client_request_handle_indet;
-  @ requires client_requests[session_request_handle_bs__req_handle] != constants__c_session_indet;
   @ requires session_pending_requests_nb[client_requests[session_request_handle_bs__req_handle]] > 0;
   @
   @ assigns *session_request_handle_bs__session;

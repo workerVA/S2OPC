@@ -48,8 +48,6 @@ void service_write_decode_bs__INITIALISATION(void)
 
 /*@ requires \valid(req);
   @ requires \valid(service_write_decode_bs__StatusCode_service);
-  @ requires (0 < req->NoOfNodesToWrite && req->NoOfNodesToWrite <= constants__k_n_WriteResponse_max) ==>
-  \valid(request);
   @ requires \separated(req, service_write_decode_bs__StatusCode_service, request);
   @ assigns request;
   @ assigns *service_write_decode_bs__StatusCode_service;
@@ -61,10 +59,12 @@ void service_write_decode_bs__INITIALISATION(void)
   @
   @ behavior e_sc_bad_nothing_to_do:
   @     assumes 0 >= req->NoOfNodesToWrite;
+  @     ensures request == \old(request);
   @     ensures *service_write_decode_bs__StatusCode_service == constants__e_sc_bad_nothing_to_do;
   @
   @ behavior e_sc_bad_too_many_ops:
   @     assumes req->NoOfNodesToWrite > constants__k_n_WriteResponse_max;
+  @     ensures request == \old(request);
   @     ensures *service_write_decode_bs__StatusCode_service == constants__e_sc_bad_too_many_ops;
   @
   @ disjoint behaviors;
@@ -103,7 +103,7 @@ void service_write_decode_bs__decode_write_request(
 }
 #endif //__FRAMAC__
 
-/*@ requires \valid(request);
+/*@ requires \true;
   @ assigns request;
   @ ensures request == \null;
  */
@@ -116,17 +116,12 @@ void service_write_decode_bs__free_write_request(void)
 /*@ requires \valid(service_write_decode_bs__nb_req);
   @ requires \valid(request);
   @ assigns *service_write_decode_bs__nb_req;
-  @ ensures not_NULL_request: (\null != request) ==> *service_write_decode_bs__nb_req == request->NoOfNodesToWrite;
-  @ ensures is_NULL_request: (\null == request) ==> *service_write_decode_bs__nb_req == 0;
+  @ ensures *service_write_decode_bs__nb_req == request->NoOfNodesToWrite;
  */
 
 void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_decode_bs__nb_req)
 {
-    /* TODO: does B prevent this operation from being called before decode ? */
-    if (NULL != request)
-        *service_write_decode_bs__nb_req = request->NoOfNodesToWrite;
-    else
-        *service_write_decode_bs__nb_req = 0;
+    *service_write_decode_bs__nb_req = request->NoOfNodesToWrite;
 }
 
 /**
@@ -135,22 +130,17 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
  * you should not free them.
  */
 
-/*@ requires \valid(service_write_decode_bs__isvalid);
+/*@ requires 1 <= service_write_decode_bs__wvi <= request->NoOfNodesToWrite;
+  @ requires \valid(service_write_decode_bs__isvalid);
   @ requires \valid(service_write_decode_bs__status);
   @ requires \valid(service_write_decode_bs__nid);
   @ requires \valid(service_write_decode_bs__aid);
   @ requires \valid(service_write_decode_bs__value);
-  @ requires 1 <= service_write_decode_bs__wvi <= request->NoOfNodesToWrite;
   @ requires \valid(request);
   @ requires \valid(request->NodesToWrite+(service_write_decode_bs__wvi - 1));
   @ requires \separated(service_write_decode_bs__nid, service_write_decode_bs__value,
   service_write_decode_bs__status, service_write_decode_bs__aid, service_write_decode_bs__isvalid, request,
   request->NodesToWrite+(service_write_decode_bs__wvi - 1));
-  @ requires \separated(request, service_write_decode_bs__isvalid);
-  @ requires \separated(request, service_write_decode_bs__status);
-  @ requires \separated(request, service_write_decode_bs__nid);
-  @ requires \separated(request, service_write_decode_bs__aid);
-  @ requires \separated(request, service_write_decode_bs__value);
   @ assigns *service_write_decode_bs__isvalid;
   @ assigns *service_write_decode_bs__status;
   @ assigns *service_write_decode_bs__aid;
@@ -161,16 +151,15 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @     assumes request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId \in {e_aid_NodeId, e_aid_NodeClass,
   e_aid_Value};
   @     assumes request->NodesToWrite[service_write_decode_bs__wvi - 1].IndexRange.Length <= 0;
-  @     ensures *service_write_decode_bs__isvalid == true;
-  @     ensures *service_write_decode_bs__nid == &request->NodesToWrite[service_write_decode_bs__wvi - 1].NodeId;
-  @     ensures *service_write_decode_bs__value == &request->NodesToWrite[service_write_decode_bs__wvi - 1].Value.Value;
-  @     ensures *service_write_decode_bs__status == \old(*service_write_decode_bs__status);
   @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeId ==>
   *service_write_decode_bs__aid == constants__e_aid_NodeId;
   @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeClass ==>
   *service_write_decode_bs__aid == constants__e_aid_NodeClass;
   @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_Value ==>
-  *service_write_decode_bs__aid == constants__e_aid_Value;
+  *service_write_decode_bs__aid == constants__e_aid_Value;  @     ensures *service_write_decode_bs__isvalid == true;
+  @     ensures *service_write_decode_bs__nid == &request->NodesToWrite[service_write_decode_bs__wvi - 1].NodeId;
+  @     ensures *service_write_decode_bs__value == &request->NodesToWrite[service_write_decode_bs__wvi - 1].Value.Value;
+  @     ensures *service_write_decode_bs__status == constants__e_sc_ok;
   @
   @ behavior invalid_range:
   @     assumes request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId \in {e_aid_NodeId, e_aid_NodeClass,
@@ -180,12 +169,7 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @     ensures *service_write_decode_bs__nid == constants__c_NodeId_indet;
   @     ensures *service_write_decode_bs__value == constants__c_Variant_indet;
   @     ensures *service_write_decode_bs__status == constants__e_sc_bad_index_range_invalid;
-  @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeId ==>
-  *service_write_decode_bs__aid == constants__e_aid_NodeId;
-  @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_NodeClass ==>
-  *service_write_decode_bs__aid == constants__e_aid_NodeClass;
-  @     ensures request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId == e_aid_Value ==>
-  *service_write_decode_bs__aid == constants__e_aid_Value;
+  @     ensures *service_write_decode_bs__aid == constants__c_AttributeId_indet;
   @
   @ behavior invalid_attribute:
   @     assumes !(request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId \in {e_aid_NodeId,
@@ -194,7 +178,7 @@ void service_write_decode_bs__get_nb_WriteValue(t_entier4* const service_write_d
   @     ensures *service_write_decode_bs__nid == constants__c_NodeId_indet;
   @     ensures *service_write_decode_bs__value == constants__c_Variant_indet;
   @     ensures *service_write_decode_bs__status == constants__e_sc_bad_attribute_id_invalid;
-  @     ensures *service_write_decode_bs__aid == \old(*service_write_decode_bs__aid);
+  @     ensures *service_write_decode_bs__aid == constants__c_AttributeId_indet;
   @
   @ complete behaviors;
   @ disjoint behaviors;
@@ -209,11 +193,11 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
 {
     *service_write_decode_bs__nid = constants__c_NodeId_indet;
     *service_write_decode_bs__value = constants__c_Variant_indet;
+    *service_write_decode_bs__aid = constants__c_AttributeId_indet;
 
-    // OpcUa_WriteValue* wv = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
+    OpcUa_WriteValue* wv = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
     *service_write_decode_bs__isvalid = true;
-    // switch (wv->AttributeId)
-    switch (request->NodesToWrite[service_write_decode_bs__wvi - 1].AttributeId)
+    switch (wv->AttributeId)
     {
     case e_aid_NodeId:
         *service_write_decode_bs__aid = constants__e_aid_NodeId;
@@ -231,14 +215,16 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
     }
     if (*service_write_decode_bs__isvalid == true)
     {
-        if (request->NodesToWrite[service_write_decode_bs__wvi - 1].IndexRange.Length > 0)
+        if (wv->IndexRange.Length > 0)
         {
             *service_write_decode_bs__isvalid = false;
             *service_write_decode_bs__status = constants__e_sc_bad_index_range_invalid;
+            *service_write_decode_bs__aid = constants__c_AttributeId_indet;
         }
     }
     if (*service_write_decode_bs__isvalid == true)
     {
+        *service_write_decode_bs__status = constants__e_sc_ok;
         *service_write_decode_bs__nid = &request->NodesToWrite[service_write_decode_bs__wvi - 1].NodeId;
         *service_write_decode_bs__value = &request->NodesToWrite[service_write_decode_bs__wvi - 1].Value.Value;
     }
