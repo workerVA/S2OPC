@@ -877,7 +877,7 @@ OPERATIONS
     END
     ;
 
-	p_nid <-- getall_conv_ExpandedNodeId_NodeId(p_expnid) =
+    p_nid <-- getall_conv_ExpandedNodeId_NodeId(p_expnid) =
     PRE
         p_expnid : t_ExpandedNodeId_i &
         p_expnid : t_ExpandedNodeId

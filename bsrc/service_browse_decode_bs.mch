@@ -111,7 +111,7 @@ OPERATIONS
         nb_req := nb_BrowseValue
     END
     ;
-    
+
     p_nb_BrowseTargetMax <-- get_nb_BrowseTargetMax =
     PRE
         isBrowseRequestDecoded = TRUE
@@ -119,7 +119,7 @@ OPERATIONS
         p_nb_BrowseTargetMax := nb_BrowseTargetMax
     END
     ;
-    
+
     p_NodeId, p_dir, p_isreftype, p_reftype, p_inc_subtype <-- getall_BrowseValue(p_bvi) =
     PRE
         p_bvi : t_BrowseValue_i &
@@ -139,11 +139,11 @@ OPERATIONS
             p_reftype     : t_NodeId_i                                     &
             p_isreftype   = bool(p_bvi : dom(BrowseValue_ReferenceTypeId)) &
             p_inc_subtype = bool(p_bvi : BrowseValue_IncludedSubtypes)     &
-            
+
             (p_isreftype = TRUE
                 =>
                 p_reftype = BrowseValue_ReferenceTypeId(p_bvi))
         )
     END
-    
+
 END
