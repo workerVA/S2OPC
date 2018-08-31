@@ -178,7 +178,7 @@ void request_handle_bs__client_fresh_req_handle(
   request_handle_bs__app_context);
   */
 
-static void request_handle_bs__client_fresh_req_handle_no_optimal_loop(
+void request_handle_bs__client_fresh_req_handle_no_optimal_loop(
     const constants__t_msg_type_i request_handle_bs__req_typ,
     const constants__t_msg_type_i request_handle_bs__resp_typ,
     const t_bool request_handle_bs__is_applicative,
@@ -200,8 +200,8 @@ static void request_handle_bs__client_fresh_req_handle_no_optimal_loop(
       @ loop assigns *request_handle_bs__request_handle;
       @ loop assigns client_requests_context[1 .. SOPC_MAX_PENDING_REQUESTS];
       @ loop variant SOPC_MAX_PENDING_REQUESTS + 1 - i; */
-    for (int i = 1; i <= SOPC_MAX_PENDING_REQUESTS &&
-                    *request_handle_bs__request_handle == constants__c_client_request_handle_indet;
+    for (uint32_t i = 1; i <= SOPC_MAX_PENDING_REQUESTS &&
+                         *request_handle_bs__request_handle == constants__c_client_request_handle_indet;
          i++)
     {
         if (client_requests_context[i].response == constants__c_msg_type_indet)
@@ -216,11 +216,10 @@ static void request_handle_bs__client_fresh_req_handle_no_optimal_loop(
 }
 
 /*@ requires \valid(request_handle_bs__ret);
-  @ ensures request_handle_bs__req_handle != constants__c_client_request_handle_indet;
   @ assigns *request_handle_bs__ret;
-  @ ensures *request_handle_bs__ret <==> (request_handle_bs__req_handle > 0 && request_handle_bs__req_handle <=
-  SOPC_MAX_PENDING_REQUESTS && client_requests_context[request_handle_bs__req_handle].response !=
-  constants__c_msg_type_indet);
+  @ ensures *request_handle_bs__ret <==> (request_handle_bs__req_handle != constants__c_client_request_handle_indet &&
+  request_handle_bs__req_handle > 0 && request_handle_bs__req_handle <= SOPC_MAX_PENDING_REQUESTS &&
+  client_requests_context[request_handle_bs__req_handle].response != constants__c_msg_type_indet);
  */
 
 void request_handle_bs__is_valid_req_handle(const constants__t_client_request_handle_i request_handle_bs__req_handle,
