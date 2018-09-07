@@ -44,6 +44,7 @@
 #include "embedded/loader.h"
 
 #define ENDPOINT_URL "opc.tcp://localhost:4841"
+#define APPLICATION_URI "urn:S2OPC:localhost"
 
 static int32_t sessionsActivated = 0;
 static int32_t sessionsClosed = 0;
@@ -270,6 +271,8 @@ int main(void)
     printf("toolkitSrcCommit: %s\n", build_info.toolkitSrcCommit);
     printf("toolkitDockerId: %s\n", build_info.toolkitDockerId);
     printf("toolkitBuildDate: %s\n", build_info.toolkitBuildDate);
+
+    scConfig.clientApplicationUri = APPLICATION_URI;
 
     // If security mode is set, load certificates and key
 

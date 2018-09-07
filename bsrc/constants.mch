@@ -197,6 +197,7 @@ SETS
 
     t_SecurityPolicy = {
         e_secpol_None,
+        e_secpol_B128RSA15,
         e_secpol_B256,
         e_secpol_B256S256};
 

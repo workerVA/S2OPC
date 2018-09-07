@@ -21,7 +21,7 @@
 
  File Name            : message_out_bs.h
 
- Date                 : 14/11/2018 14:13:01
+ Date                 : 21/01/2019 14:36:29
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -100,43 +100,6 @@ extern void message_out_bs__is_valid_msg_out_header(
 extern void message_out_bs__server_write_msg_out_header_req_handle(
    const constants__t_msg_header_i message_out_bs__msg_header,
    const constants__t_server_request_handle_i message_out_bs__req_handle);
-extern void message_out_bs__write_activate_msg_user(
-   const constants__t_msg_i message_out_bs__msg,
-   const constants__t_user_token_i message_out_bs__p_user_token);
-extern void message_out_bs__write_activate_session_req_msg_crypto(
-   const constants__t_msg_i message_out_bs__activate_req_msg,
-   const constants__t_SignatureData_i message_out_bs__signature,
-   t_bool * const message_out_bs__bret);
-extern void message_out_bs__write_activate_session_resp_msg_crypto(
-   const constants__t_msg_i message_out_bs__activate_resp_msg,
-   const constants__t_Nonce_i message_out_bs__nonce);
-extern void message_out_bs__write_create_session_msg_server_endpoints(
-   const constants__t_msg_i message_out_bs__req_msg,
-   const constants__t_msg_i message_out_bs__resp_msg,
-   const constants__t_endpoint_config_idx_i message_out_bs__endpoint_config_idx,
-   constants__t_StatusCode_i * const message_out_bs__ret);
-extern void message_out_bs__write_create_session_msg_session_revised_timeout(
-   const constants__t_msg_i message_out_bs__req_msg,
-   const constants__t_msg_i message_out_bs__resp_msg);
-extern void message_out_bs__write_create_session_msg_session_token(
-   const constants__t_msg_i message_out_bs__msg,
-   const constants__t_session_token_i message_out_bs__session_token);
-extern void message_out_bs__write_create_session_req_msg_crypto(
-   const constants__t_msg_i message_out_bs__p_req_msg,
-   const constants__t_channel_config_idx_i message_out_bs__p_channel_config_idx,
-   const constants__t_Nonce_i message_out_bs__p_nonce,
-   t_bool * const message_out_bs__bret);
-extern void message_out_bs__write_create_session_req_msg_endpointUrl(
-   const constants__t_msg_i message_out_bs__msg,
-   const constants__t_channel_config_idx_i message_out_bs__channel_config_idx);
-extern void message_out_bs__write_create_session_req_msg_sessionTimeout(
-   const constants__t_msg_i message_out_bs__create_req_msg);
-extern void message_out_bs__write_create_session_resp_msg_crypto(
-   const constants__t_msg_i message_out_bs__p_msg,
-   const constants__t_channel_config_idx_i message_out_bs__p_channel_config_idx,
-   const constants__t_Nonce_i message_out_bs__p_nonce,
-   const constants__t_SignatureData_i message_out_bs__p_signature,
-   t_bool * const message_out_bs__bret);
 extern void message_out_bs__write_msg_out_header_session_token(
    const constants__t_msg_header_i message_out_bs__msg_header,
    const constants__t_session_token_i message_out_bs__session_token);

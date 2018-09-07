@@ -37,6 +37,14 @@
 typedef struct SOPC_SecureChannel_Config
 {
     uint8_t isClientSc;
+    const char* clientApplicationUri;
+    const char* clientProductUri;
+    const SOPC_LocalizedText* clientApplicationName;
+    int32_t clientNoOfLocaleIds;
+    SOPC_String* clientLocaleIds;
+    const char* serverUri; // This value is only specified if the EndpointDescription has a gatewayServerUri
+    int32_t nbServerEndpoints;
+    OpcUa_EndpointDescription* serverEndpoints; // Mandatory if new configuration used a Discovery Endpoint
     const char* url;
     const SOPC_SerializedCertificate* crt_cli;
     const SOPC_SerializedAsymmetricKey* key_priv_cli;

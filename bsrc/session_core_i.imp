@@ -35,7 +35,8 @@ SEES
 
 IMPORTS
     session_core_1,
-    session_core_it
+    session_core_it,
+    msg_session_bs
 
 PROMOTES
     server_get_session_from_token,
@@ -305,6 +306,8 @@ OPERATIONS
         ELSE
             res_activated := TRUE
         END;
+        /* Note: results[] and diagnosticInfos[] info fields should not be filled
+           since it concerns SoftwareCertificate from request which is reserved for a future use */
         IF res_activated = TRUE THEN
             set_session_state (session, transitoryState, FALSE);
             drop_user_server (session); // In case a previous user was set, drop it
@@ -331,14 +334,16 @@ OPERATIONS
         l_channel_config_idx <-- get_channel_info (channel);
         valid, l_nonce_needed <-- client_create_session_req_do_crypto(session, channel, l_channel_config_idx);
         IF valid = TRUE THEN
-            write_create_session_req_msg_sessionTimeout (create_req_msg);
+            write_create_session_req_msg_clientDescription (create_req_msg, l_channel_config_idx);
             write_create_session_req_msg_endpointUrl (create_req_msg, l_channel_config_idx);
+            write_create_session_req_msg_sessionName (create_req_msg, session, l_channel_config_idx);
             IF l_nonce_needed = TRUE THEN
                 l_nonce <-- get_NonceClient(session);
+
                 valid <-- write_create_session_req_msg_crypto(create_req_msg, l_channel_config_idx, l_nonce)
-            END
-            /* TODO: Fill remaining parameters: sessionName, maxResponseSize (keep 0 => unused ?)*/
-            /*write_create_session_req_msg_fill(create_req_msg, l_channel_config_idx) */
+            END;
+            write_create_session_req_msg_sessionTimeout (create_req_msg);
+            write_create_session_req_msg_maxResponseMessageSize (create_req_msg, l_channel_config_idx)
         END
     END
     ;
@@ -370,16 +375,16 @@ OPERATIONS
             IF l_valid_session_token = TRUE /*& l_valid_req = TRUE */
             THEN
                 l_endpoint_config_idx <-- server_get_endpoint_config (channel);
+                l_config_idx <-- get_channel_info(channel);
                 write_create_session_msg_session_token (create_resp_msg, l_nsession_token);
                 /* Set revised timeout to : MIN <= requested timeout <= MAX */
                 write_create_session_msg_session_revised_timeout (create_req_msg, create_resp_msg);
+                write_create_session_resp_msg_maxRequestMessageSize (create_req_msg, l_config_idx);
                 service_ret <-- write_create_session_msg_server_endpoints (create_req_msg, create_resp_msg, l_endpoint_config_idx);
-                /* TODO: populate msg with remaining parameters: MaxRequestSize, RevisedSessionTimeout, CertServer, ... */
                 IF service_ret = e_sc_ok THEN
                     l_secpol <-- get_SecurityPolicy(channel);
                     IF l_secpol /= e_secpol_None THEN
                         /* Do the cryptographic challenge which may fail because of mallocs */
-                        l_config_idx <-- get_channel_info(channel); /* MAYBE this is denoted client side only... */
                         l_crypto_status, l_signature <-- server_create_session_req_do_crypto(l_nsession, create_req_msg, l_endpoint_config_idx, l_config_idx);
                         IF  l_crypto_status = e_sc_ok THEN
                             l_nonce <-- get_NonceServer(l_nsession);
@@ -387,10 +392,14 @@ OPERATIONS
                             clear_Signature(l_nsession, l_signature);
                             IF l_bret = FALSE THEN
                                 service_ret := e_sc_bad_unexpected_error
+                            ELSE
+                                create_session_req_export_maxResponseMessageSize(create_req_msg, l_config_idx)
                             END
                         ELSE
                             service_ret := l_crypto_status
                         END
+                    ELSE
+                        create_session_req_export_maxResponseMessageSize(create_req_msg, l_config_idx)
                     END
                 END
             ELSE
@@ -410,30 +419,37 @@ OPERATIONS
         l_nonce,
         l_valid,
         l_channel_config_idx,
-        l_secpol
+        l_secpol,
+        l_cert_bres,
+        l_endpoints_bres
     IN
-        /* TODO: check Request:handle == Response:handle ; Response:Cert_server == Cert_server */
-        /* TODO? check Response:serverEndpoints */
-        /* Check server signature */
-        bret := TRUE;
-        l_secpol <-- get_SecurityPolicy(channel);
-        IF l_secpol /= e_secpol_None THEN
-            /* Note: receiving a request implies that we sent it, and Nonce, if needed, was valid, hence get_NonceClient cannot fail. */
-            /* TODO: at least validate nonce value. In this case it could also be better to have it as parameter of check_crypto ! */
-            l_nonce <-- get_NonceClient(session);
-            l_channel_config_idx <-- get_channel_info (channel);
-            l_valid <-- client_create_session_check_crypto(session, l_channel_config_idx, create_resp_msg);
-            IF l_valid = TRUE THEN
-                // channel: only for the precondition
+        l_channel_config_idx <-- get_channel_info (channel);
+        l_cert_bres <-- create_session_resp_check_server_certificate (create_resp_msg, l_channel_config_idx);
+        l_endpoints_bres <-- create_session_resp_check_server_endpoints (create_resp_msg, l_channel_config_idx);
+        bret := bool(l_cert_bres = TRUE & l_endpoints_bres = TRUE);
+        IF bret = TRUE
+        THEN
+            /* Check server signature */
+            l_secpol <-- get_SecurityPolicy(channel);
+            IF l_secpol /= e_secpol_None THEN
+                /* Note: receiving a request implies that we sent it, and Nonce, if needed, was valid, hence get_NonceClient cannot fail. */
+                /* TODO: at least validate nonce value. In this case it could also be better to have it as parameter of check_crypto ! */
+                l_nonce <-- get_NonceClient(session);
+                l_valid <-- client_create_session_check_crypto(session, l_channel_config_idx, create_resp_msg);
+                IF l_valid = TRUE THEN
+                    // channel: only for the precondition
+                    set_session_state (session, e_session_created, TRUE);
+                    client_set_session_token (session, session_token);
+                    drop_NonceClient(session);
+                    create_session_resp_export_maxRequestMessageSize(create_resp_msg, l_channel_config_idx)
+                ELSE
+                    bret := FALSE
+                END
+            ELSE
                 set_session_state (session, e_session_created, TRUE);
                 client_set_session_token (session, session_token);
-                drop_NonceClient(session)
-            ELSE
-                bret := FALSE
+                create_session_resp_export_maxRequestMessageSize(create_resp_msg, l_channel_config_idx)
             END
-        ELSE
-            set_session_state (session, e_session_created, TRUE);
-            client_set_session_token (session, session_token)
         END
     END
     ;
@@ -465,6 +481,7 @@ OPERATIONS
                     l_bret <-- write_activate_session_req_msg_crypto(activate_req_msg, l_signature);
                     clear_Signature(session, l_signature);
                     IF l_bret = TRUE THEN
+                        write_activate_req_msg_locales(activate_req_msg, l_channel_config_idx);
                         ret := e_sc_ok
                     ELSE
                         ret := e_sc_bad_unexpected_error
@@ -489,11 +506,13 @@ OPERATIONS
 
     session_token <-- client_sc_activate_session_req_sm (session, channel, activate_req_msg) =
     VAR
-        l_user_token
+        l_user_token,
+        l_channel_config_idx
     IN
         session_token <-- client_get_token_from_session (session);
         l_user_token <-- get_session_user_client (session);
-        /* TODO: populate msg with parameters  */
+        l_channel_config_idx <-- get_channel_info (channel);
+        write_activate_req_msg_locales(activate_req_msg, l_channel_config_idx);
         write_activate_msg_user(activate_req_msg, l_user_token);
         set_session_channel(session, channel);
         set_session_state(session, e_session_scActivating, TRUE)

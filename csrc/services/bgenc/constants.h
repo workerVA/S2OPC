@@ -21,7 +21,7 @@
 
  File Name            : constants.h
 
- Date                 : 08/11/2018 22:09:12
+ Date                 : 21/01/2019 14:36:16
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -122,6 +122,7 @@ typedef enum {
 } constants__t_NodeClass_i;
 typedef enum {
    constants__e_secpol_None,
+   constants__e_secpol_B128RSA15,
    constants__e_secpol_B256,
    constants__e_secpol_B256S256
 } constants__t_SecurityPolicy;

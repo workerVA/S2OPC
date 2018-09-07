@@ -25,6 +25,7 @@
 #include "util_b2c.h"
 
 #include "opcua_identifiers.h"
+#include "sopc_builtintypes.h"
 #include "sopc_crypto_profiles.h"
 #include "sopc_logger.h"
 
@@ -1000,17 +1001,22 @@ bool util_channel__SecurityPolicy_C_to_B(const char* uri, constants__t_SecurityP
     if (NULL == uri || NULL == secpol)
         return false;
 
-    if (strncmp(uri, SOPC_SecurityPolicy_None_URI, strlen(SOPC_SecurityPolicy_None_URI)) == 0)
+    if (strncmp(uri, SECURITY_POLICY_NONE, strlen(SECURITY_POLICY_NONE)) == 0)
     {
         *secpol = constants__e_secpol_None;
         return true;
     }
-    if (strncmp(uri, SOPC_SecurityPolicy_Basic256_URI, strlen(SOPC_SecurityPolicy_Basic256_URI)) == 0)
+    if (strncmp(uri, SECURITY_POLICY_BASIC128RSA15, strlen(SECURITY_POLICY_BASIC128RSA15)) == 0)
+    {
+        *secpol = constants__e_secpol_B128RSA15;
+        return true;
+    }
+    if (strncmp(uri, SECURITY_POLICY_BASIC256, strlen(SECURITY_POLICY_BASIC256)) == 0)
     {
         *secpol = constants__e_secpol_B256;
         return true;
     }
-    if (strncmp(uri, SOPC_SecurityPolicy_Basic256Sha256_URI, strlen(SOPC_SecurityPolicy_Basic256Sha256_URI)) == 0)
+    if (strncmp(uri, SECURITY_POLICY_BASIC256SHA256, strlen(SECURITY_POLICY_BASIC256SHA256)) == 0)
     {
         *secpol = constants__e_secpol_B256S256;
         return true;
