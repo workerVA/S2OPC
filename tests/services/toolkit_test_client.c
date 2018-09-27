@@ -224,6 +224,14 @@ static void* getGetEndpoints_message(void)
 
 // A Secure channel connection configuration
 SOPC_SecureChannel_Config scConfig = {.isClientSc = true,
+                                      .clientApplicationUri = APPLICATION_URI,
+                                      .clientProductUri = NULL,
+                                      .clientApplicationName = NULL,
+                                      .clientNoOfLocaleIds = 0,
+                                      .clientLocaleIds = NULL,
+                                      .serverUri = NULL,
+                                      .nbServerEndpoints = 0,
+                                      .serverEndpoints = NULL,
                                       .url = ENDPOINT_URL,
                                       .crt_cli = NULL,
                                       .key_priv_cli = NULL,
@@ -271,8 +279,6 @@ int main(void)
     printf("toolkitSrcCommit: %s\n", build_info.toolkitSrcCommit);
     printf("toolkitDockerId: %s\n", build_info.toolkitDockerId);
     printf("toolkitBuildDate: %s\n", build_info.toolkitBuildDate);
-
-    scConfig.clientApplicationUri = APPLICATION_URI;
 
     // If security mode is set, load certificates and key
 

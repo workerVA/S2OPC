@@ -173,7 +173,7 @@ SOPC_ReturnStatus Helpers_NewSCConfigFromLibSubCfg(const char* szServerUrl,
     /* Create the configuration */
     if (SOPC_STATUS_OK == status)
     {
-        pscConfig = malloc(sizeof(SOPC_SecureChannel_Config));
+        pscConfig = calloc(1, sizeof(SOPC_SecureChannel_Config));
 
         if (NULL != pscConfig)
         {
@@ -185,10 +185,9 @@ SOPC_ReturnStatus Helpers_NewSCConfigFromLibSubCfg(const char* szServerUrl,
             pscConfig->requestedLifetime = iScRequestedLifetime;
             pscConfig->msgSecurityMode = msgSecurityMode;
             pscConfig->clientApplicationUri = NULL;
-            s
 
-                /* These input strings are verified non NULL */
-                pscConfig->url = malloc(strlen(szServerUrl) + 1);
+            /* These input strings are verified non NULL */
+            pscConfig->url = malloc(strlen(szServerUrl) + 1);
             pscConfig->reqSecuPolicyUri = malloc(strlen(szSecuPolicy) + 1);
             SOPC_GCC_DIAGNOSTIC_IGNORE_CAST_CONST
             if (NULL != pscConfig->url && NULL != pscConfig->reqSecuPolicyUri)
@@ -239,12 +238,9 @@ void Helpers_SecureChannel_Config_Free(SOPC_SecureChannel_Config** ppscConfig)
     SOPC_KeyManager_SerializedAsymmetricKey_Delete((SOPC_SerializedAsymmetricKey*) pscConfig->key_priv_cli);
     SOPC_KeyManager_SerializedCertificate_Delete((SOPC_SerializedCertificate*) pscConfig->crt_srv);
     SOPC_PKIProvider_Free((SOPC_PKIProvider**) (&pscConfig->pki));
-<<<<<<< HEAD
     free((void*) pscConfig->url);
     free((void*) pscConfig->reqSecuPolicyUri);
-=======
-    free((char*) pscConfig->clientApplicationUri);
->>>>>>> Ticket #000: rework session B model: separate session msg treatment + fill all create/activate session fields
+    free((void*) pscConfig->clientApplicationUri);
     SOPC_GCC_DIAGNOSTIC_RESTORE
 
     free(pscConfig);
