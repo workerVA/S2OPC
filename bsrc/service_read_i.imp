@@ -53,6 +53,7 @@ LOCAL_OPERATIONS
         p_nid      : t_NodeId_i      &
         p_aid      : t_AttributeId_i &
         p_index_range : t_IndexRange_i &
+        p_index_range : t_IndexRange &
         p_rvi      : t_ReadValue_i
     THEN
         data_Value_Value,
@@ -142,7 +143,8 @@ OPERATIONS
         WHILE l_continue = TRUE DO
             l_continue, l_rvi <-- continue_iter_write_request;
             l_sc, l_nid, l_aid, l_index_range <-- getall_ReadValue_NodeId_AttributeId(req_msg, l_rvi);
-            fill_read_response_1(p_user, resp_msg, l_sc, l_nid, l_aid, l_index_range, l_rvi)
+            fill_read_response_1(p_user, resp_msg, l_sc, l_nid, l_aid, l_index_range, l_rvi);
+            free_IndexRange (l_index_range)
         INVARIANT
             rreqs_to_iterate <: t_ReadValue &
             rreqs_iterated   <: t_ReadValue &

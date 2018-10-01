@@ -39,6 +39,7 @@ IMPORTS
 
 PROMOTES
     readall_AddressSpace_Node,
+    free_IndexRange,
     get_NodeClass,
     get_BrowseName,
     get_DisplayName,
@@ -191,7 +192,8 @@ OPERATIONS
                     /* TODO: Generates an out of memory service result or error trace ? */
                     skip
                 END
-            END
+            END;
+            free_IndexRange (l_index_range)
         INVARIANT
             wreqs_to_iterate <: t_WriteValue &
             wreqs_iterated <: t_WriteValue &

@@ -33,6 +33,7 @@
 #include "address_space_impl.h"
 #include "sopc_dict.h"
 #include "sopc_logger.h"
+#include "sopc_macros.h"
 #include "sopc_numeric_range.h"
 #include "sopc_user_manager.h"
 #include "util_b2c.h"
@@ -55,6 +56,11 @@ void address_space_bs__INITIALISATION(void)
 /*--------------------
    OPERATIONS Clause
   --------------------*/
+
+void address_space_bs__free_IndexRange(const constants__t_IndexRange_i address_space_bs__p_IndexRange)
+{
+    SOPC_NumericRange_Delete(address_space_bs__p_IndexRange);
+}
 
 /* This is a_NodeId~ */
 void address_space_bs__readall_AddressSpace_Node(const constants__t_NodeId_i address_space_bs__nid,
@@ -186,7 +192,7 @@ void address_space_bs__read_AddressSpace_Attribute_value(const constants__t_user
         return;
     }
 
-    if (0 == address_space_bs__index_range->n_dimensions)
+    if (NULL == address_space_bs__index_range)
     {
         *address_space_bs__sc = constants__e_sc_ok;
         *address_space_bs__variant = value;
@@ -281,7 +287,7 @@ void address_space_bs__set_Value(const constants__t_user_i address_space_bs__p_u
         return;
     }
 
-    if (0 == address_space_bs__index_range->n_dimensions)
+    if (NULL == address_space_bs__index_range)
     {
         *address_space_bs__serviceStatusCode =
             set_value_full(pvar, address_space_bs__value, address_space_bs__prev_value);

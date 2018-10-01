@@ -362,5 +362,14 @@ OPERATIONS
         p_ref :(p_ref : t_Reference_i &
                 p_ref = RefIndex_Reference(p_node |-> p_ref_index))
     END
+    ;
+
+    free_IndexRange(p_IndexRange) =
+    PRE
+        p_IndexRange : t_IndexRange_i &
+        p_IndexRange : t_IndexRange
+    THEN
+        skip /* Clear the dimensions array / n_dimensions */
+    END
 
 END

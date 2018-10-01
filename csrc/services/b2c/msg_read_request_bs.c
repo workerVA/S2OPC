@@ -28,6 +28,7 @@
 
 #include "msg_read_request_bs.h"
 #include "util_b2c.h"
+#include "util_variant.h"
 
 #include "address_space_impl.h"
 #include "sopc_logger.h"
@@ -78,29 +79,10 @@ void msg_read_request_bs__getall_req_ReadValue_IndexRange(
     size_t node_index = (size_t) msg_read_request_bs__rvi - 1;
     assert(request->NoOfNodesToRead >= 0 && node_index < ((size_t) request->NoOfNodesToRead));
 
-    if (request->NodesToRead[node_index].IndexRange.Length > 0)
-    {
-        SOPC_ReturnStatus retStatus = SOPC_NumericRange_Parse(
-            SOPC_String_GetRawCString(&request->NodesToRead[node_index].IndexRange), msg_read_request_bs__index_range);
-        if (SOPC_STATUS_OK != retStatus)
-        {
-            // TODO: out of memory case to be managed in B model when it is the case
-            *msg_read_request_bs__sc = constants__e_sc_bad_index_range_invalid;
-            return;
-        }
-    }
-    else
-    {
-        *msg_read_request_bs__index_range = calloc(1, sizeof(SOPC_NumericRange));
-        if (NULL == *msg_read_request_bs__index_range)
-        {
-            // TODO: out of memory case to be managed in B model
-            *msg_read_request_bs__sc = constants__e_sc_bad_index_range_invalid;
-            return;
-        }
-    }
+    // TODO: out of memory case to be managed in B model when it is the case
+    *msg_read_request_bs__sc = util_variant__IndexRange_String_to_NumericRange(
+        &request->NodesToRead[node_index].IndexRange, msg_read_request_bs__index_range);
 
-    *msg_read_request_bs__sc = constants__e_sc_ok;
     return;
 }
 

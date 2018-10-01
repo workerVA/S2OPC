@@ -844,6 +844,7 @@ OPERATIONS
         p_aid : t_AttributeId_i &
         p_aid : t_AttributeId &
         p_indexRange : t_IndexRange_i &
+        p_indexRange : t_IndexRange &
         p_value : t_Variant_i &
         p_value : t_Variant &
         p_valueSc : t_StatusCode_i &

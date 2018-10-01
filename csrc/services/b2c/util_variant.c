@@ -17,6 +17,7 @@
  * under the License.
  */
 
+#include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -298,4 +299,27 @@ void util_variant__print_SOPC_Variant(SOPC_Variant* pvar)
         printf("Unknown\n");
         break;
     }
+}
+
+constants__t_StatusCode_i util_variant__IndexRange_String_to_NumericRange(SOPC_String* strRange,
+                                                                          constants__t_IndexRange_i* numericRange)
+{
+    assert(NULL != strRange);
+    assert(NULL != numericRange);
+
+    if (strRange->Length > 0)
+    {
+        SOPC_ReturnStatus retStatus = SOPC_NumericRange_Parse(SOPC_String_GetRawCString(strRange), numericRange);
+        if (SOPC_STATUS_OK != retStatus)
+        {
+            // TODO: out of memory case to be managed in B model when it is the case
+            *numericRange = constants__c_IndexRange_indet;
+            return constants__e_sc_bad_index_range_invalid;
+        }
+    }
+    else
+    {
+        *numericRange = NULL;
+    }
+    return constants__e_sc_ok;
 }

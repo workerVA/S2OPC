@@ -81,6 +81,13 @@ constants__t_Variant_i util_variant__new_Variant_from_double(double f);
 constants__t_Variant_i util_variant__new_Variant_from_ByteString(SOPC_ByteString buf);
 
 /**
+ * In case status code is OK, the returned range is malloc if string length > 0, otherwise NULL.
+ * Otherwise the status code is Bad_IndexRangeInvalid and returned range is indet value.
+ */
+constants__t_StatusCode_i util_variant__IndexRange_String_to_NumericRange(SOPC_String* strRange,
+                                                                          constants__t_IndexRange_i* numericRange);
+
+/**
  * Quick and dirty print.
  * I don't do arrays...
  */

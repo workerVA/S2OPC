@@ -115,7 +115,7 @@ OPERATIONS
         rvi : dom(ReadValue_IndexRange)
     THEN
         /* TODO: manage out of memory case separately in B model and C code*/
-        sc, index_range 
+        sc, index_range
          :(index_range : t_IndexRange_i &
            index_range = ReadValue_IndexRange(rvi) &
            sc : t_StatusCode_i &

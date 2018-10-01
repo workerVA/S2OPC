@@ -72,14 +72,18 @@ OPERATIONS
     ;
 
     p_sc, p_nid, p_aid, p_index_range <-- getall_ReadValue_NodeId_AttributeId(p_msg, p_rvi) =
-    BEGIN
+    VAR
+        l_aid_sc,
+        l_ir_sc
+    IN
         p_nid <-- getall_req_ReadValue_NodeId(p_msg, p_rvi);
-        p_sc, p_aid <-- getall_req_ReadValue_AttributeId(p_msg, p_rvi);
-        IF p_sc = e_sc_ok
+        l_aid_sc, p_aid <-- getall_req_ReadValue_AttributeId(p_msg, p_rvi);
+        l_ir_sc, p_index_range <-- getall_req_ReadValue_IndexRange(p_msg, p_rvi);
+        IF l_aid_sc = e_sc_ok
         THEN
-            p_sc, p_index_range <-- getall_req_ReadValue_IndexRange(p_msg, p_rvi)
+            p_sc := l_ir_sc
         ELSE
-            p_index_range := c_IndexRange_indet
+            p_sc := l_aid_sc
         END
     END
     ;

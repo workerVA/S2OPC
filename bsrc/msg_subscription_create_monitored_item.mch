@@ -141,7 +141,7 @@ OPERATIONS
           (p_bres = FALSE => p_sc /= e_sc_ok) &
           (MonitoredItemReq_AttributeId(p_index) /: t_AttributeId =>
            p_sc = e_sc_bad_attribute_id_invalid) &
-          
+
           (MonitoredItemReq_AttributeId(p_index) : t_AttributeId &
            MonitoredItemReq_IndexRange(p_index) /: t_IndexRange =>
            p_sc = e_sc_bad_index_range_invalid) &

@@ -27,6 +27,7 @@
 #include "message_out_bs.h"
 
 #include "util_b2c.h"
+#include "util_variant.h"
 
 #include "sopc_types.h"
 
@@ -126,6 +127,8 @@ void msg_subscription_create_monitored_item_bs__getall_monitored_item_req_params
 {
     *msg_subscription_create_monitored_item_bs__p_sc = constants__c_StatusCode_indet;
     *msg_subscription_create_monitored_item_bs__p_aid = constants__c_AttributeId_indet;
+    *msg_subscription_create_monitored_item_bs__p_indexRange = constants__c_IndexRange_indet;
+
     *msg_subscription_create_monitored_item_bs__p_monitMode = constants__c_monitoringMode_indet;
     *msg_subscription_create_monitored_item_bs__p_clientHandle = 0;
     *msg_subscription_create_monitored_item_bs__p_samplingItv = 0;
@@ -146,28 +149,11 @@ void msg_subscription_create_monitored_item_bs__getall_monitored_item_req_params
     }
     else
     {
-        if (monitReq->ItemToMonitor.IndexRange.Length > 0)
-        {
-            SOPC_ReturnStatus retStatus =
-                SOPC_NumericRange_Parse(SOPC_String_GetRawCString(&monitReq->ItemToMonitor.IndexRange),
-                                        msg_subscription_create_monitored_item_bs__p_indexRange);
-            if (SOPC_STATUS_OK != retStatus)
-            {
-                *msg_subscription_create_monitored_item_bs__p_bres = false;
-                // TODO: out of memory case to be managed in B model when it is the case
-                *msg_subscription_create_monitored_item_bs__p_sc = constants__e_sc_bad_index_range_invalid;
-            }
-        }
-        else
-        {
-            *msg_subscription_create_monitored_item_bs__p_indexRange = calloc(1, sizeof(SOPC_NumericRange));
-            if (NULL == *msg_subscription_create_monitored_item_bs__p_indexRange)
-            {
-                *msg_subscription_create_monitored_item_bs__p_bres = false;
-                // TODO: out of memory case to be managed in B model
-                *msg_subscription_create_monitored_item_bs__p_sc = constants__e_sc_bad_index_range_invalid;
-            }
-        }
+        // TODO: out of memory case to be managed in B model when it is the case
+        *msg_subscription_create_monitored_item_bs__p_sc = util_variant__IndexRange_String_to_NumericRange(
+            &monitReq->ItemToMonitor.IndexRange, msg_subscription_create_monitored_item_bs__p_indexRange);
+        *msg_subscription_create_monitored_item_bs__p_bres =
+            *msg_subscription_create_monitored_item_bs__p_sc == constants__e_sc_ok;
     }
 
     if (*msg_subscription_create_monitored_item_bs__p_bres)

@@ -24,6 +24,7 @@
 
 #include "service_write_decode_bs.h"
 #include "b2c.h"
+#include "util_variant.h"
 
 #include "address_space_impl.h" /* e_aid_* */
 #include "sopc_types.h"
@@ -97,6 +98,7 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
     *service_write_decode_bs__nid = constants__c_NodeId_indet;
     *service_write_decode_bs__value = constants__c_Variant_indet;
     *service_write_decode_bs__isvalid = false;
+    *service_write_decode_bs__index_range = constants__c_IndexRange_indet;
 
     OpcUa_WriteValue* wv = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
     switch (wv->AttributeId)
@@ -115,26 +117,13 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
         return;
     }
 
-    if (wv->IndexRange.Length > 0)
+    // TODO: out of memory case to be managed in B model when it is the case
+    *service_write_decode_bs__status =
+        util_variant__IndexRange_String_to_NumericRange(&wv->IndexRange, service_write_decode_bs__index_range);
+
+    if (constants__e_sc_ok != *service_write_decode_bs__status)
     {
-        SOPC_ReturnStatus retStatus =
-            SOPC_NumericRange_Parse(SOPC_String_GetRawCString(&wv->IndexRange), service_write_decode_bs__index_range);
-        if (SOPC_STATUS_OK != retStatus)
-        {
-            // TODO: out of memory case to be managed in B model when it is the case
-            *service_write_decode_bs__status = constants__e_sc_bad_index_range_invalid;
-            return;
-        }
-    }
-    else
-    {
-        *service_write_decode_bs__index_range = calloc(1, sizeof(SOPC_NumericRange));
-        if (NULL == *service_write_decode_bs__index_range)
-        {
-            // TODO: out of memory case to be managed in B model
-            *service_write_decode_bs__status = constants__e_sc_bad_index_range_invalid;
-            return;
-        }
+        return;
     }
 
     *service_write_decode_bs__nid = &wv->NodeId;

@@ -367,5 +367,14 @@ OPERATIONS
     THEN
         p_authorized := bool(p_operation_type |-> p_node_id |-> p_attribute_id |-> p_user : s_AuthorizedOperations)
     END
+    ;
+
+    free_IndexRange(p_IndexRange) =
+    PRE
+        p_IndexRange : t_IndexRange_i &
+        p_IndexRange : t_IndexRange
+    THEN
+        skip /* Clear the dimensions array / n_dimensions */
+    END
 
 END

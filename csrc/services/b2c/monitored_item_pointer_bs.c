@@ -27,9 +27,11 @@
 
 #include <assert.h>
 #include <inttypes.h>
+#include <string.h>
 
 #include "sopc_dict.h"
 #include "sopc_logger.h"
+#include "sopc_macros.h"
 #include "util_b2c.h"
 
 void SOPC_InternalMontitoredItem_Free(void* data)
@@ -117,13 +119,18 @@ void monitored_item_pointer_bs__create_monitored_item_pointer(
     uintptr_t freshId = 0;
     SOPC_InternalMontitoredItem* monitItem = malloc(sizeof(SOPC_InternalMontitoredItem));
     SOPC_NodeId* nid = malloc(sizeof(SOPC_NodeId));
-    SOPC_NumericRange* range = NULL;
     SOPC_ReturnStatus retStatus = SOPC_STATUS_NOK;
+    SOPC_NumericRange* range = NULL;
+    if (NULL != monitored_item_pointer_bs__p_indexRange)
+    {
+        range = calloc(1, sizeof(SOPC_NumericRange));
+    }
 
-    if (NULL == monitItem || NULL == nid)
+    if (NULL == monitItem || NULL == nid || (NULL != monitored_item_pointer_bs__p_indexRange && NULL == range))
     {
         free(monitItem);
         free(nid);
+        free(range);
         return;
     }
 
@@ -137,7 +144,14 @@ void monitored_item_pointer_bs__create_monitored_item_pointer(
         monitItem->subId = monitored_item_pointer_bs__p_subscription;
         monitItem->nid = nid;
         monitItem->aid = monitored_item_pointer_bs__p_aid;
-        monitItem->indexRange = monitored_item_pointer_bs__p_indexRange;
+        if (NULL != monitored_item_pointer_bs__p_indexRange)
+        {
+            *range = *monitored_item_pointer_bs__p_indexRange;
+            // reset index range input values since it will be cleared by caller
+            memset(monitored_item_pointer_bs__p_indexRange, 0, sizeof(SOPC_NumericRange));
+        }
+        monitItem->indexRange = range;
+
         monitItem->timestampToReturn = monitored_item_pointer_bs__p_timestampToReturn;
         monitItem->monitoringMode = monitored_item_pointer_bs__p_monitoringMode;
         monitItem->clientHandle = monitored_item_pointer_bs__p_clientHandle;
