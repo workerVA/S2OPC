@@ -84,6 +84,7 @@ OPERATIONS
         :(p_bres : BOOL &
           p_sc : t_StatusCode_i &
           p_sc : {e_sc_ok, e_sc_bad_attribute_id_invalid,
+                  e_sc_bad_index_range_invalid,
                   e_sc_bad_monitoring_mode_invalid,
                   e_sc_bad_monitored_item_filter_unsupported} &
           p_nid : t_NodeId_i &
@@ -97,7 +98,8 @@ OPERATIONS
            p_sc = e_sc_ok &
            p_nid : t_NodeId &
            p_aid : t_AttributeId &
-           p_monitMode : t_monitoringMode))
+           p_monitMode : t_monitoringMode &
+           p_indexRange : t_IndexRange))
     END
     ;
 

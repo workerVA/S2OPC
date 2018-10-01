@@ -130,16 +130,6 @@ void monitored_item_pointer_bs__create_monitored_item_pointer(
     SOPC_NodeId_Initialize(nid);
     retStatus = SOPC_NodeId_Copy(nid, monitored_item_pointer_bs__p_nid);
 
-    if (SOPC_STATUS_OK == retStatus && monitored_item_pointer_bs__p_indexRange != NULL)
-    {
-        retStatus = SOPC_NumericRange_Parse(SOPC_String_GetRawCString(monitored_item_pointer_bs__p_indexRange), &range);
-
-        if (SOPC_STATUS_OK != retStatus)
-        {
-            *monitored_item_pointer_bs__StatusCode = constants__e_sc_bad_index_range_invalid;
-        }
-    }
-
     if (SOPC_STATUS_OK == retStatus)
     {
         bool dictInsertionOK = false;
@@ -147,7 +137,7 @@ void monitored_item_pointer_bs__create_monitored_item_pointer(
         monitItem->subId = monitored_item_pointer_bs__p_subscription;
         monitItem->nid = nid;
         monitItem->aid = monitored_item_pointer_bs__p_aid;
-        monitItem->indexRange = range;
+        monitItem->indexRange = monitored_item_pointer_bs__p_indexRange;
         monitItem->timestampToReturn = monitored_item_pointer_bs__p_timestampToReturn;
         monitItem->monitoringMode = monitored_item_pointer_bs__p_monitoringMode;
         monitItem->clientHandle = monitored_item_pointer_bs__p_clientHandle;

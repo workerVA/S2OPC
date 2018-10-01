@@ -111,7 +111,7 @@ OPERATIONS
         p_aid,
         p_index_range
         :(p_sc : t_StatusCode_i &
-          p_sc : {e_sc_ok, e_sc_bad_node_id_invalid, e_sc_bad_attribute_id_invalid, e_sc_bad_index_range_invalid} &
+          p_sc : {e_sc_ok, e_sc_bad_attribute_id_invalid, e_sc_bad_index_range_invalid} &
             p_nid : t_NodeId_i                   &
             p_nid : t_NodeId                     &
             p_aid : t_AttributeId_i              &
@@ -119,7 +119,9 @@ OPERATIONS
             p_nid = ReadValue_NodeId(p_rvi)      &
             p_aid = ReadValue_AttributeId(p_rvi) &
             p_index_range = ReadValue_IndexRange(p_rvi) &
-            (p_sc = e_sc_ok => p_aid : t_AttributeId)
+            (p_sc = e_sc_ok => p_aid : t_AttributeId & p_index_range : t_IndexRange) &
+            (p_sc = e_sc_bad_attribute_id_invalid => p_aid /: t_AttributeId) &
+            (p_sc = e_sc_bad_index_range_invalid => p_aid : t_AttributeId & p_index_range /: t_IndexRange)
         )
     END
     ;

@@ -111,7 +111,8 @@ OPERATIONS
         wvi : dom(WriteValue_AttributeId) &
         wvi : dom(WriteValue_Value)
     THEN
-        IF WriteValue_AttributeId(wvi) : {e_aid_NodeId, e_aid_NodeClass, e_aid_Value}
+        IF WriteValue_AttributeId(wvi) : {e_aid_NodeId, e_aid_NodeClass, e_aid_Value} &
+            WriteValue_IndexRange(wvi) : t_IndexRange
         THEN
             isvalid := TRUE ||
             status := e_sc_ok ||
@@ -129,7 +130,13 @@ OPERATIONS
             aid := c_AttributeId_indet ||
             value := c_Variant_indet ||
             index_range := c_IndexRange_indet ||
-            status := e_sc_bad_attribute_id_invalid
+            IF WriteValue_AttributeId(wvi) /: {e_aid_NodeId, e_aid_NodeClass, e_aid_Value}
+            THEN
+                status := e_sc_bad_attribute_id_invalid
+            ELSE
+                /* TODO: manage out of memory case separately in B model and C code*/
+                status := e_sc_bad_index_range_invalid
+            END
         END
     END
     ;

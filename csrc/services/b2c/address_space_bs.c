@@ -125,25 +125,6 @@ static constants__t_StatusCode_i read_value_indexed_helper(const SOPC_Variant* v
     return constants__e_sc_ok;
 }
 
-static constants__t_StatusCode_i read_value_indexed(const SOPC_Variant* value,
-                                                    const SOPC_String* range_str,
-                                                    SOPC_Variant* dereferenced)
-{
-    SOPC_NumericRange* range = NULL;
-    SOPC_ReturnStatus status = SOPC_NumericRange_Parse(SOPC_String_GetRawCString(range_str), &range);
-
-    if (status != SOPC_STATUS_OK)
-    {
-        return (status == SOPC_STATUS_NOK) ? constants__e_sc_bad_index_range_invalid
-                                           : index_range_bad_returnstatus_to_service_statuscode(status);
-    }
-
-    constants__t_StatusCode_i ret = read_value_indexed_helper(value, range, dereferenced);
-    SOPC_NumericRange_Delete(range);
-
-    return ret;
-}
-
 /* Reads any attribute and outputs a variant (valid or not)
  * As this function uses the *_2_Variant_i functions, the value must be freed once used
  */
@@ -205,7 +186,7 @@ void address_space_bs__read_AddressSpace_Attribute_value(const constants__t_user
         return;
     }
 
-    if (address_space_bs__index_range == NULL || address_space_bs__index_range->Length <= 0)
+    if (0 == address_space_bs__index_range->n_dimensions)
     {
         *address_space_bs__sc = constants__e_sc_ok;
         *address_space_bs__variant = value;
@@ -221,7 +202,7 @@ void address_space_bs__read_AddressSpace_Attribute_value(const constants__t_user
         else
         {
             *address_space_bs__sc =
-                read_value_indexed(value, address_space_bs__index_range, *address_space_bs__variant);
+                read_value_indexed_helper(value, address_space_bs__index_range, *address_space_bs__variant);
         }
 
         SOPC_Variant_Delete(value);
@@ -280,26 +261,6 @@ static constants__t_StatusCode_i set_value_indexed_helper(SOPC_Variant* node_val
     return constants__e_sc_ok;
 }
 
-static constants__t_StatusCode_i set_value_indexed(SOPC_Variant* node_value,
-                                                   const SOPC_Variant* new_value,
-                                                   const SOPC_String* range_str,
-                                                   SOPC_Variant** previous_value)
-{
-    SOPC_NumericRange* range = NULL;
-    SOPC_ReturnStatus status = SOPC_NumericRange_Parse(SOPC_String_GetRawCString(range_str), &range);
-
-    if (status != SOPC_STATUS_OK)
-    {
-        return (status == SOPC_STATUS_NOK) ? constants__e_sc_bad_index_range_invalid
-                                           : constants__e_sc_bad_out_of_memory;
-    }
-
-    constants__t_StatusCode_i ret = set_value_indexed_helper(node_value, new_value, range, previous_value);
-    SOPC_NumericRange_Delete(range);
-
-    return ret;
-}
-
 void address_space_bs__set_Value(const constants__t_user_i address_space_bs__p_user,
                                  const constants__t_Node_i address_space_bs__node,
                                  const constants__t_Variant_i address_space_bs__value,
@@ -320,14 +281,14 @@ void address_space_bs__set_Value(const constants__t_user_i address_space_bs__p_u
         return;
     }
 
-    if (address_space_bs__index_range->Length <= 0)
+    if (0 == address_space_bs__index_range->n_dimensions)
     {
         *address_space_bs__serviceStatusCode =
             set_value_full(pvar, address_space_bs__value, address_space_bs__prev_value);
     }
     else
     {
-        *address_space_bs__serviceStatusCode = set_value_indexed(
+        *address_space_bs__serviceStatusCode = set_value_indexed_helper(
             pvar, address_space_bs__value, address_space_bs__index_range, address_space_bs__prev_value);
     }
 

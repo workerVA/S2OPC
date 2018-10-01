@@ -141,12 +141,18 @@ OPERATIONS
           (p_bres = FALSE => p_sc /= e_sc_ok) &
           (MonitoredItemReq_AttributeId(p_index) /: t_AttributeId =>
            p_sc = e_sc_bad_attribute_id_invalid) &
+          
+          (MonitoredItemReq_AttributeId(p_index) : t_AttributeId &
+           MonitoredItemReq_IndexRange(p_index) /: t_IndexRange =>
+           p_sc = e_sc_bad_index_range_invalid) &
 
           (MonitoredItemReq_AttributeId(p_index) : t_AttributeId &
+           MonitoredItemReq_IndexRange(p_index) : t_IndexRange &
            MonitoredItemReq_ValidMonitoringMode(p_index) = FALSE =>
            p_sc = e_sc_bad_monitoring_mode_invalid) &
 
           (MonitoredItemReq_AttributeId(p_index) : t_AttributeId &
+           MonitoredItemReq_IndexRange(p_index) : t_IndexRange &
            MonitoredItemReq_ValidMonitoringMode(p_index) = TRUE &
            MonitoredItemReq_FilterPresence(p_index) = TRUE =>
            p_sc = e_sc_bad_monitored_item_filter_unsupported)

@@ -85,7 +85,7 @@ typedef uint32_t constants_bs__t_timer_id_i;
 typedef SOPC_TimeReference constants_bs__t_timeref_i;
 typedef SOPC_UserWithAuthorization* constants_bs__t_user_i;
 typedef SOPC_ExtensionObject* constants_bs__t_user_token_i;
-typedef SOPC_String* constants_bs__t_IndexRange_i;
+typedef SOPC_NumericRange* constants_bs__t_IndexRange_i;
 
 /*--------------------------
    Added by the Translator

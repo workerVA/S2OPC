@@ -69,6 +69,7 @@ void msg_read_request_bs__getall_req_ReadValue_AttributeId(const constants__t_ms
 void msg_read_request_bs__getall_req_ReadValue_IndexRange(
     const constants__t_msg_i msg_read_request_bs__msg,
     const constants__t_ReadValue_i msg_read_request_bs__rvi,
+    constants__t_StatusCode_i* const msg_read_request_bs__sc,
     constants__t_IndexRange_i* const msg_read_request_bs__index_range)
 {
     assert(msg_read_request_bs__rvi >= 0);
@@ -76,7 +77,31 @@ void msg_read_request_bs__getall_req_ReadValue_IndexRange(
     OpcUa_ReadRequest* request = msg_read_request_bs__msg;
     size_t node_index = (size_t) msg_read_request_bs__rvi - 1;
     assert(request->NoOfNodesToRead >= 0 && node_index < ((size_t) request->NoOfNodesToRead));
-    *msg_read_request_bs__index_range = &request->NodesToRead[node_index].IndexRange;
+
+    if (request->NodesToRead[node_index].IndexRange.Length > 0)
+    {
+        SOPC_ReturnStatus retStatus = SOPC_NumericRange_Parse(
+            SOPC_String_GetRawCString(&request->NodesToRead[node_index].IndexRange), msg_read_request_bs__index_range);
+        if (SOPC_STATUS_OK != retStatus)
+        {
+            // TODO: out of memory case to be managed in B model when it is the case
+            *msg_read_request_bs__sc = constants__e_sc_bad_index_range_invalid;
+            return;
+        }
+    }
+    else
+    {
+        *msg_read_request_bs__index_range = calloc(1, sizeof(SOPC_NumericRange));
+        if (NULL == *msg_read_request_bs__index_range)
+        {
+            // TODO: out of memory case to be managed in B model
+            *msg_read_request_bs__sc = constants__e_sc_bad_index_range_invalid;
+            return;
+        }
+    }
+
+    *msg_read_request_bs__sc = constants__e_sc_ok;
+    return;
 }
 
 void msg_read_request_bs__getall_req_ReadValue_NodeId(const constants__t_msg_i msg_read_request_bs__msg,

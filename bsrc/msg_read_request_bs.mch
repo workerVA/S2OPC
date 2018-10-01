@@ -104,7 +104,7 @@ OPERATIONS
     END
     ;
 
-    index_range <-- getall_req_ReadValue_IndexRange(msg, rvi) =
+    sc, index_range <-- getall_req_ReadValue_IndexRange(msg, rvi) =
     PRE
         msg  : t_msg_i &
         msg  = c_msg_in &
@@ -114,8 +114,13 @@ OPERATIONS
         rvi : t_ReadValue &
         rvi : dom(ReadValue_IndexRange)
     THEN
-        index_range :(index_range : t_IndexRange_i &
-                      index_range = ReadValue_IndexRange(rvi))
+        /* TODO: manage out of memory case separately in B model and C code*/
+        sc, index_range 
+         :(index_range : t_IndexRange_i &
+           index_range = ReadValue_IndexRange(rvi) &
+           sc : t_StatusCode_i &
+           (index_range : t_IndexRange => sc = e_sc_ok) &
+           (index_range /: t_IndexRange => sc = e_sc_bad_index_range_invalid))
     END
     ;
 

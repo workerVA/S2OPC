@@ -148,11 +148,25 @@ void msg_subscription_create_monitored_item_bs__getall_monitored_item_req_params
     {
         if (monitReq->ItemToMonitor.IndexRange.Length > 0)
         {
-            *msg_subscription_create_monitored_item_bs__p_indexRange = &monitReq->ItemToMonitor.IndexRange;
+            SOPC_ReturnStatus retStatus =
+                SOPC_NumericRange_Parse(SOPC_String_GetRawCString(&monitReq->ItemToMonitor.IndexRange),
+                                        msg_subscription_create_monitored_item_bs__p_indexRange);
+            if (SOPC_STATUS_OK != retStatus)
+            {
+                *msg_subscription_create_monitored_item_bs__p_bres = false;
+                // TODO: out of memory case to be managed in B model when it is the case
+                *msg_subscription_create_monitored_item_bs__p_sc = constants__e_sc_bad_index_range_invalid;
+            }
         }
         else
         {
-            *msg_subscription_create_monitored_item_bs__p_indexRange = NULL;
+            *msg_subscription_create_monitored_item_bs__p_indexRange = calloc(1, sizeof(SOPC_NumericRange));
+            if (NULL == *msg_subscription_create_monitored_item_bs__p_indexRange)
+            {
+                *msg_subscription_create_monitored_item_bs__p_bres = false;
+                // TODO: out of memory case to be managed in B model
+                *msg_subscription_create_monitored_item_bs__p_sc = constants__e_sc_bad_index_range_invalid;
+            }
         }
     }
 

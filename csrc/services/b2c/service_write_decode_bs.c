@@ -96,6 +96,7 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
 {
     *service_write_decode_bs__nid = constants__c_NodeId_indet;
     *service_write_decode_bs__value = constants__c_Variant_indet;
+    *service_write_decode_bs__isvalid = false;
 
     OpcUa_WriteValue* wv = &request->NodesToWrite[service_write_decode_bs__wvi - 1];
     switch (wv->AttributeId)
@@ -110,14 +111,34 @@ void service_write_decode_bs__getall_WriteValue(const constants__t_WriteValue_i 
         *service_write_decode_bs__aid = constants__e_aid_Value;
         break;
     default:
-        *service_write_decode_bs__isvalid = false;
         *service_write_decode_bs__status = constants__e_sc_bad_attribute_id_invalid;
         return;
     }
 
+    if (wv->IndexRange.Length > 0)
+    {
+        SOPC_ReturnStatus retStatus =
+            SOPC_NumericRange_Parse(SOPC_String_GetRawCString(&wv->IndexRange), service_write_decode_bs__index_range);
+        if (SOPC_STATUS_OK != retStatus)
+        {
+            // TODO: out of memory case to be managed in B model when it is the case
+            *service_write_decode_bs__status = constants__e_sc_bad_index_range_invalid;
+            return;
+        }
+    }
+    else
+    {
+        *service_write_decode_bs__index_range = calloc(1, sizeof(SOPC_NumericRange));
+        if (NULL == *service_write_decode_bs__index_range)
+        {
+            // TODO: out of memory case to be managed in B model
+            *service_write_decode_bs__status = constants__e_sc_bad_index_range_invalid;
+            return;
+        }
+    }
+
     *service_write_decode_bs__nid = &wv->NodeId;
     *service_write_decode_bs__value = &wv->Value.Value;
-    *service_write_decode_bs__index_range = &wv->IndexRange;
     *service_write_decode_bs__isvalid = true;
     *service_write_decode_bs__status = constants__e_sc_ok;
 }
