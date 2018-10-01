@@ -356,6 +356,7 @@ OPERATIONS
         l_subscription,
         l_nid,
         l_aid,
+        l_indexRange,
         l_timestampToReturn,
         l_monitoringMode,
         l_clientHandle
@@ -368,6 +369,7 @@ OPERATIONS
             l_subscription,
             l_nid,
             l_aid,
+            l_indexRange,
             l_timestampToReturn,
             l_monitoringMode,
             l_clientHandle
@@ -407,6 +409,7 @@ OPERATIONS
         l_subscription,
         l_nid,
         l_aid,
+        l_indexRange,
         l_timestampToReturn,
         l_monitoringMode,
         l_clientHandle,
@@ -443,6 +446,7 @@ OPERATIONS
             l_subscription,
             l_nid,
             l_aid,
+            l_indexRange,
             l_timestampToReturn,
             l_monitoringMode,
             l_clientHandle

@@ -230,6 +230,7 @@ void monitored_item_pointer_bs__getall_monitoredItemPointer(
     constants__t_subscription_i* const monitored_item_pointer_bs__p_subscription,
     constants__t_NodeId_i* const monitored_item_pointer_bs__p_nid,
     constants__t_AttributeId_i* const monitored_item_pointer_bs__p_aid,
+    constants__t_IndexRange_i* const monitored_item_pointer_bs__p_indexRange,
     constants__t_TimestampsToReturn_i* const monitored_item_pointer_bs__p_timestampToReturn,
     constants__t_monitoringMode_i* const monitored_item_pointer_bs__p_monitoringMode,
     constants__t_client_handle_i* const monitored_item_pointer_bs__p_clientHandle)
@@ -241,6 +242,7 @@ void monitored_item_pointer_bs__getall_monitoredItemPointer(
     *monitored_item_pointer_bs__p_subscription = monitItem->subId;
     *monitored_item_pointer_bs__p_nid = monitItem->nid;
     *monitored_item_pointer_bs__p_aid = monitItem->aid;
+    *monitored_item_pointer_bs__p_indexRange = monitItem->indexRange;
     *monitored_item_pointer_bs__p_timestampToReturn = monitItem->timestampToReturn;
     *monitored_item_pointer_bs__p_monitoringMode = monitItem->monitoringMode;
     *monitored_item_pointer_bs__p_clientHandle = monitItem->clientHandle;

@@ -1140,6 +1140,7 @@ OPERATIONS
     p_subscription,
     p_nid,
     p_aid,
+    p_indexRange,
     p_timestampToReturn,
     p_monitoringMode,
     p_clientHandle
@@ -1152,6 +1153,7 @@ OPERATIONS
         p_subscription,
         p_nid,
         p_aid,
+        p_indexRange,
         p_timestampToReturn,
         p_monitoringMode,
         p_clientHandle
@@ -1163,6 +1165,8 @@ OPERATIONS
           p_nid : t_NodeId &
           p_aid : t_AttributeId_i &
           p_aid : t_AttributeId &
+          p_indexRange : t_IndexRange_i &
+          p_indexRange : t_IndexRange &
           p_timestampToReturn : t_TimestampsToReturn_i &
           p_timestampToReturn : t_TimestampsToReturn &
           p_monitoringMode : t_monitoringMode_i &
