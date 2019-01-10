@@ -21,7 +21,7 @@
 
  File Name            : service_response_cb_bs.h
 
- Date                 : 06/11/2018 10:49:41
+ Date                 : 10/01/2019 16:28:58
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -63,6 +63,7 @@ extern void service_response_cb_bs__srv_service_response(
    const constants__t_msg_i service_response_cb_bs__resp_msg,
    const constants__t_application_context_i service_response_cb_bs__app_context);
 extern void service_response_cb_bs__srv_write_notification(
+   const constants__t_user_i service_response_cb_bs__p_user,
    const constants__t_WriteValuePointer_i service_response_cb_bs__write_value_pointer,
    const constants__t_StatusCode_i service_response_cb_bs__write_status);
 

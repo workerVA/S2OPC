@@ -122,7 +122,6 @@ static void onAddressSpaceNotification(SOPC_EventHandler* handler,
                                        uintptr_t auxParam)
 {
     (void) handler;
-    (void) id;
 
     SOPC_App_AddSpace_Event asEvent = (SOPC_App_AddSpace_Event) event;
 
@@ -144,7 +143,7 @@ static void onAddressSpaceNotification(SOPC_EventHandler* handler,
 
         if (NULL != appAddressSpaceNotificationCallback)
         {
-            appAddressSpaceNotificationCallback(asEvent, params, (SOPC_StatusCode) auxParam);
+            appAddressSpaceNotificationCallback(asEvent, (SOPC_User*) auxParam, params, id);
         }
 
         if (NULL != params)
