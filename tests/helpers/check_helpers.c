@@ -71,6 +71,7 @@ int main(void)
     srunner_add_suite(sr, tests_make_suite_event_handler());
     srunner_add_suite(sr, tests_make_suite_numeric_range());
     srunner_add_suite(sr, tests_make_suite_users());
+    srunner_add_suite(sr, tests_make_suite_encodeable_types());
 
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
