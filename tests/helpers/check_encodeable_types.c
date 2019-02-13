@@ -28,14 +28,13 @@
 #include <check.h>
 #include <stdlib.h>
 
-#include "check_encodeable_types.h"
 #include "check_helpers.h"
 
 #include "sopc_encodeable.h"
 #include "sopc_helper_endianness_cfg.h"
 #include "sopc_types.h"
 
-void setup(void)
+static void setup(void)
 {
     // Endianness init
     SOPC_Helper_EndiannessCfg_Initialize();
@@ -79,26 +78,89 @@ START_TEST(test_time_zone_data_type)
     ck_assert(return_status == SOPC_STATUS_OK);
 
     // Check buffers
-    ck_assert(memcmp(buffer_input->data, buffer_output->data, trame_size) == 0);
+    ck_assert_mem_eq(buffer_input->data, buffer_output->data, trame_size);
 
     // Clear
     OpcUa_TimeZoneDataType_EncodeableType.Clear(time_zone_data_type);
+
+}
+END_TEST
+
+/**
+ * AggregateFilterResult unitary test
+ * Test of Initialize, decode and encode functions 
+ */
+START_TEST(test_aggregate_filter_result)
+{
+    OpcUa_AggregateFilterResult* aggregate_filter_result = calloc(1, sizeof *aggregate_filter_result);
+    SOPC_ReturnStatus return_status = SOPC_STATUS_OK;
+
+    // Test trame creation (with cursor position reset)
+    uint8_t trame[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,  // 8B SOPC_Date_Time
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 8B double
+                       0x01, 0x01, 0x2A, 0x3A, 0x01}; // 5B AggregateConfiguration
+    size_t trame_size = sizeof trame;
+
+    // Buffer initialization
+    SOPC_Buffer* buffer_input = SOPC_Buffer_Create((uint32_t) trame_size);
+    SOPC_Buffer* buffer_output = SOPC_Buffer_Create((uint32_t) trame_size);
+
+    return_status = SOPC_Buffer_Write(buffer_input, trame, (uint32_t) trame_size);
+    ck_assert(return_status == SOPC_STATUS_OK);
+    return_status = SOPC_Buffer_SetPosition(buffer_input, 0);
+    ck_assert(return_status == SOPC_STATUS_OK);
+
+    // Initialization
+    OpcUa_AggregateFilterResult_EncodeableType.Initialize(aggregate_filter_result);
+
+    // Decode
+    return_status = OpcUa_AggregateFilterResult_EncodeableType.Decode(aggregate_filter_result, buffer_input);
+    ck_assert(return_status == SOPC_STATUS_OK);
+
+    // Check content of encodeable type
+    ck_assert_int_eq(aggregate_filter_result->RevisedStartTime, -1);
+    ck_assert_double_eq(aggregate_filter_result->RevisedProcessingInterval, 0);
+
+    // Check content of nested encodeable type
+    OpcUa_AggregateConfiguration* wanted_aggregate_configuration = calloc(1, sizeof *wanted_aggregate_configuration);
+    OpcUa_AggregateConfiguration_EncodeableType.Initialize(wanted_aggregate_configuration);
+    wanted_aggregate_configuration->UseServerCapabilitiesDefaults = true;
+    wanted_aggregate_configuration->TreatUncertainAsBad = true;
+    wanted_aggregate_configuration->PercentDataBad = 0x2A;
+    wanted_aggregate_configuration->PercentDataGood = 0x3A;
+    wanted_aggregate_configuration->UseSlopedExtrapolation = true;
+
+    ck_assert_mem_eq(wanted_aggregate_configuration,
+                     &(aggregate_filter_result->RevisedAggregateConfiguration),
+                     sizeof *wanted_aggregate_configuration); // nested encodeable type
+
+    OpcUa_AggregateConfiguration_EncodeableType.Clear(wanted_aggregate_configuration);
+
+    // Encode
+    return_status = OpcUa_AggregateFilterResult_EncodeableType.Encode(aggregate_filter_result, buffer_output);
+    ck_assert(return_status == SOPC_STATUS_OK);
+
+    // Check buffers
+    ck_assert_mem_eq(buffer_input->data, buffer_output->data, trame_size);
+
+    // Clear
+    OpcUa_AggregateFilterResult_EncodeableType.Clear(aggregate_filter_result);
 }
 END_TEST
 
 Suite* tests_make_suite_encodeable_types(void)
 {
     Suite* s;
-    TCase* tc_time_zone_data_type;
+    TCase* tc_encodeable_types;
 
     s = suite_create("Tests for encodeable types");
 
-    tc_time_zone_data_type = tcase_create("TimeZoneDataType");
+    tc_encodeable_types = tcase_create("Encodeable_Types");
 
-    tcase_add_checked_fixture(tc_time_zone_data_type, setup, NULL);
-
-    tcase_add_test(tc_time_zone_data_type, test_time_zone_data_type);
-    suite_add_tcase(s, tc_time_zone_data_type);
+    tcase_add_checked_fixture(tc_encodeable_types, setup, NULL);
+    tcase_add_test(tc_encodeable_types, test_time_zone_data_type);
+    tcase_add_test(tc_encodeable_types, test_aggregate_filter_result);
+    suite_add_tcase(s, tc_encodeable_types);
 
     return s;
 }
