@@ -45,9 +45,9 @@ static void setup(void)
  * The type and the checker function are received as parameters, as well as the
  * buffer to be decoded.
  ******************************************************************************/
-static void check_encodeable_type(SOPC_EncodeableType *encodeable_type,
+static void check_encodeable_type(SOPC_EncodeableType* encodeable_type,
                                   void (*encodeable_type_checker)(void*),
-                                  uint8_t *frame,
+                                  uint8_t* frame,
                                   uint32_t frame_size)
 {
     // Allocation
@@ -83,7 +83,6 @@ static void check_encodeable_type(SOPC_EncodeableType *encodeable_type,
     SOPC_Buffer_Delete(buffer_output);
 }
 
-
 /******************************************************************************
  * TimeZoneDataType unitary test
  ******************************************************************************/
@@ -97,20 +96,15 @@ static void time_zone_data_type_checker(void* encodeable_type_object)
     ck_assert(time_zone_data_type_object->DaylightSavingInOffset == true);
 }
 
-
 START_TEST(test_time_zone_data_type)
 {
     // Test frame creation
     uint8_t frame[] = {0xFF, 0xFF, 0x1};
     uint32_t frame_size = (uint32_t) sizeof frame;
 
-    check_encodeable_type(&OpcUa_TimeZoneDataType_EncodeableType,
-                          time_zone_data_type_checker,
-                          frame,
-                          frame_size);
+    check_encodeable_type(&OpcUa_TimeZoneDataType_EncodeableType, time_zone_data_type_checker, frame, frame_size);
 }
 END_TEST
-
 
 /******************************************************************************
  * AggregateFilterResult unitary test
@@ -135,20 +129,14 @@ static void aggregate_filter_result_checker(void* encodeable_type_object)
 START_TEST(test_aggregate_filter_result)
 {
     // Test frame creation (with cursor position reset)
-    uint8_t frame[] = {0xFF, 0xFF, 0xFF, 0xFF,
-                       0xFF, 0xFF, 0xFF, 0xFF,  // 8B SOPC_Date_Time
-                       0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00, 0x00,  // 8B double
-                       0x01, 0x01, 0x2A, 0x3A,
-                       0x01}; // 5B AggregateConfiguration
+    uint8_t frame[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 8B SOPC_Date_Time
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 8B double
+                       0x01, 0x01, 0x2A, 0x3A, 0x01};                  // 5B AggregateConfiguration
 
-    check_encodeable_type(&OpcUa_AggregateFilterResult_EncodeableType,
-                          aggregate_filter_result_checker,
-                          frame,
+    check_encodeable_type(&OpcUa_AggregateFilterResult_EncodeableType, aggregate_filter_result_checker, frame,
                           (uint32_t) sizeof frame);
 }
 END_TEST
-
 
 /******************************************************************************
  * BrowsePath unitary test
@@ -186,17 +174,9 @@ START_TEST(test_browse_path)
                        0x01, 0x00, 0x00, 0x00, // IsInverse true
                        0xff, 0xff, 0xff, 0xff};
 
-
-    check_encodeable_type(&OpcUa_BrowsePath_EncodeableType,
-                          browse_path_checker,
-                          frame,
-                          (uint32_t) sizeof frame);
+    check_encodeable_type(&OpcUa_BrowsePath_EncodeableType, browse_path_checker, frame, (uint32_t) sizeof frame);
 }
 END_TEST
-
-
-
-
 
 Suite* tests_make_suite_encodeable_types(void)
 {
