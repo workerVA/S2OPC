@@ -108,8 +108,8 @@ static void time_zone_data_type_checker(void* encodeable_type_object)
 START_TEST(test_time_zone_data_type)
 {
     // Test frame creation
-    uint8_t frame[] = {0xFF, 0xFF, // Offset == -1
-                       0x1};       // DaylightSavingInOffset == true
+    uint8_t frame[] = {0xFF, 0xFF,  // Offset == -1
+                       0x01};       // DaylightSavingInOffset == true
 
     check_encodeable_type(&OpcUa_TimeZoneDataType_EncodeableType,
                           time_zone_data_type_checker,
@@ -138,8 +138,8 @@ static void aggregate_filter_result_checker(void* encodeable_type_object)
 
     ck_assert_int_eq(nested_obj.UseServerCapabilitiesDefaults,  true);
     ck_assert_int_eq(nested_obj.TreatUncertainAsBad,            true);
-    ck_assert_uint_eq(nested_obj.PercentDataBad,                  42);
-    ck_assert_uint_eq(nested_obj.PercentDataGood,                 58);
+    ck_assert_uint_eq(nested_obj.PercentDataBad,                0x2A);
+    ck_assert_uint_eq(nested_obj.PercentDataGood,               0x3A);
     ck_assert_int_eq(nested_obj.UseSlopedExtrapolation,         true);
 }
 
@@ -194,6 +194,7 @@ static void browse_path_checker(void* encodeable_type_object)
     ck_assert_int_eq(elem.IsInverse,                   false);
     ck_assert_int_eq(elem.IncludeSubtypes,              true);
     ck_assert_uint_eq(elem.TargetName.NamespaceIndex,     10);
+    ck_assert_ptr_null(elem.TargetName.Name.Data);
 
     elem = obj->RelativePath.Elements[1];
 
@@ -203,6 +204,7 @@ static void browse_path_checker(void* encodeable_type_object)
     ck_assert_int_eq(elem.IsInverse,                    true);
     ck_assert_int_eq(elem.IncludeSubtypes,             false);
     ck_assert_uint_eq(elem.TargetName.NamespaceIndex,      0);
+    ck_assert_pstr_eq((char*)elem.TargetName.Name.Data, "mugu");
 }
 
 START_TEST(test_browse_path)
@@ -218,15 +220,35 @@ START_TEST(test_browse_path)
                        // BrowsePath->RelativePath
                        0x02, 0x00, 0x00, 0x00, // NoOfElements == 2
 
-                       // BrowsePath->RelativePath First element
-                       0x01, 0x04, 0x03, 0x00, // ReferenceTypeId
-                       0x00, 0x01, 0x0A, 0x00, // IncludeSubtypes == true
-                       0xff, 0xff, 0xff, 0xff,
+                       // BrowsePath->RelativePath.Element[0]
+                       // ReferenceTypeId
+                       0x01,
+                       0x04, // Namespace == 4
+                       0x03, // Data == 3
+                       0x00, // IdentifierType == Numeric
 
-                       // BrowsePath->RelativePath Second element
-                       0x01, 0x05, 0xAB, 0x00, // ReferenceTypeId
-                       0x01, 0x00, 0x00, 0x00, // IsInverse == true
-                       0xff, 0xff, 0xff, 0xff};
+                       0x00, // IsInverse == false
+                       0x01, // IncludeSubtypes == true
+
+                       // TargetName
+                       0x0A, 0x00, // NamespaceIndex == 10
+                       0xff, 0xff, 0xff, 0xff, // Name (null)
+
+                       // BrowsePath->RelativePath.Element[1]
+                       // ReferenceTypeId
+                       0x01,
+                       0x05, // Namespace == 5
+                       0xAB, // Data == 171
+                       0x00, // IdentififerType == Numeric
+
+                       0x01, // IsInverse == true
+                       0x00, // IncludeSubtypes == false
+
+                       // TargetName
+                       0x00, 0x00, // NamespaceIndex = 0
+                       0x04, 0x00, 0x00, 0x00, // Name length
+                       0x6D, 0x75, 0x67, 0x75  // Name Data == "mugu"
+    };
 
     check_encodeable_type(&OpcUa_BrowsePath_EncodeableType,
                           browse_path_checker,
