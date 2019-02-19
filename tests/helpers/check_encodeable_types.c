@@ -125,6 +125,7 @@ END_TEST
 static void aggregate_filter_result_checker(void* encodeable_type_object)
 {
     OpcUa_AggregateFilterResult* obj = encodeable_type_object;
+    OpcUa_AggregateConfiguration nested_obj;
 
     ck_assert(obj->encodeableType == &OpcUa_AggregateFilterResult_EncodeableType);
 
@@ -133,7 +134,7 @@ static void aggregate_filter_result_checker(void* encodeable_type_object)
     ck_assert_double_eq(obj->RevisedProcessingInterval, 0);
 
     // Check content of nested encodeable type
-    OpcUa_AggregateConfiguration nested_obj = obj->RevisedAggregateConfiguration;
+    nested_obj = obj->RevisedAggregateConfiguration;
 
     ck_assert_int_eq(nested_obj.UseServerCapabilitiesDefaults,  true);
     ck_assert_int_eq(nested_obj.TreatUncertainAsBad,            true);
@@ -171,6 +172,7 @@ END_TEST
 static void browse_path_checker(void* encodeable_type_object)
 {
     OpcUa_BrowsePath* obj = encodeable_type_object;
+    OpcUa_RelativePathElement elem;
 
     ck_assert(obj->encodeableType == &OpcUa_BrowsePath_EncodeableType);
 
@@ -184,7 +186,7 @@ static void browse_path_checker(void* encodeable_type_object)
     ck_assert_ptr_nonnull(obj->RelativePath.Elements);
 
     // Check content of Element of nested encodeable type)
-    OpcUa_RelativePathElement elem = obj->RelativePath.Elements[0];
+    elem = obj->RelativePath.Elements[0];
 
     ck_assert_int_eq(elem.ReferenceTypeId.IdentifierType,  0);
     ck_assert_int_eq(elem.ReferenceTypeId.Namespace,       4);
