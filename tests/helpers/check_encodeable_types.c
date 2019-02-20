@@ -44,6 +44,8 @@ static void ck_assert_ok(SOPC_ReturnStatus status)
     ck_assert(SOPC_STATUS_OK == status);
 }
 
+#define ck_assert_encodeable_type(obj, type) ck_assert_ptr_eq((obj)->encodeableType, &type##_EncodeableType)
+
 /******************************************************************************
  * Generic checker for encodeable types
  * Test of Initialize, Decode and Encode functions
@@ -101,6 +103,7 @@ static void time_zone_data_type_checker(void* encodeable_type_object)
     ck_assert(obj->encodeableType == &OpcUa_TimeZoneDataType_EncodeableType);
 
     // Check content
+    ck_assert_encodeable_type(obj, OpcUa_TimeZoneDataType);
     ck_assert(obj->Offset == -1);
     ck_assert(obj->DaylightSavingInOffset == true);
 }
@@ -125,22 +128,19 @@ END_TEST
 static void aggregate_filter_result_checker(void* encodeable_type_object)
 {
     OpcUa_AggregateFilterResult* obj = encodeable_type_object;
-    OpcUa_AggregateConfiguration nested_obj;
+    OpcUa_AggregateConfiguration* nested_obj = NULL;
 
-    ck_assert(obj->encodeableType == &OpcUa_AggregateFilterResult_EncodeableType);
-
-    // Check content
-    ck_assert_int_eq(obj->RevisedStartTime,            -1);
+    ck_assert_encodeable_type(obj, OpcUa_AggregateFilterResult);
+    ck_assert_int_eq(obj->RevisedStartTime, -1);
     ck_assert_double_eq(obj->RevisedProcessingInterval, 0);
 
-    // Check content of nested encodeable type
-    nested_obj = obj->RevisedAggregateConfiguration;
-
-    ck_assert_int_eq(nested_obj.UseServerCapabilitiesDefaults,  true);
-    ck_assert_int_eq(nested_obj.TreatUncertainAsBad,            true);
-    ck_assert_uint_eq(nested_obj.PercentDataBad,                0x2A);
-    ck_assert_uint_eq(nested_obj.PercentDataGood,               0x3A);
-    ck_assert_int_eq(nested_obj.UseSlopedExtrapolation,         true);
+    nested_obj = &obj->RevisedAggregateConfiguration;
+    ck_assert_encodeable_type(nested_obj, OpcUa_AggregateConfiguration);
+    ck_assert_int_eq(nested_obj->UseServerCapabilitiesDefaults, true);
+    ck_assert_int_eq(nested_obj->TreatUncertainAsBad, true);
+    ck_assert_uint_eq(nested_obj->PercentDataBad, 0x2A);
+    ck_assert_uint_eq(nested_obj->PercentDataGood, 0x3A);
+    ck_assert_int_eq(nested_obj->UseSlopedExtrapolation, true);
 }
 
 START_TEST(test_aggregate_filter_result)
@@ -172,39 +172,42 @@ END_TEST
 static void browse_path_checker(void* encodeable_type_object)
 {
     OpcUa_BrowsePath* obj = encodeable_type_object;
-    OpcUa_RelativePathElement elem;
+    OpcUa_RelativePath* path;
+    OpcUa_RelativePathElement* elem;
 
-    ck_assert(obj->encodeableType == &OpcUa_BrowsePath_EncodeableType);
+    ck_assert_encodeable_type(obj, OpcUa_BrowsePath);
+    ck_assert_int_eq(obj->StartingNode.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(obj->StartingNode.Namespace, 0x02);
+    ck_assert_uint_eq(obj->StartingNode.Data.Numeric, 0x0403);
 
-    // Check content
-    ck_assert_int_eq(obj->StartingNode.IdentifierType,  0);
-    ck_assert_int_eq(obj->StartingNode.Namespace,       4);
-    ck_assert_uint_eq(obj->StartingNode.Data.Numeric,   3);
+    path = &obj->RelativePath;
+    ck_assert_encodeable_type(path, OpcUa_RelativePath);
+    ck_assert_int_eq(path->NoOfElements, 2);
+    ck_assert_ptr_nonnull(path->Elements);
 
-    // Check content of nested encodeable type
-    ck_assert_int_eq(obj->RelativePath.NoOfElements,    2);
-    ck_assert_ptr_nonnull(obj->RelativePath.Elements);
+    elem = &path->Elements[0];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x05);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0706);
+    ck_assert_int_eq(elem->IsInverse, false);
+    ck_assert_int_eq(elem->IncludeSubtypes, true);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0908);
+    ck_assert_int_eq(elem->TargetName.Name.Length, -1);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_ptr_null(elem->TargetName.Name.Data);
 
-    // Check content of Element of nested encodeable type)
-    elem = obj->RelativePath.Elements[0];
-
-    ck_assert_int_eq(elem.ReferenceTypeId.IdentifierType,  0);
-    ck_assert_int_eq(elem.ReferenceTypeId.Namespace,       4);
-    ck_assert_uint_eq(elem.ReferenceTypeId.Data.Numeric,   3);
-    ck_assert_int_eq(elem.IsInverse,                   false);
-    ck_assert_int_eq(elem.IncludeSubtypes,              true);
-    ck_assert_uint_eq(elem.TargetName.NamespaceIndex,     10);
-    ck_assert_ptr_null(elem.TargetName.Name.Data);
-
-    elem = obj->RelativePath.Elements[1];
-
-    ck_assert_int_eq(elem.ReferenceTypeId.IdentifierType,  0);
-    ck_assert_int_eq(elem.ReferenceTypeId.Namespace,       5);
-    ck_assert_uint_eq(elem.ReferenceTypeId.Data.Numeric, 171);
-    ck_assert_int_eq(elem.IsInverse,                    true);
-    ck_assert_int_eq(elem.IncludeSubtypes,             false);
-    ck_assert_uint_eq(elem.TargetName.NamespaceIndex,      0);
-    ck_assert_pstr_eq((char*)elem.TargetName.Name.Data, "mugu");
+    elem = &path->Elements[1];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x0A);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0C0B);
+    ck_assert_int_eq(elem->IsInverse, true);
+    ck_assert_int_eq(elem->IncludeSubtypes, false);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0E0D);
+    ck_assert_int_eq(elem->TargetName.Name.Length, 4);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_pstr_eq((char*) elem->TargetName.Name.Data, "mugu");
 }
 
 START_TEST(test_browse_path)
@@ -213,9 +216,8 @@ START_TEST(test_browse_path)
     uint8_t frame[] = {
                        // BrowsePath->StartingNodeId
                        0x01, 
-                       0x04, // Namespace == 4
-                       0x03, // Data == 3
-                       0x00, // IdentifierType == Numeric
+                       0x02, // Namespace == 2
+                       0x03, 0x04, // Identifier == 0x0403
 
                        // BrowsePath->RelativePath
                        0x02, 0x00, 0x00, 0x00, // NoOfElements == 2
@@ -223,29 +225,27 @@ START_TEST(test_browse_path)
                        // BrowsePath->RelativePath.Element[0]
                        // ReferenceTypeId
                        0x01,
-                       0x04, // Namespace == 4
-                       0x03, // Data == 3
-                       0x00, // IdentifierType == Numeric
+                       0x05, // Namespace == 5
+                       0x06, 0x07, // Identifier == 0x0607
 
                        0x00, // IsInverse == false
                        0x01, // IncludeSubtypes == true
 
                        // TargetName
-                       0x0A, 0x00, // NamespaceIndex == 10
+                       0x08, 0x09, // NamespaceIndex == 0x0809
                        0xff, 0xff, 0xff, 0xff, // Name (null)
 
                        // BrowsePath->RelativePath.Element[1]
                        // ReferenceTypeId
                        0x01,
-                       0x05, // Namespace == 5
-                       0xAB, // Data == 171
-                       0x00, // IdentififerType == Numeric
+                       0x0A, // Namespace == 0x0A
+                       0x0B, 0x0C, // Identifier == 0x0C0B
 
                        0x01, // IsInverse == true
                        0x00, // IncludeSubtypes == false
 
                        // TargetName
-                       0x00, 0x00, // NamespaceIndex = 0
+                       0x0D, 0x0E, // NamespaceIndex = 0
                        0x04, 0x00, 0x00, 0x00, // Name length
                        0x6D, 0x75, 0x67, 0x75  // Name Data == "mugu"
     };
