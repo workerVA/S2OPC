@@ -599,8 +599,6 @@ SOPC_ReturnStatus OpcUa_OptionSet_Decode(void* pValue, SOPC_Buffer* buf);
 /*============================================================================
  * The TimeZoneDataType structure.
  *===========================================================================*/
-extern struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType;
-
 typedef struct _OpcUa_TimeZoneDataType
 {
     SOPC_EncodeableType* encodeableType;
@@ -610,6 +608,9 @@ typedef struct _OpcUa_TimeZoneDataType
     int16_t Offset;
     SOPC_Boolean DaylightSavingInOffset;
 } OpcUa_TimeZoneDataType;
+
+extern struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType;
+
 
 void OpcUa_TimeZoneDataType_Initialize(void* pValue);
 

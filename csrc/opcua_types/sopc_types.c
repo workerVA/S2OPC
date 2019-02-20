@@ -209,7 +209,8 @@ struct SOPC_EncodeableType OpcUa_Node_EncodeableType = {"Node",
                                                         OpcUa_Node_Clear,
                                                         NULL,
                                                         OpcUa_Node_Encode,
-                                                        OpcUa_Node_Decode};
+                                                        OpcUa_Node_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_InstanceNode
@@ -378,7 +379,8 @@ struct SOPC_EncodeableType OpcUa_InstanceNode_EncodeableType = {"InstanceNode",
                                                                 OpcUa_InstanceNode_Clear,
                                                                 NULL,
                                                                 OpcUa_InstanceNode_Encode,
-                                                                OpcUa_InstanceNode_Decode};
+                                                                OpcUa_InstanceNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TypeNode
@@ -547,7 +549,8 @@ struct SOPC_EncodeableType OpcUa_TypeNode_EncodeableType = {"TypeNode",
                                                             OpcUa_TypeNode_Clear,
                                                             NULL,
                                                             OpcUa_TypeNode_Encode,
-                                                            OpcUa_TypeNode_Decode};
+                                                            OpcUa_TypeNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ObjectNode
@@ -726,7 +729,8 @@ struct SOPC_EncodeableType OpcUa_ObjectNode_EncodeableType = {"ObjectNode",
                                                               OpcUa_ObjectNode_Clear,
                                                               NULL,
                                                               OpcUa_ObjectNode_Encode,
-                                                              OpcUa_ObjectNode_Decode};
+                                                              OpcUa_ObjectNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ObjectTypeNode
@@ -905,7 +909,8 @@ struct SOPC_EncodeableType OpcUa_ObjectTypeNode_EncodeableType = {"ObjectTypeNod
                                                                   OpcUa_ObjectTypeNode_Clear,
                                                                   NULL,
                                                                   OpcUa_ObjectTypeNode_Encode,
-                                                                  OpcUa_ObjectTypeNode_Decode};
+                                                                  OpcUa_ObjectTypeNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_VariableNode
@@ -1161,7 +1166,8 @@ struct SOPC_EncodeableType OpcUa_VariableNode_EncodeableType = {"VariableNode",
                                                                 OpcUa_VariableNode_Clear,
                                                                 NULL,
                                                                 OpcUa_VariableNode_Encode,
-                                                                OpcUa_VariableNode_Decode};
+                                                                OpcUa_VariableNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_VariableTypeNode
@@ -1387,7 +1393,8 @@ struct SOPC_EncodeableType OpcUa_VariableTypeNode_EncodeableType = {"VariableTyp
                                                                     OpcUa_VariableTypeNode_Clear,
                                                                     NULL,
                                                                     OpcUa_VariableTypeNode_Encode,
-                                                                    OpcUa_VariableTypeNode_Decode};
+                                                                    OpcUa_VariableTypeNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReferenceTypeNode
@@ -1586,7 +1593,8 @@ struct SOPC_EncodeableType OpcUa_ReferenceTypeNode_EncodeableType = {"ReferenceT
                                                                      OpcUa_ReferenceTypeNode_Clear,
                                                                      NULL,
                                                                      OpcUa_ReferenceTypeNode_Encode,
-                                                                     OpcUa_ReferenceTypeNode_Decode};
+                                                                     OpcUa_ReferenceTypeNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MethodNode
@@ -1775,7 +1783,8 @@ struct SOPC_EncodeableType OpcUa_MethodNode_EncodeableType = {"MethodNode",
                                                               OpcUa_MethodNode_Clear,
                                                               NULL,
                                                               OpcUa_MethodNode_Encode,
-                                                              OpcUa_MethodNode_Decode};
+                                                              OpcUa_MethodNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ViewNode
@@ -1964,7 +1973,8 @@ struct SOPC_EncodeableType OpcUa_ViewNode_EncodeableType = {"ViewNode",
                                                             OpcUa_ViewNode_Clear,
                                                             NULL,
                                                             OpcUa_ViewNode_Encode,
-                                                            OpcUa_ViewNode_Decode};
+                                                            OpcUa_ViewNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DataTypeNode
@@ -2143,7 +2153,8 @@ struct SOPC_EncodeableType OpcUa_DataTypeNode_EncodeableType = {"DataTypeNode",
                                                                 OpcUa_DataTypeNode_Clear,
                                                                 NULL,
                                                                 OpcUa_DataTypeNode_Encode,
-                                                                OpcUa_DataTypeNode_Decode};
+                                                                OpcUa_DataTypeNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReferenceNode
@@ -2254,7 +2265,8 @@ struct SOPC_EncodeableType OpcUa_ReferenceNode_EncodeableType = {"ReferenceNode"
                                                                  OpcUa_ReferenceNode_Clear,
                                                                  NULL,
                                                                  OpcUa_ReferenceNode_Encode,
-                                                                 OpcUa_ReferenceNode_Decode};
+                                                                 OpcUa_ReferenceNode_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Argument
@@ -2392,7 +2404,8 @@ struct SOPC_EncodeableType OpcUa_Argument_EncodeableType = {"Argument",
                                                             OpcUa_Argument_Clear,
                                                             NULL,
                                                             OpcUa_Argument_Encode,
-                                                            OpcUa_Argument_Decode};
+                                                            OpcUa_Argument_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EnumValueType
@@ -2503,7 +2516,8 @@ struct SOPC_EncodeableType OpcUa_EnumValueType_EncodeableType = {"EnumValueType"
                                                                  OpcUa_EnumValueType_Clear,
                                                                  NULL,
                                                                  OpcUa_EnumValueType_Encode,
-                                                                 OpcUa_EnumValueType_Decode};
+                                                                 OpcUa_EnumValueType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EnumField
@@ -2624,7 +2638,8 @@ struct SOPC_EncodeableType OpcUa_EnumField_EncodeableType = {"EnumField",
                                                              OpcUa_EnumField_Clear,
                                                              NULL,
                                                              OpcUa_EnumField_Encode,
-                                                             OpcUa_EnumField_Decode};
+                                                             OpcUa_EnumField_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_OptionSet
@@ -2725,7 +2740,8 @@ struct SOPC_EncodeableType OpcUa_OptionSet_EncodeableType = {"OptionSet",
                                                              OpcUa_OptionSet_Clear,
                                                              NULL,
                                                              OpcUa_OptionSet_Encode,
-                                                             OpcUa_OptionSet_Decode};
+                                                             OpcUa_OptionSet_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TimeZoneDataType
@@ -2813,9 +2829,14 @@ SOPC_ReturnStatus OpcUa_TimeZoneDataType_Decode(void* pValue, SOPC_Buffer* buf)
     return status;
 }
 
+
 /*============================================================================
  * OpcUa_TimeZoneDataType_EncodeableType
  *===========================================================================*/
+ElemOffset test[] = {{1, {.BuiltInId = 4}, 0},
+                     {1, {.BuiltInId = 1}, 2}};
+TypeDescriptor OpcUa_TimeZoneDataType_TypeDescriptor = {2, test};
+
 struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDataType",
                                                                     OpcUaId_TimeZoneDataType,
                                                                     OpcUaId_TimeZoneDataType_Encoding_DefaultBinary,
@@ -2826,7 +2847,9 @@ struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDat
                                                                     OpcUa_TimeZoneDataType_Clear,
                                                                     NULL,
                                                                     OpcUa_TimeZoneDataType_Encode,
-                                                                    OpcUa_TimeZoneDataType_Decode};
+                                                                    OpcUa_TimeZoneDataType_Decode,
+                                                                    &OpcUa_TimeZoneDataType_TypeDescriptor
+                                                                    };
 #endif
 
 #ifndef OPCUA_EXCLUDE_ApplicationDescription
@@ -2985,7 +3008,8 @@ struct SOPC_EncodeableType OpcUa_ApplicationDescription_EncodeableType = {
     OpcUa_ApplicationDescription_Clear,
     NULL,
     OpcUa_ApplicationDescription_Encode,
-    OpcUa_ApplicationDescription_Decode};
+    OpcUa_ApplicationDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RequestHeader
@@ -3136,7 +3160,8 @@ struct SOPC_EncodeableType OpcUa_RequestHeader_EncodeableType = {"RequestHeader"
                                                                  OpcUa_RequestHeader_Clear,
                                                                  NULL,
                                                                  OpcUa_RequestHeader_Encode,
-                                                                 OpcUa_RequestHeader_Decode};
+                                                                 OpcUa_RequestHeader_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ResponseHeader
@@ -3284,7 +3309,8 @@ struct SOPC_EncodeableType OpcUa_ResponseHeader_EncodeableType = {"ResponseHeade
                                                                   OpcUa_ResponseHeader_Clear,
                                                                   NULL,
                                                                   OpcUa_ResponseHeader_Encode,
-                                                                  OpcUa_ResponseHeader_Decode};
+                                                                  OpcUa_ResponseHeader_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ServiceFault
@@ -3365,7 +3391,8 @@ struct SOPC_EncodeableType OpcUa_ServiceFault_EncodeableType = {"ServiceFault",
                                                                 OpcUa_ServiceFault_Clear,
                                                                 NULL,
                                                                 OpcUa_ServiceFault_Encode,
-                                                                OpcUa_ServiceFault_Decode};
+                                                                OpcUa_ServiceFault_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_FindServers
@@ -3491,7 +3518,8 @@ struct SOPC_EncodeableType OpcUa_FindServersRequest_EncodeableType = {"FindServe
                                                                       OpcUa_FindServersRequest_Clear,
                                                                       NULL,
                                                                       OpcUa_FindServersRequest_Encode,
-                                                                      OpcUa_FindServersRequest_Decode};
+                                                                      OpcUa_FindServersRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_FindServersResponse
@@ -3593,7 +3621,8 @@ struct SOPC_EncodeableType OpcUa_FindServersResponse_EncodeableType = {
     OpcUa_FindServersResponse_Clear,
     NULL,
     OpcUa_FindServersResponse_Encode,
-    OpcUa_FindServersResponse_Decode};
+    OpcUa_FindServersResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -3722,7 +3751,8 @@ struct SOPC_EncodeableType OpcUa_ServerOnNetwork_EncodeableType = {"ServerOnNetw
                                                                    OpcUa_ServerOnNetwork_Clear,
                                                                    NULL,
                                                                    OpcUa_ServerOnNetwork_Encode,
-                                                                   OpcUa_ServerOnNetwork_Decode};
+                                                                   OpcUa_ServerOnNetwork_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_FindServersOnNetwork
@@ -3842,7 +3872,8 @@ struct SOPC_EncodeableType OpcUa_FindServersOnNetworkRequest_EncodeableType = {
     OpcUa_FindServersOnNetworkRequest_Clear,
     NULL,
     OpcUa_FindServersOnNetworkRequest_Encode,
-    OpcUa_FindServersOnNetworkRequest_Decode};
+    OpcUa_FindServersOnNetworkRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_FindServersOnNetworkResponse
@@ -3954,7 +3985,8 @@ struct SOPC_EncodeableType OpcUa_FindServersOnNetworkResponse_EncodeableType = {
     OpcUa_FindServersOnNetworkResponse_Clear,
     NULL,
     OpcUa_FindServersOnNetworkResponse_Encode,
-    OpcUa_FindServersOnNetworkResponse_Decode};
+    OpcUa_FindServersOnNetworkResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -4086,7 +4118,8 @@ struct SOPC_EncodeableType OpcUa_UserTokenPolicy_EncodeableType = {"UserTokenPol
                                                                    OpcUa_UserTokenPolicy_Clear,
                                                                    NULL,
                                                                    OpcUa_UserTokenPolicy_Encode,
-                                                                   OpcUa_UserTokenPolicy_Decode};
+                                                                   OpcUa_UserTokenPolicy_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EndpointDescription
@@ -4257,7 +4290,8 @@ struct SOPC_EncodeableType OpcUa_EndpointDescription_EncodeableType = {
     OpcUa_EndpointDescription_Clear,
     NULL,
     OpcUa_EndpointDescription_Encode,
-    OpcUa_EndpointDescription_Decode};
+    OpcUa_EndpointDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_GetEndpoints
@@ -4384,7 +4418,8 @@ struct SOPC_EncodeableType OpcUa_GetEndpointsRequest_EncodeableType = {
     OpcUa_GetEndpointsRequest_Clear,
     NULL,
     OpcUa_GetEndpointsRequest_Encode,
-    OpcUa_GetEndpointsRequest_Decode};
+    OpcUa_GetEndpointsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_GetEndpointsResponse
@@ -4487,7 +4522,8 @@ struct SOPC_EncodeableType OpcUa_GetEndpointsResponse_EncodeableType = {
     OpcUa_GetEndpointsResponse_Clear,
     NULL,
     OpcUa_GetEndpointsResponse_Encode,
-    OpcUa_GetEndpointsResponse_Decode};
+    OpcUa_GetEndpointsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -4664,7 +4700,8 @@ struct SOPC_EncodeableType OpcUa_RegisteredServer_EncodeableType = {"RegisteredS
                                                                     OpcUa_RegisteredServer_Clear,
                                                                     NULL,
                                                                     OpcUa_RegisteredServer_Encode,
-                                                                    OpcUa_RegisteredServer_Decode};
+                                                                    OpcUa_RegisteredServer_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RegisterServer
@@ -4757,7 +4794,8 @@ struct SOPC_EncodeableType OpcUa_RegisterServerRequest_EncodeableType = {
     OpcUa_RegisterServerRequest_Clear,
     NULL,
     OpcUa_RegisterServerRequest_Encode,
-    OpcUa_RegisterServerRequest_Decode};
+    OpcUa_RegisterServerRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RegisterServerResponse
@@ -4839,7 +4877,8 @@ struct SOPC_EncodeableType OpcUa_RegisterServerResponse_EncodeableType = {
     OpcUa_RegisterServerResponse_Clear,
     NULL,
     OpcUa_RegisterServerResponse_Encode,
-    OpcUa_RegisterServerResponse_Decode};
+    OpcUa_RegisterServerResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -4949,7 +4988,8 @@ struct SOPC_EncodeableType OpcUa_MdnsDiscoveryConfiguration_EncodeableType = {
     OpcUa_MdnsDiscoveryConfiguration_Clear,
     NULL,
     OpcUa_MdnsDiscoveryConfiguration_Encode,
-    OpcUa_MdnsDiscoveryConfiguration_Decode};
+    OpcUa_MdnsDiscoveryConfiguration_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RegisterServer2
@@ -5061,7 +5101,8 @@ struct SOPC_EncodeableType OpcUa_RegisterServer2Request_EncodeableType = {
     OpcUa_RegisterServer2Request_Clear,
     NULL,
     OpcUa_RegisterServer2Request_Encode,
-    OpcUa_RegisterServer2Request_Decode};
+    OpcUa_RegisterServer2Request_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RegisterServer2Response
@@ -5182,7 +5223,8 @@ struct SOPC_EncodeableType OpcUa_RegisterServer2Response_EncodeableType = {
     OpcUa_RegisterServer2Response_Clear,
     NULL,
     OpcUa_RegisterServer2Response_Encode,
-    OpcUa_RegisterServer2Response_Decode};
+    OpcUa_RegisterServer2Response_Decode,
+NULL};
 #endif
 #endif
 
@@ -5305,7 +5347,8 @@ struct SOPC_EncodeableType OpcUa_ChannelSecurityToken_EncodeableType = {
     OpcUa_ChannelSecurityToken_Clear,
     NULL,
     OpcUa_ChannelSecurityToken_Encode,
-    OpcUa_ChannelSecurityToken_Decode};
+    OpcUa_ChannelSecurityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_OpenSecureChannel
@@ -5438,7 +5481,8 @@ struct SOPC_EncodeableType OpcUa_OpenSecureChannelRequest_EncodeableType = {
     OpcUa_OpenSecureChannelRequest_Clear,
     NULL,
     OpcUa_OpenSecureChannelRequest_Encode,
-    OpcUa_OpenSecureChannelRequest_Decode};
+    OpcUa_OpenSecureChannelRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_OpenSecureChannelResponse
@@ -5552,7 +5596,8 @@ struct SOPC_EncodeableType OpcUa_OpenSecureChannelResponse_EncodeableType = {
     OpcUa_OpenSecureChannelResponse_Clear,
     NULL,
     OpcUa_OpenSecureChannelResponse_Encode,
-    OpcUa_OpenSecureChannelResponse_Decode};
+    OpcUa_OpenSecureChannelResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -5634,7 +5679,8 @@ struct SOPC_EncodeableType OpcUa_CloseSecureChannelRequest_EncodeableType = {
     OpcUa_CloseSecureChannelRequest_Clear,
     NULL,
     OpcUa_CloseSecureChannelRequest_Encode,
-    OpcUa_CloseSecureChannelRequest_Decode};
+    OpcUa_CloseSecureChannelRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CloseSecureChannelResponse
@@ -5716,7 +5762,8 @@ struct SOPC_EncodeableType OpcUa_CloseSecureChannelResponse_EncodeableType = {
     OpcUa_CloseSecureChannelResponse_Clear,
     NULL,
     OpcUa_CloseSecureChannelResponse_Encode,
-    OpcUa_CloseSecureChannelResponse_Decode};
+    OpcUa_CloseSecureChannelResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -5819,7 +5866,8 @@ struct SOPC_EncodeableType OpcUa_SignedSoftwareCertificate_EncodeableType = {
     OpcUa_SignedSoftwareCertificate_Clear,
     NULL,
     OpcUa_SignedSoftwareCertificate_Encode,
-    OpcUa_SignedSoftwareCertificate_Decode};
+    OpcUa_SignedSoftwareCertificate_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SignatureData
@@ -5920,7 +5968,8 @@ struct SOPC_EncodeableType OpcUa_SignatureData_EncodeableType = {"SignatureData"
                                                                  OpcUa_SignatureData_Clear,
                                                                  NULL,
                                                                  OpcUa_SignatureData_Encode,
-                                                                 OpcUa_SignatureData_Decode};
+                                                                 OpcUa_SignatureData_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CreateSession
@@ -6083,7 +6132,8 @@ struct SOPC_EncodeableType OpcUa_CreateSessionRequest_EncodeableType = {
     OpcUa_CreateSessionRequest_Clear,
     NULL,
     OpcUa_CreateSessionRequest_Encode,
-    OpcUa_CreateSessionRequest_Decode};
+    OpcUa_CreateSessionRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CreateSessionResponse
@@ -6279,7 +6329,8 @@ struct SOPC_EncodeableType OpcUa_CreateSessionResponse_EncodeableType = {
     OpcUa_CreateSessionResponse_Clear,
     NULL,
     OpcUa_CreateSessionResponse_Encode,
-    OpcUa_CreateSessionResponse_Decode};
+    OpcUa_CreateSessionResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -6371,7 +6422,8 @@ struct SOPC_EncodeableType OpcUa_UserIdentityToken_EncodeableType = {"UserIdenti
                                                                      OpcUa_UserIdentityToken_Clear,
                                                                      NULL,
                                                                      OpcUa_UserIdentityToken_Encode,
-                                                                     OpcUa_UserIdentityToken_Decode};
+                                                                     OpcUa_UserIdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AnonymousIdentityToken
@@ -6463,7 +6515,8 @@ struct SOPC_EncodeableType OpcUa_AnonymousIdentityToken_EncodeableType = {
     OpcUa_AnonymousIdentityToken_Clear,
     NULL,
     OpcUa_AnonymousIdentityToken_Encode,
-    OpcUa_AnonymousIdentityToken_Decode};
+    OpcUa_AnonymousIdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_UserNameIdentityToken
@@ -6585,7 +6638,8 @@ struct SOPC_EncodeableType OpcUa_UserNameIdentityToken_EncodeableType = {
     OpcUa_UserNameIdentityToken_Clear,
     NULL,
     OpcUa_UserNameIdentityToken_Encode,
-    OpcUa_UserNameIdentityToken_Decode};
+    OpcUa_UserNameIdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_X509IdentityToken
@@ -6686,7 +6740,8 @@ struct SOPC_EncodeableType OpcUa_X509IdentityToken_EncodeableType = {"X509Identi
                                                                      OpcUa_X509IdentityToken_Clear,
                                                                      NULL,
                                                                      OpcUa_X509IdentityToken_Encode,
-                                                                     OpcUa_X509IdentityToken_Decode};
+                                                                     OpcUa_X509IdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_KerberosIdentityToken
@@ -6788,7 +6843,8 @@ struct SOPC_EncodeableType OpcUa_KerberosIdentityToken_EncodeableType = {
     OpcUa_KerberosIdentityToken_Clear,
     NULL,
     OpcUa_KerberosIdentityToken_Encode,
-    OpcUa_KerberosIdentityToken_Decode};
+    OpcUa_KerberosIdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_IssuedIdentityToken
@@ -6900,7 +6956,8 @@ struct SOPC_EncodeableType OpcUa_IssuedIdentityToken_EncodeableType = {
     OpcUa_IssuedIdentityToken_Clear,
     NULL,
     OpcUa_IssuedIdentityToken_Encode,
-    OpcUa_IssuedIdentityToken_Decode};
+    OpcUa_IssuedIdentityToken_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ActivateSession
@@ -7052,7 +7109,8 @@ struct SOPC_EncodeableType OpcUa_ActivateSessionRequest_EncodeableType = {
     OpcUa_ActivateSessionRequest_Clear,
     NULL,
     OpcUa_ActivateSessionRequest_Encode,
-    OpcUa_ActivateSessionRequest_Decode};
+    OpcUa_ActivateSessionRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ActivateSessionResponse
@@ -7182,7 +7240,8 @@ struct SOPC_EncodeableType OpcUa_ActivateSessionResponse_EncodeableType = {
     OpcUa_ActivateSessionResponse_Clear,
     NULL,
     OpcUa_ActivateSessionResponse_Encode,
-    OpcUa_ActivateSessionResponse_Decode};
+    OpcUa_ActivateSessionResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -7276,7 +7335,8 @@ struct SOPC_EncodeableType OpcUa_CloseSessionRequest_EncodeableType = {
     OpcUa_CloseSessionRequest_Clear,
     NULL,
     OpcUa_CloseSessionRequest_Encode,
-    OpcUa_CloseSessionRequest_Decode};
+    OpcUa_CloseSessionRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CloseSessionResponse
@@ -7358,7 +7418,8 @@ struct SOPC_EncodeableType OpcUa_CloseSessionResponse_EncodeableType = {
     OpcUa_CloseSessionResponse_Clear,
     NULL,
     OpcUa_CloseSessionResponse_Encode,
-    OpcUa_CloseSessionResponse_Decode};
+    OpcUa_CloseSessionResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -7451,7 +7512,8 @@ struct SOPC_EncodeableType OpcUa_CancelRequest_EncodeableType = {"CancelRequest"
                                                                  OpcUa_CancelRequest_Clear,
                                                                  NULL,
                                                                  OpcUa_CancelRequest_Encode,
-                                                                 OpcUa_CancelRequest_Decode};
+                                                                 OpcUa_CancelRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CancelResponse
@@ -7544,7 +7606,8 @@ struct SOPC_EncodeableType OpcUa_CancelResponse_EncodeableType = {"CancelRespons
                                                                   OpcUa_CancelResponse_Clear,
                                                                   NULL,
                                                                   OpcUa_CancelResponse_Encode,
-                                                                  OpcUa_CancelResponse_Decode};
+                                                                  OpcUa_CancelResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -7676,7 +7739,8 @@ struct SOPC_EncodeableType OpcUa_NodeAttributes_EncodeableType = {"NodeAttribute
                                                                   OpcUa_NodeAttributes_Clear,
                                                                   NULL,
                                                                   OpcUa_NodeAttributes_Encode,
-                                                                  OpcUa_NodeAttributes_Decode};
+                                                                  OpcUa_NodeAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ObjectAttributes
@@ -7817,7 +7881,8 @@ struct SOPC_EncodeableType OpcUa_ObjectAttributes_EncodeableType = {"ObjectAttri
                                                                     OpcUa_ObjectAttributes_Clear,
                                                                     NULL,
                                                                     OpcUa_ObjectAttributes_Encode,
-                                                                    OpcUa_ObjectAttributes_Decode};
+                                                                    OpcUa_ObjectAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_VariableAttributes
@@ -8035,7 +8100,8 @@ struct SOPC_EncodeableType OpcUa_VariableAttributes_EncodeableType = {"VariableA
                                                                       OpcUa_VariableAttributes_Clear,
                                                                       NULL,
                                                                       OpcUa_VariableAttributes_Encode,
-                                                                      OpcUa_VariableAttributes_Decode};
+                                                                      OpcUa_VariableAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MethodAttributes
@@ -8186,7 +8252,8 @@ struct SOPC_EncodeableType OpcUa_MethodAttributes_EncodeableType = {"MethodAttri
                                                                     OpcUa_MethodAttributes_Clear,
                                                                     NULL,
                                                                     OpcUa_MethodAttributes_Encode,
-                                                                    OpcUa_MethodAttributes_Decode};
+                                                                    OpcUa_MethodAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ObjectTypeAttributes
@@ -8328,7 +8395,8 @@ struct SOPC_EncodeableType OpcUa_ObjectTypeAttributes_EncodeableType = {
     OpcUa_ObjectTypeAttributes_Clear,
     NULL,
     OpcUa_ObjectTypeAttributes_Encode,
-    OpcUa_ObjectTypeAttributes_Decode};
+    OpcUa_ObjectTypeAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_VariableTypeAttributes
@@ -8517,7 +8585,8 @@ struct SOPC_EncodeableType OpcUa_VariableTypeAttributes_EncodeableType = {
     OpcUa_VariableTypeAttributes_Clear,
     NULL,
     OpcUa_VariableTypeAttributes_Encode,
-    OpcUa_VariableTypeAttributes_Decode};
+    OpcUa_VariableTypeAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReferenceTypeAttributes
@@ -8679,7 +8748,8 @@ struct SOPC_EncodeableType OpcUa_ReferenceTypeAttributes_EncodeableType = {
     OpcUa_ReferenceTypeAttributes_Clear,
     NULL,
     OpcUa_ReferenceTypeAttributes_Encode,
-    OpcUa_ReferenceTypeAttributes_Decode};
+    OpcUa_ReferenceTypeAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DataTypeAttributes
@@ -8820,7 +8890,8 @@ struct SOPC_EncodeableType OpcUa_DataTypeAttributes_EncodeableType = {"DataTypeA
                                                                       OpcUa_DataTypeAttributes_Clear,
                                                                       NULL,
                                                                       OpcUa_DataTypeAttributes_Encode,
-                                                                      OpcUa_DataTypeAttributes_Decode};
+                                                                      OpcUa_DataTypeAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ViewAttributes
@@ -8971,7 +9042,8 @@ struct SOPC_EncodeableType OpcUa_ViewAttributes_EncodeableType = {"ViewAttribute
                                                                   OpcUa_ViewAttributes_Clear,
                                                                   NULL,
                                                                   OpcUa_ViewAttributes_Encode,
-                                                                  OpcUa_ViewAttributes_Decode};
+                                                                  OpcUa_ViewAttributes_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddNodesItem
@@ -9122,7 +9194,8 @@ struct SOPC_EncodeableType OpcUa_AddNodesItem_EncodeableType = {"AddNodesItem",
                                                                 OpcUa_AddNodesItem_Clear,
                                                                 NULL,
                                                                 OpcUa_AddNodesItem_Encode,
-                                                                OpcUa_AddNodesItem_Decode};
+                                                                OpcUa_AddNodesItem_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddNodesResult
@@ -9223,7 +9296,8 @@ struct SOPC_EncodeableType OpcUa_AddNodesResult_EncodeableType = {"AddNodesResul
                                                                   OpcUa_AddNodesResult_Clear,
                                                                   NULL,
                                                                   OpcUa_AddNodesResult_Encode,
-                                                                  OpcUa_AddNodesResult_Decode};
+                                                                  OpcUa_AddNodesResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddNodes
@@ -9323,7 +9397,8 @@ struct SOPC_EncodeableType OpcUa_AddNodesRequest_EncodeableType = {"AddNodesRequ
                                                                    OpcUa_AddNodesRequest_Clear,
                                                                    NULL,
                                                                    OpcUa_AddNodesRequest_Encode,
-                                                                   OpcUa_AddNodesRequest_Decode};
+                                                                   OpcUa_AddNodesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddNodesResponse
@@ -9442,7 +9517,8 @@ struct SOPC_EncodeableType OpcUa_AddNodesResponse_EncodeableType = {"AddNodesRes
                                                                     OpcUa_AddNodesResponse_Clear,
                                                                     NULL,
                                                                     OpcUa_AddNodesResponse_Encode,
-                                                                    OpcUa_AddNodesResponse_Decode};
+                                                                    OpcUa_AddNodesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -9584,7 +9660,8 @@ struct SOPC_EncodeableType OpcUa_AddReferencesItem_EncodeableType = {"AddReferen
                                                                      OpcUa_AddReferencesItem_Clear,
                                                                      NULL,
                                                                      OpcUa_AddReferencesItem_Encode,
-                                                                     OpcUa_AddReferencesItem_Decode};
+                                                                     OpcUa_AddReferencesItem_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddReferences
@@ -9687,7 +9764,8 @@ struct SOPC_EncodeableType OpcUa_AddReferencesRequest_EncodeableType = {
     OpcUa_AddReferencesRequest_Clear,
     NULL,
     OpcUa_AddReferencesRequest_Encode,
-    OpcUa_AddReferencesRequest_Decode};
+    OpcUa_AddReferencesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AddReferencesResponse
@@ -9807,7 +9885,8 @@ struct SOPC_EncodeableType OpcUa_AddReferencesResponse_EncodeableType = {
     OpcUa_AddReferencesResponse_Clear,
     NULL,
     OpcUa_AddReferencesResponse_Encode,
-    OpcUa_AddReferencesResponse_Decode};
+    OpcUa_AddReferencesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -9909,7 +9988,8 @@ struct SOPC_EncodeableType OpcUa_DeleteNodesItem_EncodeableType = {"DeleteNodesI
                                                                    OpcUa_DeleteNodesItem_Clear,
                                                                    NULL,
                                                                    OpcUa_DeleteNodesItem_Encode,
-                                                                   OpcUa_DeleteNodesItem_Decode};
+                                                                   OpcUa_DeleteNodesItem_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteNodes
@@ -10010,7 +10090,8 @@ struct SOPC_EncodeableType OpcUa_DeleteNodesRequest_EncodeableType = {"DeleteNod
                                                                       OpcUa_DeleteNodesRequest_Clear,
                                                                       NULL,
                                                                       OpcUa_DeleteNodesRequest_Encode,
-                                                                      OpcUa_DeleteNodesRequest_Decode};
+                                                                      OpcUa_DeleteNodesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteNodesResponse
@@ -10130,7 +10211,8 @@ struct SOPC_EncodeableType OpcUa_DeleteNodesResponse_EncodeableType = {
     OpcUa_DeleteNodesResponse_Clear,
     NULL,
     OpcUa_DeleteNodesResponse_Encode,
-    OpcUa_DeleteNodesResponse_Decode};
+    OpcUa_DeleteNodesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -10263,7 +10345,8 @@ struct SOPC_EncodeableType OpcUa_DeleteReferencesItem_EncodeableType = {
     OpcUa_DeleteReferencesItem_Clear,
     NULL,
     OpcUa_DeleteReferencesItem_Encode,
-    OpcUa_DeleteReferencesItem_Decode};
+    OpcUa_DeleteReferencesItem_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteReferences
@@ -10366,7 +10449,8 @@ struct SOPC_EncodeableType OpcUa_DeleteReferencesRequest_EncodeableType = {
     OpcUa_DeleteReferencesRequest_Clear,
     NULL,
     OpcUa_DeleteReferencesRequest_Encode,
-    OpcUa_DeleteReferencesRequest_Decode};
+    OpcUa_DeleteReferencesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteReferencesResponse
@@ -10486,7 +10570,8 @@ struct SOPC_EncodeableType OpcUa_DeleteReferencesResponse_EncodeableType = {
     OpcUa_DeleteReferencesResponse_Clear,
     NULL,
     OpcUa_DeleteReferencesResponse_Encode,
-    OpcUa_DeleteReferencesResponse_Decode};
+    OpcUa_DeleteReferencesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -10598,7 +10683,8 @@ struct SOPC_EncodeableType OpcUa_ViewDescription_EncodeableType = {"ViewDescript
                                                                    OpcUa_ViewDescription_Clear,
                                                                    NULL,
                                                                    OpcUa_ViewDescription_Encode,
-                                                                   OpcUa_ViewDescription_Decode};
+                                                                   OpcUa_ViewDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowseDescription
@@ -10739,7 +10825,8 @@ struct SOPC_EncodeableType OpcUa_BrowseDescription_EncodeableType = {"BrowseDesc
                                                                      OpcUa_BrowseDescription_Clear,
                                                                      NULL,
                                                                      OpcUa_BrowseDescription_Encode,
-                                                                     OpcUa_BrowseDescription_Decode};
+                                                                     OpcUa_BrowseDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReferenceDescription
@@ -10891,7 +10978,8 @@ struct SOPC_EncodeableType OpcUa_ReferenceDescription_EncodeableType = {
     OpcUa_ReferenceDescription_Clear,
     NULL,
     OpcUa_ReferenceDescription_Encode,
-    OpcUa_ReferenceDescription_Decode};
+    OpcUa_ReferenceDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowseResult
@@ -11011,7 +11099,8 @@ struct SOPC_EncodeableType OpcUa_BrowseResult_EncodeableType = {"BrowseResult",
                                                                 OpcUa_BrowseResult_Clear,
                                                                 NULL,
                                                                 OpcUa_BrowseResult_Encode,
-                                                                OpcUa_BrowseResult_Decode};
+                                                                OpcUa_BrowseResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Browse
@@ -11133,7 +11222,8 @@ struct SOPC_EncodeableType OpcUa_BrowseRequest_EncodeableType = {"BrowseRequest"
                                                                  OpcUa_BrowseRequest_Clear,
                                                                  NULL,
                                                                  OpcUa_BrowseRequest_Encode,
-                                                                 OpcUa_BrowseRequest_Decode};
+                                                                 OpcUa_BrowseRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowseResponse
@@ -11252,7 +11342,8 @@ struct SOPC_EncodeableType OpcUa_BrowseResponse_EncodeableType = {"BrowseRespons
                                                                   OpcUa_BrowseResponse_Clear,
                                                                   NULL,
                                                                   OpcUa_BrowseResponse_Encode,
-                                                                  OpcUa_BrowseResponse_Decode};
+                                                                  OpcUa_BrowseResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -11363,7 +11454,8 @@ struct SOPC_EncodeableType OpcUa_BrowseNextRequest_EncodeableType = {"BrowseNext
                                                                      OpcUa_BrowseNextRequest_Clear,
                                                                      NULL,
                                                                      OpcUa_BrowseNextRequest_Encode,
-                                                                     OpcUa_BrowseNextRequest_Decode};
+                                                                     OpcUa_BrowseNextRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowseNextResponse
@@ -11482,7 +11574,8 @@ struct SOPC_EncodeableType OpcUa_BrowseNextResponse_EncodeableType = {"BrowseNex
                                                                       OpcUa_BrowseNextResponse_Clear,
                                                                       NULL,
                                                                       OpcUa_BrowseNextResponse_Encode,
-                                                                      OpcUa_BrowseNextResponse_Decode};
+                                                                      OpcUa_BrowseNextResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -11605,7 +11698,8 @@ struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
     OpcUa_RelativePathElement_Clear,
     NULL,
     OpcUa_RelativePathElement_Encode,
-    OpcUa_RelativePathElement_Decode};
+    OpcUa_RelativePathElement_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RelativePath
@@ -11704,7 +11798,8 @@ struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
                                                                 OpcUa_RelativePath_Clear,
                                                                 NULL,
                                                                 OpcUa_RelativePath_Encode,
-                                                                OpcUa_RelativePath_Decode};
+                                                                OpcUa_RelativePath_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePath
@@ -11805,7 +11900,8 @@ struct SOPC_EncodeableType OpcUa_BrowsePath_EncodeableType = {"BrowsePath",
                                                               OpcUa_BrowsePath_Clear,
                                                               NULL,
                                                               OpcUa_BrowsePath_Encode,
-                                                              OpcUa_BrowsePath_Decode};
+                                                              OpcUa_BrowsePath_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePathTarget
@@ -11906,7 +12002,8 @@ struct SOPC_EncodeableType OpcUa_BrowsePathTarget_EncodeableType = {"BrowsePathT
                                                                     OpcUa_BrowsePathTarget_Clear,
                                                                     NULL,
                                                                     OpcUa_BrowsePathTarget_Encode,
-                                                                    OpcUa_BrowsePathTarget_Decode};
+                                                                    OpcUa_BrowsePathTarget_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePathResult
@@ -12015,7 +12112,8 @@ struct SOPC_EncodeableType OpcUa_BrowsePathResult_EncodeableType = {"BrowsePathR
                                                                     OpcUa_BrowsePathResult_Clear,
                                                                     NULL,
                                                                     OpcUa_BrowsePathResult_Encode,
-                                                                    OpcUa_BrowsePathResult_Decode};
+                                                                    OpcUa_BrowsePathResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TranslateBrowsePathsToNodeIds
@@ -12116,7 +12214,8 @@ struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encodeable
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Clear,
     NULL,
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encode,
-    OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode};
+    OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TranslateBrowsePathsToNodeIdsResponse
@@ -12238,7 +12337,8 @@ struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsResponse_Encodeabl
     OpcUa_TranslateBrowsePathsToNodeIdsResponse_Clear,
     NULL,
     OpcUa_TranslateBrowsePathsToNodeIdsResponse_Encode,
-    OpcUa_TranslateBrowsePathsToNodeIdsResponse_Decode};
+    OpcUa_TranslateBrowsePathsToNodeIdsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -12339,7 +12439,8 @@ struct SOPC_EncodeableType OpcUa_RegisterNodesRequest_EncodeableType = {
     OpcUa_RegisterNodesRequest_Clear,
     NULL,
     OpcUa_RegisterNodesRequest_Encode,
-    OpcUa_RegisterNodesRequest_Decode};
+    OpcUa_RegisterNodesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RegisterNodesResponse
@@ -12440,7 +12541,8 @@ struct SOPC_EncodeableType OpcUa_RegisterNodesResponse_EncodeableType = {
     OpcUa_RegisterNodesResponse_Clear,
     NULL,
     OpcUa_RegisterNodesResponse_Encode,
-    OpcUa_RegisterNodesResponse_Decode};
+    OpcUa_RegisterNodesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -12541,7 +12643,8 @@ struct SOPC_EncodeableType OpcUa_UnregisterNodesRequest_EncodeableType = {
     OpcUa_UnregisterNodesRequest_Clear,
     NULL,
     OpcUa_UnregisterNodesRequest_Encode,
-    OpcUa_UnregisterNodesRequest_Decode};
+    OpcUa_UnregisterNodesRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_UnregisterNodesResponse
@@ -12623,7 +12726,8 @@ struct SOPC_EncodeableType OpcUa_UnregisterNodesResponse_EncodeableType = {
     OpcUa_UnregisterNodesResponse_Clear,
     NULL,
     OpcUa_UnregisterNodesResponse_Encode,
-    OpcUa_UnregisterNodesResponse_Decode};
+    OpcUa_UnregisterNodesResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -12796,7 +12900,8 @@ struct SOPC_EncodeableType OpcUa_EndpointConfiguration_EncodeableType = {
     OpcUa_EndpointConfiguration_Clear,
     NULL,
     OpcUa_EndpointConfiguration_Encode,
-    OpcUa_EndpointConfiguration_Decode};
+    OpcUa_EndpointConfiguration_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SupportedProfile
@@ -12944,7 +13049,8 @@ struct SOPC_EncodeableType OpcUa_SupportedProfile_EncodeableType = {"SupportedPr
                                                                     OpcUa_SupportedProfile_Clear,
                                                                     NULL,
                                                                     OpcUa_SupportedProfile_Encode,
-                                                                    OpcUa_SupportedProfile_Decode};
+                                                                    OpcUa_SupportedProfile_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SoftwareCertificate
@@ -13136,7 +13242,8 @@ struct SOPC_EncodeableType OpcUa_SoftwareCertificate_EncodeableType = {
     OpcUa_SoftwareCertificate_Clear,
     NULL,
     OpcUa_SoftwareCertificate_Encode,
-    OpcUa_SoftwareCertificate_Decode};
+    OpcUa_SoftwareCertificate_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_QueryDataDescription
@@ -13248,7 +13355,8 @@ struct SOPC_EncodeableType OpcUa_QueryDataDescription_EncodeableType = {
     OpcUa_QueryDataDescription_Clear,
     NULL,
     OpcUa_QueryDataDescription_Encode,
-    OpcUa_QueryDataDescription_Decode};
+    OpcUa_QueryDataDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_NodeTypeDescription
@@ -13370,7 +13478,8 @@ struct SOPC_EncodeableType OpcUa_NodeTypeDescription_EncodeableType = {
     OpcUa_NodeTypeDescription_Clear,
     NULL,
     OpcUa_NodeTypeDescription_Encode,
-    OpcUa_NodeTypeDescription_Decode};
+    OpcUa_NodeTypeDescription_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_QueryDataSet
@@ -13488,7 +13597,8 @@ struct SOPC_EncodeableType OpcUa_QueryDataSet_EncodeableType = {"QueryDataSet",
                                                                 OpcUa_QueryDataSet_Clear,
                                                                 NULL,
                                                                 OpcUa_QueryDataSet_Encode,
-                                                                OpcUa_QueryDataSet_Decode};
+                                                                OpcUa_QueryDataSet_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_NodeReference
@@ -13616,7 +13726,8 @@ struct SOPC_EncodeableType OpcUa_NodeReference_EncodeableType = {"NodeReference"
                                                                  OpcUa_NodeReference_Clear,
                                                                  NULL,
                                                                  OpcUa_NodeReference_Encode,
-                                                                 OpcUa_NodeReference_Decode};
+                                                                 OpcUa_NodeReference_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ContentFilterElement
@@ -13727,7 +13838,8 @@ struct SOPC_EncodeableType OpcUa_ContentFilterElement_EncodeableType = {
     OpcUa_ContentFilterElement_Clear,
     NULL,
     OpcUa_ContentFilterElement_Encode,
-    OpcUa_ContentFilterElement_Decode};
+    OpcUa_ContentFilterElement_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ContentFilter
@@ -13826,7 +13938,8 @@ struct SOPC_EncodeableType OpcUa_ContentFilter_EncodeableType = {"ContentFilter"
                                                                  OpcUa_ContentFilter_Clear,
                                                                  NULL,
                                                                  OpcUa_ContentFilter_Encode,
-                                                                 OpcUa_ContentFilter_Decode};
+                                                                 OpcUa_ContentFilter_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ElementOperand
@@ -13917,7 +14030,8 @@ struct SOPC_EncodeableType OpcUa_ElementOperand_EncodeableType = {"ElementOperan
                                                                   OpcUa_ElementOperand_Clear,
                                                                   NULL,
                                                                   OpcUa_ElementOperand_Encode,
-                                                                  OpcUa_ElementOperand_Decode};
+                                                                  OpcUa_ElementOperand_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_LiteralOperand
@@ -14008,7 +14122,8 @@ struct SOPC_EncodeableType OpcUa_LiteralOperand_EncodeableType = {"LiteralOperan
                                                                   OpcUa_LiteralOperand_Clear,
                                                                   NULL,
                                                                   OpcUa_LiteralOperand_Encode,
-                                                                  OpcUa_LiteralOperand_Decode};
+                                                                  OpcUa_LiteralOperand_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AttributeOperand
@@ -14139,7 +14254,8 @@ struct SOPC_EncodeableType OpcUa_AttributeOperand_EncodeableType = {"AttributeOp
                                                                     OpcUa_AttributeOperand_Clear,
                                                                     NULL,
                                                                     OpcUa_AttributeOperand_Encode,
-                                                                    OpcUa_AttributeOperand_Decode};
+                                                                    OpcUa_AttributeOperand_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SimpleAttributeOperand
@@ -14269,7 +14385,8 @@ struct SOPC_EncodeableType OpcUa_SimpleAttributeOperand_EncodeableType = {
     OpcUa_SimpleAttributeOperand_Clear,
     NULL,
     OpcUa_SimpleAttributeOperand_Encode,
-    OpcUa_SimpleAttributeOperand_Decode};
+    OpcUa_SimpleAttributeOperand_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ContentFilterElementResult
@@ -14398,7 +14515,8 @@ struct SOPC_EncodeableType OpcUa_ContentFilterElementResult_EncodeableType = {
     OpcUa_ContentFilterElementResult_Clear,
     NULL,
     OpcUa_ContentFilterElementResult_Encode,
-    OpcUa_ContentFilterElementResult_Decode};
+    OpcUa_ContentFilterElementResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ContentFilterResult
@@ -14519,7 +14637,8 @@ struct SOPC_EncodeableType OpcUa_ContentFilterResult_EncodeableType = {
     OpcUa_ContentFilterResult_Clear,
     NULL,
     OpcUa_ContentFilterResult_Encode,
-    OpcUa_ContentFilterResult_Decode};
+    OpcUa_ContentFilterResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ParsingResult
@@ -14647,7 +14766,8 @@ struct SOPC_EncodeableType OpcUa_ParsingResult_EncodeableType = {"ParsingResult"
                                                                  OpcUa_ParsingResult_Clear,
                                                                  NULL,
                                                                  OpcUa_ParsingResult_Encode,
-                                                                 OpcUa_ParsingResult_Decode};
+                                                                 OpcUa_ParsingResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_QueryFirst
@@ -14788,7 +14908,8 @@ struct SOPC_EncodeableType OpcUa_QueryFirstRequest_EncodeableType = {"QueryFirst
                                                                      OpcUa_QueryFirstRequest_Clear,
                                                                      NULL,
                                                                      OpcUa_QueryFirstRequest_Encode,
-                                                                     OpcUa_QueryFirstRequest_Decode};
+                                                                     OpcUa_QueryFirstRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_QueryFirstResponse
@@ -14948,7 +15069,8 @@ struct SOPC_EncodeableType OpcUa_QueryFirstResponse_EncodeableType = {"QueryFirs
                                                                       OpcUa_QueryFirstResponse_Clear,
                                                                       NULL,
                                                                       OpcUa_QueryFirstResponse_Encode,
-                                                                      OpcUa_QueryFirstResponse_Decode};
+                                                                      OpcUa_QueryFirstResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -15051,7 +15173,8 @@ struct SOPC_EncodeableType OpcUa_QueryNextRequest_EncodeableType = {"QueryNextRe
                                                                     OpcUa_QueryNextRequest_Clear,
                                                                     NULL,
                                                                     OpcUa_QueryNextRequest_Encode,
-                                                                    OpcUa_QueryNextRequest_Decode};
+                                                                    OpcUa_QueryNextRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_QueryNextResponse
@@ -15163,7 +15286,8 @@ struct SOPC_EncodeableType OpcUa_QueryNextResponse_EncodeableType = {"QueryNextR
                                                                      OpcUa_QueryNextResponse_Clear,
                                                                      NULL,
                                                                      OpcUa_QueryNextResponse_Encode,
-                                                                     OpcUa_QueryNextResponse_Decode};
+                                                                     OpcUa_QueryNextResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -15285,7 +15409,8 @@ struct SOPC_EncodeableType OpcUa_ReadValueId_EncodeableType = {"ReadValueId",
                                                                OpcUa_ReadValueId_Clear,
                                                                NULL,
                                                                OpcUa_ReadValueId_Encode,
-                                                               OpcUa_ReadValueId_Decode};
+                                                               OpcUa_ReadValueId_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Read
@@ -15404,7 +15529,8 @@ struct SOPC_EncodeableType OpcUa_ReadRequest_EncodeableType = {"ReadRequest",
                                                                OpcUa_ReadRequest_Clear,
                                                                NULL,
                                                                OpcUa_ReadRequest_Encode,
-                                                               OpcUa_ReadRequest_Decode};
+                                                               OpcUa_ReadRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReadResponse
@@ -15523,7 +15649,8 @@ struct SOPC_EncodeableType OpcUa_ReadResponse_EncodeableType = {"ReadResponse",
                                                                 OpcUa_ReadResponse_Clear,
                                                                 NULL,
                                                                 OpcUa_ReadResponse_Encode,
-                                                                OpcUa_ReadResponse_Decode};
+                                                                OpcUa_ReadResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -15645,7 +15772,8 @@ struct SOPC_EncodeableType OpcUa_HistoryReadValueId_EncodeableType = {"HistoryRe
                                                                       OpcUa_HistoryReadValueId_Clear,
                                                                       NULL,
                                                                       OpcUa_HistoryReadValueId_Encode,
-                                                                      OpcUa_HistoryReadValueId_Decode};
+                                                                      OpcUa_HistoryReadValueId_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryReadResult
@@ -15756,7 +15884,8 @@ struct SOPC_EncodeableType OpcUa_HistoryReadResult_EncodeableType = {"HistoryRea
                                                                      OpcUa_HistoryReadResult_Clear,
                                                                      NULL,
                                                                      OpcUa_HistoryReadResult_Encode,
-                                                                     OpcUa_HistoryReadResult_Decode};
+                                                                     OpcUa_HistoryReadResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReadEventDetails
@@ -15877,7 +16006,8 @@ struct SOPC_EncodeableType OpcUa_ReadEventDetails_EncodeableType = {"ReadEventDe
                                                                     OpcUa_ReadEventDetails_Clear,
                                                                     NULL,
                                                                     OpcUa_ReadEventDetails_Encode,
-                                                                    OpcUa_ReadEventDetails_Decode};
+                                                                    OpcUa_ReadEventDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReadRawModifiedDetails
@@ -16009,7 +16139,8 @@ struct SOPC_EncodeableType OpcUa_ReadRawModifiedDetails_EncodeableType = {
     OpcUa_ReadRawModifiedDetails_Clear,
     NULL,
     OpcUa_ReadRawModifiedDetails_Encode,
-    OpcUa_ReadRawModifiedDetails_Decode};
+    OpcUa_ReadRawModifiedDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReadProcessedDetails
@@ -16148,7 +16279,8 @@ struct SOPC_EncodeableType OpcUa_ReadProcessedDetails_EncodeableType = {
     OpcUa_ReadProcessedDetails_Clear,
     NULL,
     OpcUa_ReadProcessedDetails_Encode,
-    OpcUa_ReadProcessedDetails_Decode};
+    OpcUa_ReadProcessedDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ReadAtTimeDetails
@@ -16256,7 +16388,8 @@ struct SOPC_EncodeableType OpcUa_ReadAtTimeDetails_EncodeableType = {"ReadAtTime
                                                                      OpcUa_ReadAtTimeDetails_Clear,
                                                                      NULL,
                                                                      OpcUa_ReadAtTimeDetails_Encode,
-                                                                     OpcUa_ReadAtTimeDetails_Decode};
+                                                                     OpcUa_ReadAtTimeDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryData
@@ -16354,7 +16487,8 @@ struct SOPC_EncodeableType OpcUa_HistoryData_EncodeableType = {"HistoryData",
                                                                OpcUa_HistoryData_Clear,
                                                                NULL,
                                                                OpcUa_HistoryData_Encode,
-                                                               OpcUa_HistoryData_Decode};
+                                                               OpcUa_HistoryData_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ModificationInfo
@@ -16465,7 +16599,8 @@ struct SOPC_EncodeableType OpcUa_ModificationInfo_EncodeableType = {"Modificatio
                                                                     OpcUa_ModificationInfo_Clear,
                                                                     NULL,
                                                                     OpcUa_ModificationInfo_Encode,
-                                                                    OpcUa_ModificationInfo_Decode};
+                                                                    OpcUa_ModificationInfo_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryModifiedData
@@ -16584,7 +16719,8 @@ struct SOPC_EncodeableType OpcUa_HistoryModifiedData_EncodeableType = {
     OpcUa_HistoryModifiedData_Clear,
     NULL,
     OpcUa_HistoryModifiedData_Encode,
-    OpcUa_HistoryModifiedData_Decode};
+    OpcUa_HistoryModifiedData_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryEvent
@@ -16683,7 +16819,8 @@ struct SOPC_EncodeableType OpcUa_HistoryEvent_EncodeableType = {"HistoryEvent",
                                                                 OpcUa_HistoryEvent_Clear,
                                                                 NULL,
                                                                 OpcUa_HistoryEvent_Encode,
-                                                                OpcUa_HistoryEvent_Decode};
+                                                                OpcUa_HistoryEvent_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryRead
@@ -16814,7 +16951,8 @@ struct SOPC_EncodeableType OpcUa_HistoryReadRequest_EncodeableType = {"HistoryRe
                                                                       OpcUa_HistoryReadRequest_Clear,
                                                                       NULL,
                                                                       OpcUa_HistoryReadRequest_Encode,
-                                                                      OpcUa_HistoryReadRequest_Decode};
+                                                                      OpcUa_HistoryReadRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryReadResponse
@@ -16935,7 +17073,8 @@ struct SOPC_EncodeableType OpcUa_HistoryReadResponse_EncodeableType = {
     OpcUa_HistoryReadResponse_Clear,
     NULL,
     OpcUa_HistoryReadResponse_Encode,
-    OpcUa_HistoryReadResponse_Decode};
+    OpcUa_HistoryReadResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -17057,7 +17196,8 @@ struct SOPC_EncodeableType OpcUa_WriteValue_EncodeableType = {"WriteValue",
                                                               OpcUa_WriteValue_Clear,
                                                               NULL,
                                                               OpcUa_WriteValue_Encode,
-                                                              OpcUa_WriteValue_Decode};
+                                                              OpcUa_WriteValue_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Write
@@ -17156,7 +17296,8 @@ struct SOPC_EncodeableType OpcUa_WriteRequest_EncodeableType = {"WriteRequest",
                                                                 OpcUa_WriteRequest_Clear,
                                                                 NULL,
                                                                 OpcUa_WriteRequest_Encode,
-                                                                OpcUa_WriteRequest_Decode};
+                                                                OpcUa_WriteRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_WriteResponse
@@ -17275,7 +17416,8 @@ struct SOPC_EncodeableType OpcUa_WriteResponse_EncodeableType = {"WriteResponse"
                                                                  OpcUa_WriteResponse_Clear,
                                                                  NULL,
                                                                  OpcUa_WriteResponse_Encode,
-                                                                 OpcUa_WriteResponse_Decode};
+                                                                 OpcUa_WriteResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -17368,7 +17510,8 @@ struct SOPC_EncodeableType OpcUa_HistoryUpdateDetails_EncodeableType = {
     OpcUa_HistoryUpdateDetails_Clear,
     NULL,
     OpcUa_HistoryUpdateDetails_Encode,
-    OpcUa_HistoryUpdateDetails_Decode};
+    OpcUa_HistoryUpdateDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_UpdateDataDetails
@@ -17486,7 +17629,8 @@ struct SOPC_EncodeableType OpcUa_UpdateDataDetails_EncodeableType = {"UpdateData
                                                                      OpcUa_UpdateDataDetails_Clear,
                                                                      NULL,
                                                                      OpcUa_UpdateDataDetails_Encode,
-                                                                     OpcUa_UpdateDataDetails_Decode};
+                                                                     OpcUa_UpdateDataDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_UpdateStructureDataDetails
@@ -17605,7 +17749,8 @@ struct SOPC_EncodeableType OpcUa_UpdateStructureDataDetails_EncodeableType = {
     OpcUa_UpdateStructureDataDetails_Clear,
     NULL,
     OpcUa_UpdateStructureDataDetails_Encode,
-    OpcUa_UpdateStructureDataDetails_Decode};
+    OpcUa_UpdateStructureDataDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_UpdateEventDetails
@@ -17735,7 +17880,8 @@ struct SOPC_EncodeableType OpcUa_UpdateEventDetails_EncodeableType = {"UpdateEve
                                                                       OpcUa_UpdateEventDetails_Clear,
                                                                       NULL,
                                                                       OpcUa_UpdateEventDetails_Encode,
-                                                                      OpcUa_UpdateEventDetails_Decode};
+                                                                      OpcUa_UpdateEventDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteRawModifiedDetails
@@ -17857,7 +18003,8 @@ struct SOPC_EncodeableType OpcUa_DeleteRawModifiedDetails_EncodeableType = {
     OpcUa_DeleteRawModifiedDetails_Clear,
     NULL,
     OpcUa_DeleteRawModifiedDetails_Encode,
-    OpcUa_DeleteRawModifiedDetails_Decode};
+    OpcUa_DeleteRawModifiedDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteAtTimeDetails
@@ -17966,7 +18113,8 @@ struct SOPC_EncodeableType OpcUa_DeleteAtTimeDetails_EncodeableType = {
     OpcUa_DeleteAtTimeDetails_Clear,
     NULL,
     OpcUa_DeleteAtTimeDetails_Encode,
-    OpcUa_DeleteAtTimeDetails_Decode};
+    OpcUa_DeleteAtTimeDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteEventDetails
@@ -18074,7 +18222,8 @@ struct SOPC_EncodeableType OpcUa_DeleteEventDetails_EncodeableType = {"DeleteEve
                                                                       OpcUa_DeleteEventDetails_Clear,
                                                                       NULL,
                                                                       OpcUa_DeleteEventDetails_Encode,
-                                                                      OpcUa_DeleteEventDetails_Decode};
+                                                                      OpcUa_DeleteEventDetails_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryUpdateResult
@@ -18203,7 +18352,8 @@ struct SOPC_EncodeableType OpcUa_HistoryUpdateResult_EncodeableType = {
     OpcUa_HistoryUpdateResult_Clear,
     NULL,
     OpcUa_HistoryUpdateResult_Encode,
-    OpcUa_HistoryUpdateResult_Decode};
+    OpcUa_HistoryUpdateResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryUpdate
@@ -18305,7 +18455,8 @@ struct SOPC_EncodeableType OpcUa_HistoryUpdateRequest_EncodeableType = {
     OpcUa_HistoryUpdateRequest_Clear,
     NULL,
     OpcUa_HistoryUpdateRequest_Encode,
-    OpcUa_HistoryUpdateRequest_Decode};
+    OpcUa_HistoryUpdateRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryUpdateResponse
@@ -18426,7 +18577,8 @@ struct SOPC_EncodeableType OpcUa_HistoryUpdateResponse_EncodeableType = {
     OpcUa_HistoryUpdateResponse_Clear,
     NULL,
     OpcUa_HistoryUpdateResponse_Encode,
-    OpcUa_HistoryUpdateResponse_Decode};
+    OpcUa_HistoryUpdateResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -18545,7 +18697,8 @@ struct SOPC_EncodeableType OpcUa_CallMethodRequest_EncodeableType = {"CallMethod
                                                                      OpcUa_CallMethodRequest_Clear,
                                                                      NULL,
                                                                      OpcUa_CallMethodRequest_Encode,
-                                                                     OpcUa_CallMethodRequest_Decode};
+                                                                     OpcUa_CallMethodRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CallMethodResult
@@ -18690,7 +18843,8 @@ struct SOPC_EncodeableType OpcUa_CallMethodResult_EncodeableType = {"CallMethodR
                                                                     OpcUa_CallMethodResult_Clear,
                                                                     NULL,
                                                                     OpcUa_CallMethodResult_Encode,
-                                                                    OpcUa_CallMethodResult_Decode};
+                                                                    OpcUa_CallMethodResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Call
@@ -18792,7 +18946,8 @@ struct SOPC_EncodeableType OpcUa_CallRequest_EncodeableType = {"CallRequest",
                                                                OpcUa_CallRequest_Clear,
                                                                NULL,
                                                                OpcUa_CallRequest_Encode,
-                                                               OpcUa_CallRequest_Decode};
+                                                               OpcUa_CallRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CallResponse
@@ -18912,7 +19067,8 @@ struct SOPC_EncodeableType OpcUa_CallResponse_EncodeableType = {"CallResponse",
                                                                 OpcUa_CallResponse_Clear,
                                                                 NULL,
                                                                 OpcUa_CallResponse_Encode,
-                                                                OpcUa_CallResponse_Decode};
+                                                                OpcUa_CallResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -19024,7 +19180,8 @@ struct SOPC_EncodeableType OpcUa_DataChangeFilter_EncodeableType = {"DataChangeF
                                                                     OpcUa_DataChangeFilter_Clear,
                                                                     NULL,
                                                                     OpcUa_DataChangeFilter_Encode,
-                                                                    OpcUa_DataChangeFilter_Decode};
+                                                                    OpcUa_DataChangeFilter_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EventFilter
@@ -19135,7 +19292,8 @@ struct SOPC_EncodeableType OpcUa_EventFilter_EncodeableType = {"EventFilter",
                                                                OpcUa_EventFilter_Clear,
                                                                NULL,
                                                                OpcUa_EventFilter_Encode,
-                                                               OpcUa_EventFilter_Decode};
+                                                               OpcUa_EventFilter_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AggregateConfiguration
@@ -19267,7 +19425,8 @@ struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
     OpcUa_AggregateConfiguration_Clear,
     NULL,
     OpcUa_AggregateConfiguration_Encode,
-    OpcUa_AggregateConfiguration_Decode};
+    OpcUa_AggregateConfiguration_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AggregateFilter
@@ -19388,7 +19547,8 @@ struct SOPC_EncodeableType OpcUa_AggregateFilter_EncodeableType = {"AggregateFil
                                                                    OpcUa_AggregateFilter_Clear,
                                                                    NULL,
                                                                    OpcUa_AggregateFilter_Encode,
-                                                                   OpcUa_AggregateFilter_Decode};
+                                                                   OpcUa_AggregateFilter_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EventFilterResult
@@ -19516,7 +19676,8 @@ struct SOPC_EncodeableType OpcUa_EventFilterResult_EncodeableType = {"EventFilte
                                                                      OpcUa_EventFilterResult_Clear,
                                                                      NULL,
                                                                      OpcUa_EventFilterResult_Encode,
-                                                                     OpcUa_EventFilterResult_Decode};
+                                                                     OpcUa_EventFilterResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AggregateFilterResult
@@ -19628,7 +19789,8 @@ struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     OpcUa_AggregateFilterResult_Clear,
     NULL,
     OpcUa_AggregateFilterResult_Encode,
-    OpcUa_AggregateFilterResult_Decode};
+    OpcUa_AggregateFilterResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoringParameters
@@ -19760,7 +19922,8 @@ struct SOPC_EncodeableType OpcUa_MonitoringParameters_EncodeableType = {
     OpcUa_MonitoringParameters_Clear,
     NULL,
     OpcUa_MonitoringParameters_Encode,
-    OpcUa_MonitoringParameters_Decode};
+    OpcUa_MonitoringParameters_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoredItemCreateRequest
@@ -19872,7 +20035,8 @@ struct SOPC_EncodeableType OpcUa_MonitoredItemCreateRequest_EncodeableType = {
     OpcUa_MonitoredItemCreateRequest_Clear,
     NULL,
     OpcUa_MonitoredItemCreateRequest_Encode,
-    OpcUa_MonitoredItemCreateRequest_Decode};
+    OpcUa_MonitoredItemCreateRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoredItemCreateResult
@@ -20004,7 +20168,8 @@ struct SOPC_EncodeableType OpcUa_MonitoredItemCreateResult_EncodeableType = {
     OpcUa_MonitoredItemCreateResult_Clear,
     NULL,
     OpcUa_MonitoredItemCreateResult_Encode,
-    OpcUa_MonitoredItemCreateResult_Decode};
+    OpcUa_MonitoredItemCreateResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CreateMonitoredItems
@@ -20127,7 +20292,8 @@ struct SOPC_EncodeableType OpcUa_CreateMonitoredItemsRequest_EncodeableType = {
     OpcUa_CreateMonitoredItemsRequest_Clear,
     NULL,
     OpcUa_CreateMonitoredItemsRequest_Encode,
-    OpcUa_CreateMonitoredItemsRequest_Decode};
+    OpcUa_CreateMonitoredItemsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CreateMonitoredItemsResponse
@@ -20249,7 +20415,8 @@ struct SOPC_EncodeableType OpcUa_CreateMonitoredItemsResponse_EncodeableType = {
     OpcUa_CreateMonitoredItemsResponse_Clear,
     NULL,
     OpcUa_CreateMonitoredItemsResponse_Encode,
-    OpcUa_CreateMonitoredItemsResponse_Decode};
+    OpcUa_CreateMonitoredItemsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -20352,7 +20519,8 @@ struct SOPC_EncodeableType OpcUa_MonitoredItemModifyRequest_EncodeableType = {
     OpcUa_MonitoredItemModifyRequest_Clear,
     NULL,
     OpcUa_MonitoredItemModifyRequest_Encode,
-    OpcUa_MonitoredItemModifyRequest_Decode};
+    OpcUa_MonitoredItemModifyRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoredItemModifyResult
@@ -20474,7 +20642,8 @@ struct SOPC_EncodeableType OpcUa_MonitoredItemModifyResult_EncodeableType = {
     OpcUa_MonitoredItemModifyResult_Clear,
     NULL,
     OpcUa_MonitoredItemModifyResult_Encode,
-    OpcUa_MonitoredItemModifyResult_Decode};
+    OpcUa_MonitoredItemModifyResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ModifyMonitoredItems
@@ -20597,7 +20766,8 @@ struct SOPC_EncodeableType OpcUa_ModifyMonitoredItemsRequest_EncodeableType = {
     OpcUa_ModifyMonitoredItemsRequest_Clear,
     NULL,
     OpcUa_ModifyMonitoredItemsRequest_Encode,
-    OpcUa_ModifyMonitoredItemsRequest_Decode};
+    OpcUa_ModifyMonitoredItemsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ModifyMonitoredItemsResponse
@@ -20719,7 +20889,8 @@ struct SOPC_EncodeableType OpcUa_ModifyMonitoredItemsResponse_EncodeableType = {
     OpcUa_ModifyMonitoredItemsResponse_Clear,
     NULL,
     OpcUa_ModifyMonitoredItemsResponse_Encode,
-    OpcUa_ModifyMonitoredItemsResponse_Decode};
+    OpcUa_ModifyMonitoredItemsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -20840,7 +21011,8 @@ struct SOPC_EncodeableType OpcUa_SetMonitoringModeRequest_EncodeableType = {
     OpcUa_SetMonitoringModeRequest_Clear,
     NULL,
     OpcUa_SetMonitoringModeRequest_Encode,
-    OpcUa_SetMonitoringModeRequest_Decode};
+    OpcUa_SetMonitoringModeRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SetMonitoringModeResponse
@@ -20960,7 +21132,8 @@ struct SOPC_EncodeableType OpcUa_SetMonitoringModeResponse_EncodeableType = {
     OpcUa_SetMonitoringModeResponse_Clear,
     NULL,
     OpcUa_SetMonitoringModeResponse_Encode,
-    OpcUa_SetMonitoringModeResponse_Decode};
+    OpcUa_SetMonitoringModeResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -21098,7 +21271,8 @@ struct SOPC_EncodeableType OpcUa_SetTriggeringRequest_EncodeableType = {
     OpcUa_SetTriggeringRequest_Clear,
     NULL,
     OpcUa_SetTriggeringRequest_Encode,
-    OpcUa_SetTriggeringRequest_Decode};
+    OpcUa_SetTriggeringRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SetTriggeringResponse
@@ -21254,7 +21428,8 @@ struct SOPC_EncodeableType OpcUa_SetTriggeringResponse_EncodeableType = {
     OpcUa_SetTriggeringResponse_Clear,
     NULL,
     OpcUa_SetTriggeringResponse_Encode,
-    OpcUa_SetTriggeringResponse_Decode};
+    OpcUa_SetTriggeringResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -21365,7 +21540,8 @@ struct SOPC_EncodeableType OpcUa_DeleteMonitoredItemsRequest_EncodeableType = {
     OpcUa_DeleteMonitoredItemsRequest_Clear,
     NULL,
     OpcUa_DeleteMonitoredItemsRequest_Encode,
-    OpcUa_DeleteMonitoredItemsRequest_Decode};
+    OpcUa_DeleteMonitoredItemsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteMonitoredItemsResponse
@@ -21485,7 +21661,8 @@ struct SOPC_EncodeableType OpcUa_DeleteMonitoredItemsResponse_EncodeableType = {
     OpcUa_DeleteMonitoredItemsResponse_Clear,
     NULL,
     OpcUa_DeleteMonitoredItemsResponse_Encode,
-    OpcUa_DeleteMonitoredItemsResponse_Decode};
+    OpcUa_DeleteMonitoredItemsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -21629,7 +21806,8 @@ struct SOPC_EncodeableType OpcUa_CreateSubscriptionRequest_EncodeableType = {
     OpcUa_CreateSubscriptionRequest_Clear,
     NULL,
     OpcUa_CreateSubscriptionRequest_Encode,
-    OpcUa_CreateSubscriptionRequest_Decode};
+    OpcUa_CreateSubscriptionRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_CreateSubscriptionResponse
@@ -21753,7 +21931,8 @@ struct SOPC_EncodeableType OpcUa_CreateSubscriptionResponse_EncodeableType = {
     OpcUa_CreateSubscriptionResponse_Clear,
     NULL,
     OpcUa_CreateSubscriptionResponse_Encode,
-    OpcUa_CreateSubscriptionResponse_Decode};
+    OpcUa_CreateSubscriptionResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -21897,7 +22076,8 @@ struct SOPC_EncodeableType OpcUa_ModifySubscriptionRequest_EncodeableType = {
     OpcUa_ModifySubscriptionRequest_Clear,
     NULL,
     OpcUa_ModifySubscriptionRequest_Encode,
-    OpcUa_ModifySubscriptionRequest_Decode};
+    OpcUa_ModifySubscriptionRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ModifySubscriptionResponse
@@ -22011,7 +22191,8 @@ struct SOPC_EncodeableType OpcUa_ModifySubscriptionResponse_EncodeableType = {
     OpcUa_ModifySubscriptionResponse_Clear,
     NULL,
     OpcUa_ModifySubscriptionResponse_Encode,
-    OpcUa_ModifySubscriptionResponse_Decode};
+    OpcUa_ModifySubscriptionResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -22122,7 +22303,8 @@ struct SOPC_EncodeableType OpcUa_SetPublishingModeRequest_EncodeableType = {
     OpcUa_SetPublishingModeRequest_Clear,
     NULL,
     OpcUa_SetPublishingModeRequest_Encode,
-    OpcUa_SetPublishingModeRequest_Decode};
+    OpcUa_SetPublishingModeRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SetPublishingModeResponse
@@ -22242,7 +22424,8 @@ struct SOPC_EncodeableType OpcUa_SetPublishingModeResponse_EncodeableType = {
     OpcUa_SetPublishingModeResponse_Clear,
     NULL,
     OpcUa_SetPublishingModeResponse_Encode,
-    OpcUa_SetPublishingModeResponse_Decode};
+    OpcUa_SetPublishingModeResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -22364,7 +22547,8 @@ struct SOPC_EncodeableType OpcUa_NotificationMessage_EncodeableType = {
     OpcUa_NotificationMessage_Clear,
     NULL,
     OpcUa_NotificationMessage_Encode,
-    OpcUa_NotificationMessage_Decode};
+    OpcUa_NotificationMessage_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DataChangeNotification
@@ -22485,7 +22669,8 @@ struct SOPC_EncodeableType OpcUa_DataChangeNotification_EncodeableType = {
     OpcUa_DataChangeNotification_Clear,
     NULL,
     OpcUa_DataChangeNotification_Encode,
-    OpcUa_DataChangeNotification_Decode};
+    OpcUa_DataChangeNotification_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoredItemNotification
@@ -22587,7 +22772,8 @@ struct SOPC_EncodeableType OpcUa_MonitoredItemNotification_EncodeableType = {
     OpcUa_MonitoredItemNotification_Clear,
     NULL,
     OpcUa_MonitoredItemNotification_Encode,
-    OpcUa_MonitoredItemNotification_Decode};
+    OpcUa_MonitoredItemNotification_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EventNotificationList
@@ -22686,7 +22872,8 @@ struct SOPC_EncodeableType OpcUa_EventNotificationList_EncodeableType = {
     OpcUa_EventNotificationList_Clear,
     NULL,
     OpcUa_EventNotificationList_Encode,
-    OpcUa_EventNotificationList_Decode};
+    OpcUa_EventNotificationList_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EventFieldList
@@ -22794,7 +22981,8 @@ struct SOPC_EncodeableType OpcUa_EventFieldList_EncodeableType = {"EventFieldLis
                                                                   OpcUa_EventFieldList_Clear,
                                                                   NULL,
                                                                   OpcUa_EventFieldList_Encode,
-                                                                  OpcUa_EventFieldList_Decode};
+                                                                  OpcUa_EventFieldList_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_HistoryEventFieldList
@@ -22893,7 +23081,8 @@ struct SOPC_EncodeableType OpcUa_HistoryEventFieldList_EncodeableType = {
     OpcUa_HistoryEventFieldList_Clear,
     NULL,
     OpcUa_HistoryEventFieldList_Encode,
-    OpcUa_HistoryEventFieldList_Decode};
+    OpcUa_HistoryEventFieldList_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_StatusChangeNotification
@@ -22995,7 +23184,8 @@ struct SOPC_EncodeableType OpcUa_StatusChangeNotification_EncodeableType = {
     OpcUa_StatusChangeNotification_Clear,
     NULL,
     OpcUa_StatusChangeNotification_Encode,
-    OpcUa_StatusChangeNotification_Decode};
+    OpcUa_StatusChangeNotification_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SubscriptionAcknowledgement
@@ -23097,7 +23287,8 @@ struct SOPC_EncodeableType OpcUa_SubscriptionAcknowledgement_EncodeableType = {
     OpcUa_SubscriptionAcknowledgement_Clear,
     NULL,
     OpcUa_SubscriptionAcknowledgement_Encode,
-    OpcUa_SubscriptionAcknowledgement_Decode};
+    OpcUa_SubscriptionAcknowledgement_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Publish
@@ -23202,7 +23393,8 @@ struct SOPC_EncodeableType OpcUa_PublishRequest_EncodeableType = {"PublishReques
                                                                   OpcUa_PublishRequest_Clear,
                                                                   NULL,
                                                                   OpcUa_PublishRequest_Encode,
-                                                                  OpcUa_PublishRequest_Decode};
+                                                                  OpcUa_PublishRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_PublishResponse
@@ -23369,7 +23561,8 @@ struct SOPC_EncodeableType OpcUa_PublishResponse_EncodeableType = {"PublishRespo
                                                                    OpcUa_PublishResponse_Clear,
                                                                    NULL,
                                                                    OpcUa_PublishResponse_Encode,
-                                                                   OpcUa_PublishResponse_Decode};
+                                                                   OpcUa_PublishResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -23472,7 +23665,8 @@ struct SOPC_EncodeableType OpcUa_RepublishRequest_EncodeableType = {"RepublishRe
                                                                     OpcUa_RepublishRequest_Clear,
                                                                     NULL,
                                                                     OpcUa_RepublishRequest_Encode,
-                                                                    OpcUa_RepublishRequest_Decode};
+                                                                    OpcUa_RepublishRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RepublishResponse
@@ -23565,7 +23759,8 @@ struct SOPC_EncodeableType OpcUa_RepublishResponse_EncodeableType = {"RepublishR
                                                                      OpcUa_RepublishResponse_Clear,
                                                                      NULL,
                                                                      OpcUa_RepublishResponse_Encode,
-                                                                     OpcUa_RepublishResponse_Decode};
+                                                                     OpcUa_RepublishResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -23675,7 +23870,8 @@ struct SOPC_EncodeableType OpcUa_TransferResult_EncodeableType = {"TransferResul
                                                                   OpcUa_TransferResult_Clear,
                                                                   NULL,
                                                                   OpcUa_TransferResult_Encode,
-                                                                  OpcUa_TransferResult_Decode};
+                                                                  OpcUa_TransferResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TransferSubscriptions
@@ -23785,7 +23981,8 @@ struct SOPC_EncodeableType OpcUa_TransferSubscriptionsRequest_EncodeableType = {
     OpcUa_TransferSubscriptionsRequest_Clear,
     NULL,
     OpcUa_TransferSubscriptionsRequest_Encode,
-    OpcUa_TransferSubscriptionsRequest_Decode};
+    OpcUa_TransferSubscriptionsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TransferSubscriptionsResponse
@@ -23905,7 +24102,8 @@ struct SOPC_EncodeableType OpcUa_TransferSubscriptionsResponse_EncodeableType = 
     OpcUa_TransferSubscriptionsResponse_Clear,
     NULL,
     OpcUa_TransferSubscriptionsResponse_Encode,
-    OpcUa_TransferSubscriptionsResponse_Decode};
+    OpcUa_TransferSubscriptionsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -24006,7 +24204,8 @@ struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     OpcUa_DeleteSubscriptionsRequest_Clear,
     NULL,
     OpcUa_DeleteSubscriptionsRequest_Encode,
-    OpcUa_DeleteSubscriptionsRequest_Decode};
+    OpcUa_DeleteSubscriptionsRequest_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteSubscriptionsResponse
@@ -24126,7 +24325,8 @@ struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsResponse_EncodeableType = {
     OpcUa_DeleteSubscriptionsResponse_Clear,
     NULL,
     OpcUa_DeleteSubscriptionsResponse_Encode,
-    OpcUa_DeleteSubscriptionsResponse_Decode};
+    OpcUa_DeleteSubscriptionsResponse_Decode,
+NULL};
 #endif
 #endif
 
@@ -24268,7 +24468,8 @@ struct SOPC_EncodeableType OpcUa_BuildInfo_EncodeableType = {"BuildInfo",
                                                              OpcUa_BuildInfo_Clear,
                                                              NULL,
                                                              OpcUa_BuildInfo_Encode,
-                                                             OpcUa_BuildInfo_Decode};
+                                                             OpcUa_BuildInfo_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RedundantServerDataType
@@ -24380,7 +24581,8 @@ struct SOPC_EncodeableType OpcUa_RedundantServerDataType_EncodeableType = {
     OpcUa_RedundantServerDataType_Clear,
     NULL,
     OpcUa_RedundantServerDataType_Encode,
-    OpcUa_RedundantServerDataType_Decode};
+    OpcUa_RedundantServerDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EndpointUrlListDataType
@@ -24479,7 +24681,8 @@ struct SOPC_EncodeableType OpcUa_EndpointUrlListDataType_EncodeableType = {
     OpcUa_EndpointUrlListDataType_Clear,
     NULL,
     OpcUa_EndpointUrlListDataType_Encode,
-    OpcUa_EndpointUrlListDataType_Decode};
+    OpcUa_EndpointUrlListDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_NetworkGroupDataType
@@ -24591,7 +24794,8 @@ struct SOPC_EncodeableType OpcUa_NetworkGroupDataType_EncodeableType = {
     OpcUa_NetworkGroupDataType_Clear,
     NULL,
     OpcUa_NetworkGroupDataType_Encode,
-    OpcUa_NetworkGroupDataType_Decode};
+    OpcUa_NetworkGroupDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SamplingIntervalDiagnosticsDataType
@@ -24714,7 +24918,8 @@ struct SOPC_EncodeableType OpcUa_SamplingIntervalDiagnosticsDataType_EncodeableT
     OpcUa_SamplingIntervalDiagnosticsDataType_Clear,
     NULL,
     OpcUa_SamplingIntervalDiagnosticsDataType_Encode,
-    OpcUa_SamplingIntervalDiagnosticsDataType_Decode};
+    OpcUa_SamplingIntervalDiagnosticsDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ServerDiagnosticsSummaryDataType
@@ -24916,7 +25121,8 @@ struct SOPC_EncodeableType OpcUa_ServerDiagnosticsSummaryDataType_EncodeableType
     OpcUa_ServerDiagnosticsSummaryDataType_Clear,
     NULL,
     OpcUa_ServerDiagnosticsSummaryDataType_Encode,
-    OpcUa_ServerDiagnosticsSummaryDataType_Decode};
+    OpcUa_ServerDiagnosticsSummaryDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ServerStatusDataType
@@ -25058,7 +25264,8 @@ struct SOPC_EncodeableType OpcUa_ServerStatusDataType_EncodeableType = {
     OpcUa_ServerStatusDataType_Clear,
     NULL,
     OpcUa_ServerStatusDataType_Encode,
-    OpcUa_ServerStatusDataType_Decode};
+    OpcUa_ServerStatusDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SessionDiagnosticsDataType
@@ -25577,7 +25784,8 @@ struct SOPC_EncodeableType OpcUa_SessionDiagnosticsDataType_EncodeableType = {
     OpcUa_SessionDiagnosticsDataType_Clear,
     NULL,
     OpcUa_SessionDiagnosticsDataType_Encode,
-    OpcUa_SessionDiagnosticsDataType_Decode};
+    OpcUa_SessionDiagnosticsDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SessionSecurityDiagnosticsDataType
@@ -25756,7 +25964,8 @@ struct SOPC_EncodeableType OpcUa_SessionSecurityDiagnosticsDataType_EncodeableTy
     OpcUa_SessionSecurityDiagnosticsDataType_Clear,
     NULL,
     OpcUa_SessionSecurityDiagnosticsDataType_Encode,
-    OpcUa_SessionSecurityDiagnosticsDataType_Decode};
+    OpcUa_SessionSecurityDiagnosticsDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ServiceCounterDataType
@@ -25858,7 +26067,8 @@ struct SOPC_EncodeableType OpcUa_ServiceCounterDataType_EncodeableType = {
     OpcUa_ServiceCounterDataType_Clear,
     NULL,
     OpcUa_ServiceCounterDataType_Encode,
-    OpcUa_ServiceCounterDataType_Decode};
+    OpcUa_ServiceCounterDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_StatusResult
@@ -25959,7 +26169,8 @@ struct SOPC_EncodeableType OpcUa_StatusResult_EncodeableType = {"StatusResult",
                                                                 OpcUa_StatusResult_Clear,
                                                                 NULL,
                                                                 OpcUa_StatusResult_Encode,
-                                                                OpcUa_StatusResult_Decode};
+                                                                OpcUa_StatusResult_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SubscriptionDiagnosticsDataType
@@ -26351,7 +26562,8 @@ struct SOPC_EncodeableType OpcUa_SubscriptionDiagnosticsDataType_EncodeableType 
     OpcUa_SubscriptionDiagnosticsDataType_Clear,
     NULL,
     OpcUa_SubscriptionDiagnosticsDataType_Encode,
-    OpcUa_SubscriptionDiagnosticsDataType_Decode};
+    OpcUa_SubscriptionDiagnosticsDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ModelChangeStructureDataType
@@ -26463,7 +26675,8 @@ struct SOPC_EncodeableType OpcUa_ModelChangeStructureDataType_EncodeableType = {
     OpcUa_ModelChangeStructureDataType_Clear,
     NULL,
     OpcUa_ModelChangeStructureDataType_Encode,
-    OpcUa_ModelChangeStructureDataType_Decode};
+    OpcUa_ModelChangeStructureDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_SemanticChangeStructureDataType
@@ -26565,7 +26778,8 @@ struct SOPC_EncodeableType OpcUa_SemanticChangeStructureDataType_EncodeableType 
     OpcUa_SemanticChangeStructureDataType_Clear,
     NULL,
     OpcUa_SemanticChangeStructureDataType_Encode,
-    OpcUa_SemanticChangeStructureDataType_Decode};
+    OpcUa_SemanticChangeStructureDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Range
@@ -26666,7 +26880,8 @@ struct SOPC_EncodeableType OpcUa_Range_EncodeableType = {"Range",
                                                          OpcUa_Range_Clear,
                                                          NULL,
                                                          OpcUa_Range_Encode,
-                                                         OpcUa_Range_Decode};
+                                                         OpcUa_Range_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_EUInformation
@@ -26787,7 +27002,8 @@ struct SOPC_EncodeableType OpcUa_EUInformation_EncodeableType = {"EUInformation"
                                                                  OpcUa_EUInformation_Clear,
                                                                  NULL,
                                                                  OpcUa_EUInformation_Encode,
-                                                                 OpcUa_EUInformation_Decode};
+                                                                 OpcUa_EUInformation_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ComplexNumberType
@@ -26888,7 +27104,8 @@ struct SOPC_EncodeableType OpcUa_ComplexNumberType_EncodeableType = {"ComplexNum
                                                                      OpcUa_ComplexNumberType_Clear,
                                                                      NULL,
                                                                      OpcUa_ComplexNumberType_Encode,
-                                                                     OpcUa_ComplexNumberType_Decode};
+                                                                     OpcUa_ComplexNumberType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DoubleComplexNumberType
@@ -26990,7 +27207,8 @@ struct SOPC_EncodeableType OpcUa_DoubleComplexNumberType_EncodeableType = {
     OpcUa_DoubleComplexNumberType_Clear,
     NULL,
     OpcUa_DoubleComplexNumberType_Encode,
-    OpcUa_DoubleComplexNumberType_Decode};
+    OpcUa_DoubleComplexNumberType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AxisInformation
@@ -27128,7 +27346,8 @@ struct SOPC_EncodeableType OpcUa_AxisInformation_EncodeableType = {"AxisInformat
                                                                    OpcUa_AxisInformation_Clear,
                                                                    NULL,
                                                                    OpcUa_AxisInformation_Encode,
-                                                                   OpcUa_AxisInformation_Decode};
+                                                                   OpcUa_AxisInformation_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_XVType
@@ -27229,7 +27448,8 @@ struct SOPC_EncodeableType OpcUa_XVType_EncodeableType = {"XVType",
                                                           OpcUa_XVType_Clear,
                                                           NULL,
                                                           OpcUa_XVType_Encode,
-                                                          OpcUa_XVType_Decode};
+                                                          OpcUa_XVType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_ProgramDiagnosticDataType
@@ -27427,7 +27647,8 @@ struct SOPC_EncodeableType OpcUa_ProgramDiagnosticDataType_EncodeableType = {
     OpcUa_ProgramDiagnosticDataType_Clear,
     NULL,
     OpcUa_ProgramDiagnosticDataType_Encode,
-    OpcUa_ProgramDiagnosticDataType_Decode};
+    OpcUa_ProgramDiagnosticDataType_Decode,
+NULL};
 #endif
 
 #ifndef OPCUA_EXCLUDE_Annotation
@@ -27538,7 +27759,8 @@ struct SOPC_EncodeableType OpcUa_Annotation_EncodeableType = {"Annotation",
                                                               OpcUa_Annotation_Clear,
                                                               NULL,
                                                               OpcUa_Annotation_Encode,
-                                                              OpcUa_Annotation_Decode};
+                                                              OpcUa_Annotation_Decode,
+NULL};
 #endif
 
 void SOPC_Initialize_EnumeratedType(int32_t* enumerationValue)
