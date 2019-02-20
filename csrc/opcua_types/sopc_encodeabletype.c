@@ -70,3 +70,87 @@ const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType)
     }
     return result;
 }
+
+void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
+{
+    // Initializing encodeable type
+    void* field_ptr = ((char*) pValue);
+    SOPC_EncodeableType** field_ec_type = (SOPC_EncodeableType**) field_ptr;
+    *field_ec_type = enc_type;
+
+    // Initializing fields
+    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    {
+        // Getting the field
+        field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+
+        if (enc_type->descriptor->Elements[i].IsBuiltIn)
+        {
+            switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+            {
+                case SOPC_Boolean_Id:
+                    SOPC_Boolean_Initialize(field_ptr);
+                    break;
+                case SOPC_SByte_Id:
+                    SOPC_SByte_Initialize(field_ptr);
+                    break;
+                case SOPC_Byte_Id:
+                    SOPC_Byte_Initialize(field_ptr);
+                    break;
+                case SOPC_Int16_Id:
+                    SOPC_Int16_Initialize(field_ptr);
+                    break;
+                case SOPC_UInt16_Id:
+                    break;
+                case SOPC_Int32_Id:
+                    break;
+                case SOPC_UInt32_Id:
+                    break;
+                case SOPC_Int64_Id: 
+                    break;
+                case SOPC_UInt64_Id:
+                    break;
+                case SOPC_Float_Id: 
+                    break;
+                case SOPC_Double_Id:
+                    SOPC_Double_Initialize(field_ptr);
+                    break;
+                case SOPC_String_Id:
+                    break;
+                case SOPC_DateTime_Id:
+                    SOPC_DateTime_Initialize(field_ptr);
+                    break;
+                case SOPC_Guid_Id:
+                    break;
+                case SOPC_ByteString_Id:
+                    break;
+                case SOPC_XmlElement_Id:
+                    break;
+                case SOPC_NodeId_Id:
+                    break;
+                case SOPC_ExpandedNodeId_Id:
+                    break;
+                case SOPC_StatusCode_Id:
+                    break;
+                case SOPC_QualifiedName_Id:
+                    break;
+                case SOPC_LocalizedText_Id:
+                    break;
+                case SOPC_ExtensionObject_Id:
+                    break;
+                case SOPC_DataValue_Id:
+                    break;
+                case SOPC_Variant_Id:
+                    break;
+                case SOPC_DiagnosticInfo_Id:
+                    break;
+                default:
+                    ;
+            }
+        }
+        else
+        {
+            SOPC_Generic_Initialize(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType);
+        }
+    }
+}

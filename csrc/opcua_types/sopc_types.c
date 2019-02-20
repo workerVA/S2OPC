@@ -2833,8 +2833,9 @@ SOPC_ReturnStatus OpcUa_TimeZoneDataType_Decode(void* pValue, SOPC_Buffer* buf)
 /*============================================================================
  * OpcUa_TimeZoneDataType_EncodeableType
  *===========================================================================*/
-ElemOffset test[] = {{1, {.BuiltInId = 4}, 0},
-                     {1, {.BuiltInId = 1}, 2}};
+ElemOffset test[] = {{true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset)},
+                     {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset)}};
+
 TypeDescriptor OpcUa_TimeZoneDataType_TypeDescriptor = {2, test};
 
 struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDataType",

@@ -33,12 +33,13 @@
 #include "sopc_enums.h"
 
 struct TypeDescriptor;
+struct SOPC_EncodeableType;
 
 typedef struct _ElemOffset {
     bool IsBuiltIn;
     union _Id {
         uint8_t BuiltInId;
-        struct TypeDescriptor* EncType;
+        struct SOPC_EncodeableType* NestedEncType;
     } Id;
     uint32_t Offset;
 } ElemOffset;
@@ -104,5 +105,16 @@ typedef struct SOPC_EncodeableType
 SOPC_EncodeableType* SOPC_EncodeableType_GetEncodeableType(uint32_t typeId);
 
 const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType);
+
+
+
+
+void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type);
+
+//void OpcUa_Generic_Clear(void* pValue);
+//
+//SOPC_ReturnStatus OpcUa_Generic_Encode(const void* pValue, SOPC_Buffer* buf);
+//
+//SOPC_ReturnStatus OpcUa_Generic_Decode(void* pValue, SOPC_Buffer* buf);
 
 #endif /* SOPC_ENCODEABLETYPE_H_ */
