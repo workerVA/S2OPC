@@ -2750,13 +2750,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_TimeZoneDataType_Initialize(void* pValue)
 {
-    OpcUa_TimeZoneDataType* a_pValue = (OpcUa_TimeZoneDataType*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_TimeZoneDataType_EncodeableType;
-        SOPC_Int16_Initialize(&a_pValue->Offset);
-        SOPC_Boolean_Initialize(&a_pValue->DaylightSavingInOffset);
-    }
+    SOPC_Generic_Initialize(pValue, &OpcUa_TimeZoneDataType_EncodeableType);
 }
 
 /*============================================================================
@@ -2764,12 +2758,7 @@ void OpcUa_TimeZoneDataType_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_TimeZoneDataType_Clear(void* pValue)
 {
-    OpcUa_TimeZoneDataType* a_pValue = (OpcUa_TimeZoneDataType*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_Int16_Clear(&a_pValue->Offset);
-        SOPC_Boolean_Clear(&a_pValue->DaylightSavingInOffset);
-    }
+    SOPC_Generic_Clear(pValue, &OpcUa_TimeZoneDataType_EncodeableType);
 }
 
 /*============================================================================
@@ -2777,24 +2766,7 @@ void OpcUa_TimeZoneDataType_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_TimeZoneDataType_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_TimeZoneDataType* a_pValue = (const OpcUa_TimeZoneDataType*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Int16_Write(&a_pValue->Offset, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->DaylightSavingInOffset, buf);
-    }
-
-    return status;
+    return SOPC_Generic_Encode(pValue, &OpcUa_TimeZoneDataType_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -2802,41 +2774,18 @@ SOPC_ReturnStatus OpcUa_TimeZoneDataType_Encode(const void* pValue, SOPC_Buffer*
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_TimeZoneDataType_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_TimeZoneDataType* a_pValue = (OpcUa_TimeZoneDataType*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_TimeZoneDataType_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Int16_Read(&a_pValue->Offset, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->DaylightSavingInOffset, buf);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_TimeZoneDataType_Clear(a_pValue);
-    }
-
-    return status;
+    return SOPC_Generic_Decode(pValue, &OpcUa_TimeZoneDataType_EncodeableType, buf);
 }
 
 
 /*============================================================================
  * OpcUa_TimeZoneDataType_EncodeableType
  *===========================================================================*/
-ElemOffset test[] = {{true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset)},
-                     {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset)}};
+FieldDescriptor TimeZoneDataType_FieldDescriptor[] = {
+    {true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset)},
+    {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset)}};
 
-TypeDescriptor OpcUa_TimeZoneDataType_TypeDescriptor = {2, test};
+TypeDescriptor OpcUa_TimeZoneDataType_Descriptor = {2, TimeZoneDataType_FieldDescriptor};
 
 struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDataType",
                                                                     OpcUaId_TimeZoneDataType,
@@ -2849,7 +2798,7 @@ struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDat
                                                                     NULL,
                                                                     OpcUa_TimeZoneDataType_Encode,
                                                                     OpcUa_TimeZoneDataType_Decode,
-                                                                    &OpcUa_TimeZoneDataType_TypeDescriptor
+                                                                    &OpcUa_TimeZoneDataType_Descriptor
                                                                     };
 #endif
 
@@ -19303,16 +19252,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_AggregateConfiguration_Initialize(void* pValue)
 {
-    OpcUa_AggregateConfiguration* a_pValue = (OpcUa_AggregateConfiguration*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_AggregateConfiguration_EncodeableType;
-        SOPC_Boolean_Initialize(&a_pValue->UseServerCapabilitiesDefaults);
-        SOPC_Boolean_Initialize(&a_pValue->TreatUncertainAsBad);
-        SOPC_Byte_Initialize(&a_pValue->PercentDataBad);
-        SOPC_Byte_Initialize(&a_pValue->PercentDataGood);
-        SOPC_Boolean_Initialize(&a_pValue->UseSlopedExtrapolation);
-    }
+    SOPC_Generic_Initialize(pValue, &OpcUa_AggregateConfiguration_EncodeableType);
 }
 
 /*============================================================================
@@ -19320,15 +19260,7 @@ void OpcUa_AggregateConfiguration_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_AggregateConfiguration_Clear(void* pValue)
 {
-    OpcUa_AggregateConfiguration* a_pValue = (OpcUa_AggregateConfiguration*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_Boolean_Clear(&a_pValue->UseServerCapabilitiesDefaults);
-        SOPC_Boolean_Clear(&a_pValue->TreatUncertainAsBad);
-        SOPC_Byte_Clear(&a_pValue->PercentDataBad);
-        SOPC_Byte_Clear(&a_pValue->PercentDataGood);
-        SOPC_Boolean_Clear(&a_pValue->UseSlopedExtrapolation);
-    }
+    SOPC_Generic_Clear(pValue, &OpcUa_AggregateConfiguration_EncodeableType);
 }
 
 /*============================================================================
@@ -19336,36 +19268,7 @@ void OpcUa_AggregateConfiguration_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_AggregateConfiguration_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_AggregateConfiguration* a_pValue = (const OpcUa_AggregateConfiguration*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->UseServerCapabilitiesDefaults, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->TreatUncertainAsBad, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Byte_Write(&a_pValue->PercentDataBad, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Byte_Write(&a_pValue->PercentDataGood, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->UseSlopedExtrapolation, buf);
-    }
-
-    return status;
+    return SOPC_Generic_Encode(pValue, &OpcUa_AggregateConfiguration_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -19373,48 +19276,23 @@ SOPC_ReturnStatus OpcUa_AggregateConfiguration_Encode(const void* pValue, SOPC_B
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_AggregateConfiguration_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_AggregateConfiguration* a_pValue = (OpcUa_AggregateConfiguration*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_AggregateConfiguration_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->UseServerCapabilitiesDefaults, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->TreatUncertainAsBad, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Byte_Read(&a_pValue->PercentDataBad, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Byte_Read(&a_pValue->PercentDataGood, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->UseSlopedExtrapolation, buf);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_AggregateConfiguration_Clear(a_pValue);
-    }
-
-    return status;
+    return SOPC_Generic_Decode(pValue, &OpcUa_AggregateConfiguration_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_AggregateConfiguration_EncodeableType
  *===========================================================================*/
+FieldDescriptor AggregateConfiguration_FieldDescriptor[] = {
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseServerCapabilitiesDefaults)},
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, TreatUncertainAsBad)},
+    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataBad)},
+    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataGood)},
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseSlopedExtrapolation)}};
+
+
+TypeDescriptor OpcUa_AggregateConfiguration_Descriptor = {5, AggregateConfiguration_FieldDescriptor};
+
+
 struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
     "AggregateConfiguration",
     OpcUaId_AggregateConfiguration,
@@ -19427,7 +19305,7 @@ struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
     NULL,
     OpcUa_AggregateConfiguration_Encode,
     OpcUa_AggregateConfiguration_Decode,
-NULL};
+    &OpcUa_AggregateConfiguration_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AggregateFilter
@@ -19687,14 +19565,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_AggregateFilterResult_Initialize(void* pValue)
 {
-    OpcUa_AggregateFilterResult* a_pValue = (OpcUa_AggregateFilterResult*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_AggregateFilterResult_EncodeableType;
-        SOPC_DateTime_Initialize(&a_pValue->RevisedStartTime);
-        SOPC_Double_Initialize(&a_pValue->RevisedProcessingInterval);
-        OpcUa_AggregateConfiguration_Initialize(&a_pValue->RevisedAggregateConfiguration);
-    }
+    SOPC_Generic_Initialize(pValue, &OpcUa_AggregateFilterResult_EncodeableType);
 }
 
 /*============================================================================
@@ -19702,13 +19573,7 @@ void OpcUa_AggregateFilterResult_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_AggregateFilterResult_Clear(void* pValue)
 {
-    OpcUa_AggregateFilterResult* a_pValue = (OpcUa_AggregateFilterResult*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_DateTime_Clear(&a_pValue->RevisedStartTime);
-        SOPC_Double_Clear(&a_pValue->RevisedProcessingInterval);
-        OpcUa_AggregateConfiguration_Clear(&a_pValue->RevisedAggregateConfiguration);
-    }
+    SOPC_Generic_Clear(pValue, &OpcUa_AggregateFilterResult_EncodeableType);
 }
 
 /*============================================================================
@@ -19716,28 +19581,7 @@ void OpcUa_AggregateFilterResult_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_AggregateFilterResult_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_AggregateFilterResult* a_pValue = (const OpcUa_AggregateFilterResult*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_DateTime_Write(&a_pValue->RevisedStartTime, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Double_Write(&a_pValue->RevisedProcessingInterval, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = OpcUa_AggregateConfiguration_Encode(&a_pValue->RevisedAggregateConfiguration, buf);
-    }
-
-    return status;
+    return SOPC_Generic_Encode(pValue, &OpcUa_AggregateFilterResult_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -19745,40 +19589,20 @@ SOPC_ReturnStatus OpcUa_AggregateFilterResult_Encode(const void* pValue, SOPC_Bu
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_AggregateFilterResult_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_AggregateFilterResult* a_pValue = (OpcUa_AggregateFilterResult*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_AggregateFilterResult_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_DateTime_Read(&a_pValue->RevisedStartTime, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Double_Read(&a_pValue->RevisedProcessingInterval, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = OpcUa_AggregateConfiguration_Decode(&a_pValue->RevisedAggregateConfiguration, buf);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_AggregateFilterResult_Clear(a_pValue);
-    }
-
-    return status;
+    return SOPC_Generic_Decode(pValue, &OpcUa_AggregateFilterResult_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_AggregateFilterResult_EncodeableType
  *===========================================================================*/
+FieldDescriptor AggregateFilterResult_FieldDescriptor[] = {
+    {1, {.BuiltInId = 13}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedStartTime)},
+    {1, {.BuiltInId = 11}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedProcessingInterval)},
+    {0, {.NestedEncType = &OpcUa_AggregateConfiguration_EncodeableType},
+        (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedAggregateConfiguration)}};
+
+TypeDescriptor OpcUa_AggregateFilterResult_Descriptor = {3, AggregateFilterResult_FieldDescriptor};
+
 struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     "AggregateFilterResult",
     OpcUaId_AggregateFilterResult,
@@ -19791,7 +19615,7 @@ struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     NULL,
     OpcUa_AggregateFilterResult_Encode,
     OpcUa_AggregateFilterResult_Decode,
-NULL};
+    &OpcUa_AggregateFilterResult_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoringParameters

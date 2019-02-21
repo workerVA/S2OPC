@@ -18,12 +18,14 @@
  */
 
 #include "sopc_encodeabletype.h"
+#include "sopc_encoder.h"
 
 #include <string.h>
 
 #include "sopc_builtintypes.h"
 #include "sopc_helper_string.h"
 #include "sopc_types.h"
+#include <assert.h>
 
 const char* nullType = "NULL";
 const char* noNameType = "NoName";
@@ -100,49 +102,11 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
                 case SOPC_Int16_Id:
                     SOPC_Int16_Initialize(field_ptr);
                     break;
-                case SOPC_UInt16_Id:
-                    break;
-                case SOPC_Int32_Id:
-                    break;
-                case SOPC_UInt32_Id:
-                    break;
-                case SOPC_Int64_Id: 
-                    break;
-                case SOPC_UInt64_Id:
-                    break;
-                case SOPC_Float_Id: 
-                    break;
                 case SOPC_Double_Id:
                     SOPC_Double_Initialize(field_ptr);
                     break;
-                case SOPC_String_Id:
-                    break;
                 case SOPC_DateTime_Id:
                     SOPC_DateTime_Initialize(field_ptr);
-                    break;
-                case SOPC_Guid_Id:
-                    break;
-                case SOPC_ByteString_Id:
-                    break;
-                case SOPC_XmlElement_Id:
-                    break;
-                case SOPC_NodeId_Id:
-                    break;
-                case SOPC_ExpandedNodeId_Id:
-                    break;
-                case SOPC_StatusCode_Id:
-                    break;
-                case SOPC_QualifiedName_Id:
-                    break;
-                case SOPC_LocalizedText_Id:
-                    break;
-                case SOPC_ExtensionObject_Id:
-                    break;
-                case SOPC_DataValue_Id:
-                    break;
-                case SOPC_Variant_Id:
-                    break;
-                case SOPC_DiagnosticInfo_Id:
                     break;
                 default:
                     ;
@@ -153,4 +117,168 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
             SOPC_Generic_Initialize(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType);
         }
     }
+}
+
+void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
+{
+    // Initializing encodeable type
+    void* field_ptr = NULL;
+
+    // Initializing fields
+    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    {
+        // Getting the field
+        field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+
+        if (enc_type->descriptor->Elements[i].IsBuiltIn)
+        {
+            switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+            {
+                case SOPC_Boolean_Id:
+                    SOPC_Boolean_Clear(field_ptr);
+                    break;
+                case SOPC_SByte_Id:
+                    SOPC_SByte_Clear(field_ptr);
+                    break;
+                case SOPC_Byte_Id:
+                    SOPC_Byte_Clear(field_ptr);
+                    break;
+                case SOPC_Int16_Id:
+                    SOPC_Int16_Clear(field_ptr);
+                    break;
+                case SOPC_Double_Id:
+                    SOPC_Double_Clear(field_ptr);
+                    break;
+                case SOPC_DateTime_Id:
+                    SOPC_DateTime_Clear(field_ptr);
+                    break;
+                default:
+                    ;
+            }
+        }
+        else
+        {
+            SOPC_Generic_Clear(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType);
+        }
+    }
+}
+
+SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* enc_type, SOPC_Buffer* buf)
+{
+    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+
+    // Initializing encodeable type
+
+    if (pValue != NULL && buf != NULL)
+    {
+        status = SOPC_STATUS_OK;
+    }
+
+    // Initializing fields
+    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    {
+        if (SOPC_STATUS_OK == status)
+        {
+            // Getting the field
+            const void* field_ptr = ((const char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+    
+            if (enc_type->descriptor->Elements[i].IsBuiltIn)
+            {
+                switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+                {
+                    case SOPC_Boolean_Id:
+                        status = SOPC_Boolean_Write(field_ptr, buf);
+                        break;
+                    case SOPC_SByte_Id:
+                        status = SOPC_SByte_Write(field_ptr, buf);
+                        break;
+                    case SOPC_Byte_Id:
+                        status = SOPC_Byte_Write(field_ptr, buf);
+                        break;
+                    case SOPC_Int16_Id:
+                        status = SOPC_Int16_Write(field_ptr, buf);
+                        break;
+                    case SOPC_Double_Id:
+                        status = SOPC_Double_Write(field_ptr, buf);
+                        break;
+                    case SOPC_DateTime_Id:
+                        status = SOPC_DateTime_Write(field_ptr, buf);
+                        break;
+                    default:
+                        status = SOPC_STATUS_NOK;
+                        ;
+                }
+            }
+            else
+            {
+                SOPC_Generic_Encode(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType, buf);
+            }
+        }
+    }
+    
+    return status;
+}
+
+SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_type, SOPC_Buffer* buf)
+{
+    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+
+    // Initializing encodeable type
+    void* field_ptr = NULL;
+
+    if (pValue != NULL && buf != NULL)
+    {
+        status = SOPC_STATUS_OK;
+    }
+
+    SOPC_Generic_Initialize(pValue, enc_type);
+
+    // Initializing fields
+    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    {
+        if (SOPC_STATUS_OK == status)
+        {
+            // Getting the field
+            field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+    
+            if (enc_type->descriptor->Elements[i].IsBuiltIn)
+            {
+                switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+                {
+                    case SOPC_Boolean_Id:
+                        status = SOPC_Boolean_Read(field_ptr, buf);
+                        break;
+                    case SOPC_SByte_Id:
+                        status = SOPC_SByte_Read(field_ptr, buf);
+                        break;
+                    case SOPC_Byte_Id:
+                        status = SOPC_Byte_Read(field_ptr, buf);
+                        break;
+                    case SOPC_Int16_Id:
+                        status = SOPC_Int16_Read(field_ptr, buf);
+                        break;
+                    case SOPC_Double_Id:
+                        status = SOPC_Double_Read(field_ptr, buf);
+                        break;
+                    case SOPC_DateTime_Id:
+                        status = SOPC_DateTime_Read(field_ptr, buf);
+                        break;
+                    default:
+                        status = SOPC_STATUS_NOK;
+                        ;
+                }
+            }
+            else
+            {
+                SOPC_Generic_Decode(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType, buf);
+            }
+        }
+    }
+
+    if (status != SOPC_STATUS_OK && pValue != NULL)
+    {
+        SOPC_Generic_Clear(pValue, enc_type);
+    }
+    
+    return status;
 }

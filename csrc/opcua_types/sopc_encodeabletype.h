@@ -35,19 +35,19 @@
 struct TypeDescriptor;
 struct SOPC_EncodeableType;
 
-typedef struct _ElemOffset {
+typedef struct _FieldDescriptor {
     bool IsBuiltIn;
     union _Id {
         uint8_t BuiltInId;
         struct SOPC_EncodeableType* NestedEncType;
     } Id;
     uint32_t Offset;
-} ElemOffset;
+} FieldDescriptor;
 
 typedef struct _TypeDescriptor {
     uint32_t nbElements;
-    ElemOffset* Elements;
-}TypeDescriptor;
+    FieldDescriptor* Elements;
+} TypeDescriptor;
 
 /**
  *  \brief Initialization function generic signature for an encodeable object
@@ -111,10 +111,10 @@ const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType);
 
 void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type);
 
-//void OpcUa_Generic_Clear(void* pValue);
-//
-//SOPC_ReturnStatus OpcUa_Generic_Encode(const void* pValue, SOPC_Buffer* buf);
-//
-//SOPC_ReturnStatus OpcUa_Generic_Decode(void* pValue, SOPC_Buffer* buf);
+void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type);
+
+SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* enc_type, SOPC_Buffer* buf);
+
+SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_type, SOPC_Buffer* buf);
 
 #endif /* SOPC_ENCODEABLETYPE_H_ */
