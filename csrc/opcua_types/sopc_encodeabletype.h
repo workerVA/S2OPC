@@ -32,22 +32,26 @@
 #include "sopc_buffer.h"
 #include "sopc_enums.h"
 
-struct TypeDescriptor;
-struct SOPC_EncodeableType;
+//struct SOPC_EncodeableType;
 
-typedef struct _FieldDescriptor {
+typedef struct SOPC_FieldDescriptor {
     bool IsBuiltIn;
-    union _Id {
+
+    union Type {
         uint8_t BuiltInId;
         struct SOPC_EncodeableType* NestedEncType;
-    } Id;
-    uint32_t Offset;
-} FieldDescriptor;
+    } Type;
 
-typedef struct _TypeDescriptor {
+    uint32_t Offset;
+
+    bool IsArray;
+    uint32_t OffsetNbElem;
+} SOPC_FieldDescriptor;
+
+typedef struct SOPC_TypeDescriptor {
     uint32_t nbElements;
-    FieldDescriptor* Elements;
-} TypeDescriptor;
+    SOPC_FieldDescriptor* Elements;
+} SOPC_TypeDescriptor;
 
 /**
  *  \brief Initialization function generic signature for an encodeable object
@@ -93,7 +97,7 @@ typedef struct SOPC_EncodeableType
     SOPC_EncodeableObject_PfnEncode* Encode;
     SOPC_EncodeableObject_PfnDecode* Decode;
 
-    TypeDescriptor* descriptor;
+    SOPC_TypeDescriptor* Descriptor;
 } SOPC_EncodeableType;
 
 /**

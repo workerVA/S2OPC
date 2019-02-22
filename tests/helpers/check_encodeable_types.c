@@ -100,8 +100,6 @@ static void time_zone_data_type_checker(void* encodeable_type_object)
 {
     OpcUa_TimeZoneDataType* obj = encodeable_type_object;
 
-    ck_assert(obj->encodeableType == &OpcUa_TimeZoneDataType_EncodeableType);
-
     // Check content
     ck_assert_encodeable_type(obj, OpcUa_TimeZoneDataType);
     ck_assert(obj->Offset == -1);
@@ -215,7 +213,7 @@ START_TEST(test_browse_path)
     // Test frame creation
     uint8_t frame[] = {
                        // BrowsePath->StartingNodeId
-                       0x01, 
+                       0x01, // Four byte encoding of NodeId
                        0x02, // Namespace == 2
                        0x03, 0x04, // Identifier == 0x0403
 
@@ -224,20 +222,20 @@ START_TEST(test_browse_path)
 
                        // BrowsePath->RelativePath.Element[0]
                        // ReferenceTypeId
-                       0x01,
+                       0x01, // Four byte encoding of NodeId
                        0x05, // Namespace == 5
-                       0x06, 0x07, // Identifier == 0x0607
+                       0x06, 0x07, // Identifier == 0x0706
 
                        0x00, // IsInverse == false
                        0x01, // IncludeSubtypes == true
 
                        // TargetName
-                       0x08, 0x09, // NamespaceIndex == 0x0809
+                       0x08, 0x09, // NamespaceIndex == 0x0908
                        0xff, 0xff, 0xff, 0xff, // Name (null)
 
                        // BrowsePath->RelativePath.Element[1]
                        // ReferenceTypeId
-                       0x01,
+                       0x01, // Four byte encoding of NodeId
                        0x0A, // Namespace == 0x0A
                        0x0B, 0x0C, // Identifier == 0x0C0B
 

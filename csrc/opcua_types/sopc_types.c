@@ -2781,11 +2781,11 @@ SOPC_ReturnStatus OpcUa_TimeZoneDataType_Decode(void* pValue, SOPC_Buffer* buf)
 /*============================================================================
  * OpcUa_TimeZoneDataType_EncodeableType
  *===========================================================================*/
-FieldDescriptor TimeZoneDataType_FieldDescriptor[] = {
-    {true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset)},
-    {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset)}};
+SOPC_FieldDescriptor TimeZoneDataType_SOPC_FieldDescriptor[] = {
+    {true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset), false, 0},
+    {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset), false, 0}};
 
-TypeDescriptor OpcUa_TimeZoneDataType_Descriptor = {2, TimeZoneDataType_FieldDescriptor};
+SOPC_TypeDescriptor OpcUa_TimeZoneDataType_Descriptor = {2, TimeZoneDataType_SOPC_FieldDescriptor};
 
 struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDataType",
                                                                     OpcUaId_TimeZoneDataType,
@@ -11535,7 +11535,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_RelativePathElement_Initialize(void* pValue)
 {
-    OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
+    /*OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
     if (a_pValue != NULL)
     {
         a_pValue->encodeableType = &OpcUa_RelativePathElement_EncodeableType;
@@ -11543,7 +11543,9 @@ void OpcUa_RelativePathElement_Initialize(void* pValue)
         SOPC_Boolean_Initialize(&a_pValue->IsInverse);
         SOPC_Boolean_Initialize(&a_pValue->IncludeSubtypes);
         SOPC_QualifiedName_Initialize(&a_pValue->TargetName);
-    }
+    }*/
+
+    SOPC_Generic_Initialize(pValue, &OpcUa_RelativePathElement_EncodeableType);
 }
 
 /*============================================================================
@@ -11551,14 +11553,15 @@ void OpcUa_RelativePathElement_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_RelativePathElement_Clear(void* pValue)
 {
-    OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
+    /*OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
     if (a_pValue != NULL)
     {
         SOPC_NodeId_Clear(&a_pValue->ReferenceTypeId);
         SOPC_Boolean_Clear(&a_pValue->IsInverse);
         SOPC_Boolean_Clear(&a_pValue->IncludeSubtypes);
         SOPC_QualifiedName_Clear(&a_pValue->TargetName);
-    }
+    }*/
+    SOPC_Generic_Clear(pValue, &OpcUa_RelativePathElement_EncodeableType);
 }
 
 /*============================================================================
@@ -11566,7 +11569,7 @@ void OpcUa_RelativePathElement_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePathElement_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     const OpcUa_RelativePathElement* a_pValue = (const OpcUa_RelativePathElement*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11591,7 +11594,9 @@ SOPC_ReturnStatus OpcUa_RelativePathElement_Encode(const void* pValue, SOPC_Buff
         status = SOPC_QualifiedName_Write(&a_pValue->TargetName, buf);
     }
 
-    return status;
+    return status;*/
+
+    return SOPC_Generic_Encode(pValue, &OpcUa_RelativePathElement_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -11599,7 +11604,7 @@ SOPC_ReturnStatus OpcUa_RelativePathElement_Encode(const void* pValue, SOPC_Buff
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePathElement_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11631,12 +11636,22 @@ SOPC_ReturnStatus OpcUa_RelativePathElement_Decode(void* pValue, SOPC_Buffer* bu
         OpcUa_RelativePathElement_Clear(a_pValue);
     }
 
-    return status;
+    return status;*/
+    return SOPC_Generic_Decode(pValue, &OpcUa_RelativePathElement_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_RelativePathElement_EncodeableType
  *===========================================================================*/
+SOPC_FieldDescriptor RelativePathElement_SOPC_FieldDescriptor[] = {
+    {true, {.BuiltInId = SOPC_NodeId_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, ReferenceTypeId), false, 0},
+    {true, {.BuiltInId = SOPC_Boolean_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, IsInverse), false, 0},
+    {true, {.BuiltInId = SOPC_Boolean_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, IncludeSubtypes), false, 0},
+    {true, {.BuiltInId = SOPC_QualifiedName_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, TargetName), false, 0}};
+
+SOPC_TypeDescriptor OpcUa_RelativePathElement_Descriptor = {4, RelativePathElement_SOPC_FieldDescriptor};
+
+
 struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
     "RelativePathElement",
     OpcUaId_RelativePathElement,
@@ -11649,7 +11664,7 @@ struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
     NULL,
     OpcUa_RelativePathElement_Encode,
     OpcUa_RelativePathElement_Decode,
-NULL};
+    &OpcUa_RelativePathElement_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RelativePath
@@ -11658,13 +11673,15 @@ NULL};
  *===========================================================================*/
 void OpcUa_RelativePath_Initialize(void* pValue)
 {
-    OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
+    /*OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
     if (a_pValue != NULL)
     {
         a_pValue->encodeableType = &OpcUa_RelativePath_EncodeableType;
         SOPC_Initialize_Array(&a_pValue->NoOfElements, (void**) &a_pValue->Elements, sizeof(OpcUa_RelativePathElement),
                               (SOPC_EncodeableObject_PfnInitialize*) OpcUa_RelativePathElement_Initialize);
-    }
+    }*/
+
+    SOPC_Generic_Initialize(pValue, &OpcUa_RelativePath_EncodeableType);
 }
 
 /*============================================================================
@@ -11672,12 +11689,14 @@ void OpcUa_RelativePath_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_RelativePath_Clear(void* pValue)
 {
-    OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
+    /*OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
     if (a_pValue != NULL)
     {
         SOPC_Clear_Array(&a_pValue->NoOfElements, (void**) &a_pValue->Elements, sizeof(OpcUa_RelativePathElement),
                          (SOPC_EncodeableObject_PfnClear*) OpcUa_RelativePathElement_Clear);
-    }
+    }*/
+
+    SOPC_Generic_Clear(pValue, &OpcUa_RelativePath_EncodeableType);
 }
 
 /*============================================================================
@@ -11685,7 +11704,7 @@ void OpcUa_RelativePath_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePath_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     const OpcUa_RelativePath* a_pValue = (const OpcUa_RelativePath*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11700,7 +11719,9 @@ SOPC_ReturnStatus OpcUa_RelativePath_Encode(const void* pValue, SOPC_Buffer* buf
                                   (SOPC_EncodeableObject_PfnEncode*) OpcUa_RelativePathElement_Encode);
     }
 
-    return status;
+    return status;*/
+
+    return SOPC_Generic_Encode(pValue, &OpcUa_RelativePath_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -11708,7 +11729,7 @@ SOPC_ReturnStatus OpcUa_RelativePath_Encode(const void* pValue, SOPC_Buffer* buf
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePath_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11732,12 +11753,22 @@ SOPC_ReturnStatus OpcUa_RelativePath_Decode(void* pValue, SOPC_Buffer* buf)
         OpcUa_RelativePath_Clear(a_pValue);
     }
 
-    return status;
+    return status;*/
+
+    return SOPC_Generic_Decode(pValue, &OpcUa_RelativePath_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_RelativePath_EncodeableType
  *===========================================================================*/
+SOPC_FieldDescriptor RelativePath_SOPC_FieldDescriptor[] = {
+    //{true, {.BuiltInId = SOPC_Int32_Id}, (uint32_t) offsetof(OpcUa_RelativePath, NoOfElements), false, 0},
+    {false, {.NestedEncType = &OpcUa_RelativePathElement_EncodeableType},
+        (uint32_t) offsetof(OpcUa_RelativePath, Elements), true,
+        (uint32_t) offsetof(OpcUa_RelativePath, NoOfElements)}};
+
+SOPC_TypeDescriptor OpcUa_RelativePath_Descriptor = {1, RelativePath_SOPC_FieldDescriptor};
+
 struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
                                                                 OpcUaId_RelativePath,
                                                                 OpcUaId_RelativePath_Encoding_DefaultBinary,
@@ -11749,7 +11780,7 @@ struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
                                                                 NULL,
                                                                 OpcUa_RelativePath_Encode,
                                                                 OpcUa_RelativePath_Decode,
-NULL};
+                                                                &OpcUa_RelativePath_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePath
@@ -11758,13 +11789,15 @@ NULL};
  *===========================================================================*/
 void OpcUa_BrowsePath_Initialize(void* pValue)
 {
-    OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
+    /*OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
     if (a_pValue != NULL)
     {
         a_pValue->encodeableType = &OpcUa_BrowsePath_EncodeableType;
         SOPC_NodeId_Initialize(&a_pValue->StartingNode);
         OpcUa_RelativePath_Initialize(&a_pValue->RelativePath);
-    }
+    }*/
+
+    SOPC_Generic_Initialize(pValue, &OpcUa_BrowsePath_EncodeableType);
 }
 
 /*============================================================================
@@ -11772,12 +11805,14 @@ void OpcUa_BrowsePath_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_BrowsePath_Clear(void* pValue)
 {
-    OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
+    /*OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
     if (a_pValue != NULL)
     {
         SOPC_NodeId_Clear(&a_pValue->StartingNode);
         OpcUa_RelativePath_Clear(&a_pValue->RelativePath);
-    }
+    }*/
+
+    SOPC_Generic_Clear(pValue, &OpcUa_BrowsePath_EncodeableType);
 }
 
 /*============================================================================
@@ -11785,7 +11820,7 @@ void OpcUa_BrowsePath_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_BrowsePath_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     const OpcUa_BrowsePath* a_pValue = (const OpcUa_BrowsePath*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11802,7 +11837,8 @@ SOPC_ReturnStatus OpcUa_BrowsePath_Encode(const void* pValue, SOPC_Buffer* buf)
         status = OpcUa_RelativePath_Encode(&a_pValue->RelativePath, buf);
     }
 
-    return status;
+    return status;*/
+    return SOPC_Generic_Encode(pValue, &OpcUa_BrowsePath_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -11810,7 +11846,7 @@ SOPC_ReturnStatus OpcUa_BrowsePath_Encode(const void* pValue, SOPC_Buffer* buf)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_BrowsePath_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
+    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
     OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
 
     if (a_pValue != NULL && buf != NULL)
@@ -11834,12 +11870,22 @@ SOPC_ReturnStatus OpcUa_BrowsePath_Decode(void* pValue, SOPC_Buffer* buf)
         OpcUa_BrowsePath_Clear(a_pValue);
     }
 
-    return status;
+    return status;*/
+
+    return SOPC_Generic_Decode(pValue, &OpcUa_BrowsePath_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_BrowsePath_EncodeableType
  *===========================================================================*/
+SOPC_FieldDescriptor BrowsePath_SOPC_FieldDescriptor[] = {
+    {true, {.BuiltInId = 17}, (uint32_t) offsetof(OpcUa_BrowsePath, StartingNode), false, 0},
+    {false, {.NestedEncType = &OpcUa_RelativePath_EncodeableType},
+        (uint32_t) offsetof(OpcUa_BrowsePath, RelativePath), false, 0}};
+
+SOPC_TypeDescriptor OpcUa_BrowsePath_Descriptor = {2, BrowsePath_SOPC_FieldDescriptor};
+
+
 struct SOPC_EncodeableType OpcUa_BrowsePath_EncodeableType = {"BrowsePath",
                                                               OpcUaId_BrowsePath,
                                                               OpcUaId_BrowsePath_Encoding_DefaultBinary,
@@ -11851,7 +11897,7 @@ struct SOPC_EncodeableType OpcUa_BrowsePath_EncodeableType = {"BrowsePath",
                                                               NULL,
                                                               OpcUa_BrowsePath_Encode,
                                                               OpcUa_BrowsePath_Decode,
-NULL};
+                                                              &OpcUa_BrowsePath_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePathTarget
@@ -19282,15 +19328,15 @@ SOPC_ReturnStatus OpcUa_AggregateConfiguration_Decode(void* pValue, SOPC_Buffer*
 /*============================================================================
  * OpcUa_AggregateConfiguration_EncodeableType
  *===========================================================================*/
-FieldDescriptor AggregateConfiguration_FieldDescriptor[] = {
-    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseServerCapabilitiesDefaults)},
-    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, TreatUncertainAsBad)},
-    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataBad)},
-    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataGood)},
-    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseSlopedExtrapolation)}};
+SOPC_FieldDescriptor AggregateConfiguration_SOPC_FieldDescriptor[] = {
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseServerCapabilitiesDefaults), false, 0},
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, TreatUncertainAsBad), false, 0},
+    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataBad), false, 0},
+    {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataGood), false, 0},
+    {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseSlopedExtrapolation), false, 0}};
 
 
-TypeDescriptor OpcUa_AggregateConfiguration_Descriptor = {5, AggregateConfiguration_FieldDescriptor};
+SOPC_TypeDescriptor OpcUa_AggregateConfiguration_Descriptor = {5, AggregateConfiguration_SOPC_FieldDescriptor};
 
 
 struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
@@ -19595,13 +19641,13 @@ SOPC_ReturnStatus OpcUa_AggregateFilterResult_Decode(void* pValue, SOPC_Buffer* 
 /*============================================================================
  * OpcUa_AggregateFilterResult_EncodeableType
  *===========================================================================*/
-FieldDescriptor AggregateFilterResult_FieldDescriptor[] = {
-    {1, {.BuiltInId = 13}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedStartTime)},
-    {1, {.BuiltInId = 11}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedProcessingInterval)},
-    {0, {.NestedEncType = &OpcUa_AggregateConfiguration_EncodeableType},
-        (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedAggregateConfiguration)}};
+SOPC_FieldDescriptor AggregateFilterResult_SOPC_FieldDescriptor[] = {
+    {true, {.BuiltInId = 13}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedStartTime), false, 0},
+    {true, {.BuiltInId = 11}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedProcessingInterval), false, 0},
+    {false, {.NestedEncType = &OpcUa_AggregateConfiguration_EncodeableType},
+        (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedAggregateConfiguration), false, 0}};
 
-TypeDescriptor OpcUa_AggregateFilterResult_Descriptor = {3, AggregateFilterResult_FieldDescriptor};
+SOPC_TypeDescriptor OpcUa_AggregateFilterResult_Descriptor = {3, AggregateFilterResult_SOPC_FieldDescriptor};
 
 struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     "AggregateFilterResult",

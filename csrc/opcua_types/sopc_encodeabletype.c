@@ -19,6 +19,7 @@
 
 #include "sopc_encodeabletype.h"
 #include "sopc_encoder.h"
+#include "sopc_macros.h"
 
 #include <string.h>
 
@@ -76,46 +77,79 @@ const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType)
 void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
 {
     // Initializing encodeable type
-    void* field_ptr = ((char*) pValue);
-    SOPC_EncodeableType** field_ec_type = (SOPC_EncodeableType**) field_ptr;
+    void* field_ptr = NULL;
+    void* nbelem_ptr = NULL;
+    SOPC_FieldDescriptor* field_desc = NULL;
+    SOPC_EncodeableType** field_ec_type = (SOPC_EncodeableType**) pValue;
     *field_ec_type = enc_type;
 
     // Initializing fields
-    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    for (uint32_t i = 0 ; i < enc_type->Descriptor->nbElements ; i++)
     {
         // Getting the field
-        field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+        field_desc = &enc_type->Descriptor->Elements[i];
 
-        if (enc_type->descriptor->Elements[i].IsBuiltIn)
+        field_ptr = ((char*) pValue) + field_desc->Offset;
+
+        if (field_desc->IsArray)
         {
-            switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+            if (field_desc->IsBuiltIn)
             {
-                case SOPC_Boolean_Id:
-                    SOPC_Boolean_Initialize(field_ptr);
-                    break;
-                case SOPC_SByte_Id:
-                    SOPC_SByte_Initialize(field_ptr);
-                    break;
-                case SOPC_Byte_Id:
-                    SOPC_Byte_Initialize(field_ptr);
-                    break;
-                case SOPC_Int16_Id:
-                    SOPC_Int16_Initialize(field_ptr);
-                    break;
-                case SOPC_Double_Id:
-                    SOPC_Double_Initialize(field_ptr);
-                    break;
-                case SOPC_DateTime_Id:
-                    SOPC_DateTime_Initialize(field_ptr);
-                    break;
-                default:
-                    ;
+                // TODO
+            }
+            else
+            {
+                nbelem_ptr = ((char*) pValue) + field_desc->OffsetNbElem;
+
+                SOPC_Initialize_Array(
+                    (int32_t*) nbelem_ptr,
+                    (void**) field_ptr,
+                    field_desc->Type.NestedEncType->AllocationSize,
+                    (SOPC_EncodeableObject_PfnInitialize*) field_desc->Type.NestedEncType->Initialize);
             }
         }
         else
         {
-            SOPC_Generic_Initialize(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType);
-        }
+            if (field_desc->IsBuiltIn)
+            {
+                switch(field_desc->Type.BuiltInId)
+                {
+                    case SOPC_Boolean_Id:
+                        SOPC_Boolean_Initialize(field_ptr);
+                        break;
+                    case SOPC_SByte_Id:
+                        SOPC_SByte_Initialize(field_ptr);
+                        break;
+                    case SOPC_Byte_Id:
+                        SOPC_Byte_Initialize(field_ptr);
+                        break;
+                    case SOPC_Int16_Id:
+                        SOPC_Int16_Initialize(field_ptr);
+                        break;
+                    case SOPC_Int32_Id:
+                        SOPC_Int32_Initialize(field_ptr);
+                        break;
+                    case SOPC_Double_Id:
+                        SOPC_Double_Initialize(field_ptr);
+                        break;
+                    case SOPC_DateTime_Id:
+                        SOPC_DateTime_Initialize(field_ptr);
+                        break;
+                    case SOPC_NodeId_Id:
+                        SOPC_NodeId_Initialize(field_ptr);
+                        break;
+                    case SOPC_QualifiedName_Id:
+                        SOPC_QualifiedName_Initialize(field_ptr);
+                        break;
+                    default:
+                        assert(false);
+                }
+            }
+            else
+            {
+                SOPC_Generic_Initialize(field_ptr, field_desc->Type.NestedEncType);
+            }
+        } 
     }
 }
 
@@ -123,51 +157,85 @@ void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
 {
     // Initializing encodeable type
     void* field_ptr = NULL;
+    void* nbelem_ptr = NULL;
+    SOPC_FieldDescriptor* field_desc = NULL;
 
     // Initializing fields
-    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    for (uint32_t i = 0 ; i < enc_type->Descriptor->nbElements ; i++)
     {
         // Getting the field
-        field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
+        field_desc = &enc_type->Descriptor->Elements[i];
 
-        if (enc_type->descriptor->Elements[i].IsBuiltIn)
+        field_ptr = ((char*) pValue) + field_desc->Offset;
+
+        if (field_desc->IsArray)
         {
-            switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+            if (field_desc->IsBuiltIn)
             {
-                case SOPC_Boolean_Id:
-                    SOPC_Boolean_Clear(field_ptr);
-                    break;
-                case SOPC_SByte_Id:
-                    SOPC_SByte_Clear(field_ptr);
-                    break;
-                case SOPC_Byte_Id:
-                    SOPC_Byte_Clear(field_ptr);
-                    break;
-                case SOPC_Int16_Id:
-                    SOPC_Int16_Clear(field_ptr);
-                    break;
-                case SOPC_Double_Id:
-                    SOPC_Double_Clear(field_ptr);
-                    break;
-                case SOPC_DateTime_Id:
-                    SOPC_DateTime_Clear(field_ptr);
-                    break;
-                default:
-                    ;
+                // TODO
+            }
+            else
+            {
+                nbelem_ptr = ((char*) pValue) + field_desc->OffsetNbElem;
+
+                SOPC_Clear_Array(
+                    (int32_t*) nbelem_ptr,
+                    (void**) field_ptr,
+                    field_desc->Type.NestedEncType->AllocationSize,
+                    (SOPC_EncodeableObject_PfnClear*) field_desc->Type.NestedEncType->Clear);
             }
         }
         else
         {
-            SOPC_Generic_Clear(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType);
+            if (field_desc->IsBuiltIn)
+            {
+                switch(field_desc->Type.BuiltInId)
+                {
+                    case SOPC_Boolean_Id:
+                        SOPC_Boolean_Clear(field_ptr);
+                        break;
+                    case SOPC_SByte_Id:
+                        SOPC_SByte_Clear(field_ptr);
+                        break;
+                    case SOPC_Byte_Id:
+                        SOPC_Byte_Clear(field_ptr);
+                        break;
+                    case SOPC_Int16_Id:
+                        SOPC_Int16_Clear(field_ptr);
+                        break;
+                    case SOPC_Int32_Id:
+                        SOPC_Int32_Clear(field_ptr);
+                        break;
+                    case SOPC_Double_Id:
+                        SOPC_Double_Clear(field_ptr);
+                        break;
+                    case SOPC_DateTime_Id:
+                        SOPC_DateTime_Clear(field_ptr);
+                        break;
+                    case SOPC_NodeId_Id:
+                        SOPC_NodeId_Clear(field_ptr);
+                        break;
+                    case SOPC_QualifiedName_Id:
+                        SOPC_QualifiedName_Clear(field_ptr);
+                        break;
+                    default:
+                        assert(false);
+                }
+            }
+            else
+            {
+                SOPC_Generic_Clear(field_ptr, field_desc->Type.NestedEncType);
+            }
         }
     }
 }
-
+/*status = SOPC_Write_Array(buf, &a_pValue->NoOfElements, &arr, sizeof(OpcUa_RelativePathElement),
+                                  (SOPC_EncodeableObject_PfnEncode*) OpcUa_RelativePathElement_Encode);*/
 SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* enc_type, SOPC_Buffer* buf)
 {
     SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
 
-    // Initializing encodeable type
+    SOPC_FieldDescriptor* field_desc = NULL;
 
     if (pValue != NULL && buf != NULL)
     {
@@ -175,43 +243,80 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
     }
 
     // Initializing fields
-    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    for (uint32_t i = 0 ; i < enc_type->Descriptor->nbElements ; i++)
     {
         if (SOPC_STATUS_OK == status)
         {
             // Getting the field
-            const void* field_ptr = ((const char*) pValue) + enc_type->descriptor->Elements[i].Offset;
-    
-            if (enc_type->descriptor->Elements[i].IsBuiltIn)
+            field_desc = &enc_type->Descriptor->Elements[i];
+
+            const void* field_ptr = ((const char*) pValue) + field_desc->Offset;
+
+            if (field_desc->IsArray)
             {
-                switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+                if (field_desc->IsBuiltIn)
                 {
-                    case SOPC_Boolean_Id:
-                        status = SOPC_Boolean_Write(field_ptr, buf);
-                        break;
-                    case SOPC_SByte_Id:
-                        status = SOPC_SByte_Write(field_ptr, buf);
-                        break;
-                    case SOPC_Byte_Id:
-                        status = SOPC_Byte_Write(field_ptr, buf);
-                        break;
-                    case SOPC_Int16_Id:
-                        status = SOPC_Int16_Write(field_ptr, buf);
-                        break;
-                    case SOPC_Double_Id:
-                        status = SOPC_Double_Write(field_ptr, buf);
-                        break;
-                    case SOPC_DateTime_Id:
-                        status = SOPC_DateTime_Write(field_ptr, buf);
-                        break;
-                    default:
-                        status = SOPC_STATUS_NOK;
-                        ;
+                    // TODO
+                }
+                else
+                {
+                    const void* nbelem_ptr = ((const char*) pValue) + field_desc->OffsetNbElem;
+
+                    // Pointer containing address to array (cqfd void**)
+                    SOPC_GCC_DIAGNOSTIC_IGNORE_CAST_CONST
+                    const void** array_ptr = (const void**) field_ptr;
+                    SOPC_GCC_DIAGNOSTIC_RESTORE
+                    
+                    status = SOPC_Write_Array(
+                        buf,
+                        (const int32_t*) nbelem_ptr,
+                        array_ptr,
+                        field_desc->Type.NestedEncType->AllocationSize,
+                        (SOPC_EncodeableObject_PfnEncode*) field_desc->Type.NestedEncType->Encode);
                 }
             }
             else
             {
-                SOPC_Generic_Encode(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType, buf);
+                if (field_desc->IsBuiltIn)
+                {
+                    switch(field_desc->Type.BuiltInId)
+                    {
+                        case SOPC_Boolean_Id:
+                            status = SOPC_Boolean_Write(field_ptr, buf);
+                            break;
+                        case SOPC_SByte_Id:
+                            status = SOPC_SByte_Write(field_ptr, buf);
+                            break;
+                        case SOPC_Byte_Id:
+                            status = SOPC_Byte_Write(field_ptr, buf);
+                            break;
+                        case SOPC_Int16_Id:
+                            status = SOPC_Int16_Write(field_ptr, buf);
+                            break;
+                        case SOPC_Int32_Id:
+                            status = SOPC_Int32_Write(field_ptr, buf);
+                            break;
+                        case SOPC_Double_Id:
+                            status = SOPC_Double_Write(field_ptr, buf);
+                            break;
+                        case SOPC_DateTime_Id:
+                            status = SOPC_DateTime_Write(field_ptr, buf);
+                            break;
+                        case SOPC_NodeId_Id:
+                            status = SOPC_NodeId_Write(field_ptr, buf);
+                            break;
+                        case SOPC_QualifiedName_Id:
+                            status = SOPC_QualifiedName_Write(field_ptr, buf);
+                            break;
+                        default:
+                            status = SOPC_STATUS_NOK;
+                            assert(false);
+                    }
+                }
+                else
+                {
+                    status = SOPC_Generic_Encode(field_ptr, field_desc->Type.NestedEncType, buf);
+                }
             }
         }
     }
@@ -223,8 +328,11 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
 {
     SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
 
+    SOPC_FieldDescriptor* field_desc = NULL;
+
     // Initializing encodeable type
     void* field_ptr = NULL;
+    void* nbelem_ptr = NULL;
 
     if (pValue != NULL && buf != NULL)
     {
@@ -234,43 +342,78 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
     SOPC_Generic_Initialize(pValue, enc_type);
 
     // Initializing fields
-    for (uint32_t i = 0 ; i < enc_type->descriptor->nbElements ; i++)
+    for (uint32_t i = 0 ; i < enc_type->Descriptor->nbElements ; i++)
     {
         if (SOPC_STATUS_OK == status)
         {
             // Getting the field
-            field_ptr = ((char*) pValue) + enc_type->descriptor->Elements[i].Offset;
-    
-            if (enc_type->descriptor->Elements[i].IsBuiltIn)
+            field_desc = &enc_type->Descriptor->Elements[i];
+
+            field_ptr = ((char*) pValue) + field_desc->Offset;
+
+            if (field_desc->IsArray)
             {
-                switch(enc_type->descriptor->Elements[i].Id.BuiltInId)
+                if (field_desc->IsBuiltIn)
                 {
-                    case SOPC_Boolean_Id:
-                        status = SOPC_Boolean_Read(field_ptr, buf);
-                        break;
-                    case SOPC_SByte_Id:
-                        status = SOPC_SByte_Read(field_ptr, buf);
-                        break;
-                    case SOPC_Byte_Id:
-                        status = SOPC_Byte_Read(field_ptr, buf);
-                        break;
-                    case SOPC_Int16_Id:
-                        status = SOPC_Int16_Read(field_ptr, buf);
-                        break;
-                    case SOPC_Double_Id:
-                        status = SOPC_Double_Read(field_ptr, buf);
-                        break;
-                    case SOPC_DateTime_Id:
-                        status = SOPC_DateTime_Read(field_ptr, buf);
-                        break;
-                    default:
-                        status = SOPC_STATUS_NOK;
-                        ;
+                    // TODO
+                }
+                else
+                {
+                    nbelem_ptr = ((char*) pValue) + field_desc->OffsetNbElem;
+
+                    status = SOPC_Read_Array(
+                        buf,
+                        (int32_t*) nbelem_ptr,
+                        (void**) field_ptr,
+                        field_desc->Type.NestedEncType->AllocationSize,
+                        (SOPC_EncodeableObject_PfnDecode*) field_desc->Type.NestedEncType->Decode,
+                        (SOPC_EncodeableObject_PfnInitialize*) field_desc->Type.NestedEncType->Initialize,
+                        (SOPC_EncodeableObject_PfnClear*) field_desc->Type.NestedEncType->Clear);
                 }
             }
             else
             {
-                SOPC_Generic_Decode(field_ptr, enc_type->descriptor->Elements[i].Id.NestedEncType, buf);
+    
+                if (field_desc->IsBuiltIn)
+                {
+                    switch(field_desc->Type.BuiltInId)
+                    {
+                        case SOPC_Boolean_Id:
+                            status = SOPC_Boolean_Read(field_ptr, buf);
+                            break;
+                        case SOPC_SByte_Id:
+                            status = SOPC_SByte_Read(field_ptr, buf);
+                            break;
+                        case SOPC_Byte_Id:
+                            status = SOPC_Byte_Read(field_ptr, buf);
+                            break;
+                        case SOPC_Int16_Id:
+                            status = SOPC_Int16_Read(field_ptr, buf);
+                            break;
+                        case SOPC_Int32_Id:
+                            status = SOPC_Int32_Read(field_ptr, buf);
+                            break;
+                        case SOPC_Double_Id:
+                            status = SOPC_Double_Read(field_ptr, buf);
+                            break;
+                        case SOPC_DateTime_Id:
+                            status = SOPC_DateTime_Read(field_ptr, buf);
+                            break;
+                        case SOPC_NodeId_Id:
+                            status = SOPC_NodeId_Read(field_ptr, buf);
+                            break;
+                        case SOPC_QualifiedName_Id:
+                            status = SOPC_QualifiedName_Read(field_ptr, buf);
+                            break;
+                        default:
+                            status = SOPC_STATUS_NOK;
+                            assert(false);
+                    }
+                }
+                else
+                {
+                    status = SOPC_Generic_Decode(field_ptr, field_desc->Type.NestedEncType, buf);
+                }
             }
         }
     }
