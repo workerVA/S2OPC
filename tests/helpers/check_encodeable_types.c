@@ -255,6 +255,36 @@ START_TEST(test_browse_path)
 }
 END_TEST
 
+/******************************************************************************
+ * DeleteSubscriptionsRequest unitary test
+ ******************************************************************************/
+
+static void delete_subscriptions_request_checker(void* encodeable_type_object)
+{
+    OpcUa_DeleteSubscriptionsRequest* obj = encodeable_type_object;
+
+    ck_assert_encodeable_type(obj, OpcUa_DeleteSubscriptionsRequest);
+    ck_assert_int_eq(obj->NoOfSubscriptionIds, 2);
+    ck_assert_uint_eq(obj->SubscriptionIds[0], 5);
+    ck_assert_uint_eq(obj->SubscriptionIds[1], 10);
+}
+
+START_TEST(test_delete_subscriptions_request)
+{
+    // Test frame creation (with cursor position reset)
+    uint8_t frame[] = {
+        0x02, 0x00, 0x00, 0x00, // NoOfSubscriptionIds == 2
+        0x05, 0x00, 0x00, 0x00, // SubscriptionsIds[0] == 5
+        0x0A, 0x00, 0x00, 0x00  // SubscriptionsIds[1] == 10
+                       };                 
+
+    check_encodeable_type(&OpcUa_DeleteSubscriptionsRequest_EncodeableType,
+                          delete_subscriptions_request_checker,
+                          frame,
+                          (uint32_t) sizeof frame);
+}
+END_TEST
+
 Suite* tests_make_suite_encodeable_types(void)
 {
     Suite* s;
@@ -268,6 +298,7 @@ Suite* tests_make_suite_encodeable_types(void)
     tcase_add_test(tc_encodeable_types, test_time_zone_data_type);
     tcase_add_test(tc_encodeable_types, test_aggregate_filter_result);
     tcase_add_test(tc_encodeable_types, test_browse_path);
+    tcase_add_test(tc_encodeable_types, test_delete_subscriptions_request);
     suite_add_tcase(s, tc_encodeable_types);
 
     return s;

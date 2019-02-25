@@ -11535,16 +11535,6 @@ NULL};
  *===========================================================================*/
 void OpcUa_RelativePathElement_Initialize(void* pValue)
 {
-    /*OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_RelativePathElement_EncodeableType;
-        SOPC_NodeId_Initialize(&a_pValue->ReferenceTypeId);
-        SOPC_Boolean_Initialize(&a_pValue->IsInverse);
-        SOPC_Boolean_Initialize(&a_pValue->IncludeSubtypes);
-        SOPC_QualifiedName_Initialize(&a_pValue->TargetName);
-    }*/
-
     SOPC_Generic_Initialize(pValue, &OpcUa_RelativePathElement_EncodeableType);
 }
 
@@ -11553,14 +11543,6 @@ void OpcUa_RelativePathElement_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_RelativePathElement_Clear(void* pValue)
 {
-    /*OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_NodeId_Clear(&a_pValue->ReferenceTypeId);
-        SOPC_Boolean_Clear(&a_pValue->IsInverse);
-        SOPC_Boolean_Clear(&a_pValue->IncludeSubtypes);
-        SOPC_QualifiedName_Clear(&a_pValue->TargetName);
-    }*/
     SOPC_Generic_Clear(pValue, &OpcUa_RelativePathElement_EncodeableType);
 }
 
@@ -11569,32 +11551,6 @@ void OpcUa_RelativePathElement_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePathElement_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_RelativePathElement* a_pValue = (const OpcUa_RelativePathElement*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_NodeId_Write(&a_pValue->ReferenceTypeId, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->IsInverse, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Write(&a_pValue->IncludeSubtypes, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_QualifiedName_Write(&a_pValue->TargetName, buf);
-    }
-
-    return status;*/
 
     return SOPC_Generic_Encode(pValue, &OpcUa_RelativePathElement_EncodeableType, buf);
 }
@@ -11604,39 +11560,6 @@ SOPC_ReturnStatus OpcUa_RelativePathElement_Encode(const void* pValue, SOPC_Buff
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePathElement_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_RelativePathElement* a_pValue = (OpcUa_RelativePathElement*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_RelativePathElement_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_NodeId_Read(&a_pValue->ReferenceTypeId, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->IsInverse, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Boolean_Read(&a_pValue->IncludeSubtypes, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_QualifiedName_Read(&a_pValue->TargetName, buf);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_RelativePathElement_Clear(a_pValue);
-    }
-
-    return status;*/
     return SOPC_Generic_Decode(pValue, &OpcUa_RelativePathElement_EncodeableType, buf);
 }
 
@@ -11673,14 +11596,6 @@ struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
  *===========================================================================*/
 void OpcUa_RelativePath_Initialize(void* pValue)
 {
-    /*OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_RelativePath_EncodeableType;
-        SOPC_Initialize_Array(&a_pValue->NoOfElements, (void**) &a_pValue->Elements, sizeof(OpcUa_RelativePathElement),
-                              (SOPC_EncodeableObject_PfnInitialize*) OpcUa_RelativePathElement_Initialize);
-    }*/
-
     SOPC_Generic_Initialize(pValue, &OpcUa_RelativePath_EncodeableType);
 }
 
@@ -11689,13 +11604,6 @@ void OpcUa_RelativePath_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_RelativePath_Clear(void* pValue)
 {
-    /*OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_Clear_Array(&a_pValue->NoOfElements, (void**) &a_pValue->Elements, sizeof(OpcUa_RelativePathElement),
-                         (SOPC_EncodeableObject_PfnClear*) OpcUa_RelativePathElement_Clear);
-    }*/
-
     SOPC_Generic_Clear(pValue, &OpcUa_RelativePath_EncodeableType);
 }
 
@@ -11704,23 +11612,6 @@ void OpcUa_RelativePath_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePath_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_RelativePath* a_pValue = (const OpcUa_RelativePath*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        const void* arr = a_pValue->Elements;
-        status = SOPC_Write_Array(buf, &a_pValue->NoOfElements, &arr, sizeof(OpcUa_RelativePathElement),
-                                  (SOPC_EncodeableObject_PfnEncode*) OpcUa_RelativePathElement_Encode);
-    }
-
-    return status;*/
-
     return SOPC_Generic_Encode(pValue, &OpcUa_RelativePath_EncodeableType, buf);
 }
 
@@ -11729,32 +11620,6 @@ SOPC_ReturnStatus OpcUa_RelativePath_Encode(const void* pValue, SOPC_Buffer* buf
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_RelativePath_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_RelativePath* a_pValue = (OpcUa_RelativePath*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_RelativePath_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Read_Array(buf, &a_pValue->NoOfElements, (void**) &a_pValue->Elements,
-                                 sizeof(OpcUa_RelativePathElement),
-                                 (SOPC_EncodeableObject_PfnDecode*) OpcUa_RelativePathElement_Decode,
-                                 (SOPC_EncodeableObject_PfnInitialize*) OpcUa_RelativePathElement_Initialize,
-                                 (SOPC_EncodeableObject_PfnClear*) OpcUa_RelativePathElement_Clear);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_RelativePath_Clear(a_pValue);
-    }
-
-    return status;*/
-
     return SOPC_Generic_Decode(pValue, &OpcUa_RelativePath_EncodeableType, buf);
 }
 
@@ -11789,14 +11654,6 @@ struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
  *===========================================================================*/
 void OpcUa_BrowsePath_Initialize(void* pValue)
 {
-    /*OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_BrowsePath_EncodeableType;
-        SOPC_NodeId_Initialize(&a_pValue->StartingNode);
-        OpcUa_RelativePath_Initialize(&a_pValue->RelativePath);
-    }*/
-
     SOPC_Generic_Initialize(pValue, &OpcUa_BrowsePath_EncodeableType);
 }
 
@@ -11805,13 +11662,6 @@ void OpcUa_BrowsePath_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_BrowsePath_Clear(void* pValue)
 {
-    /*OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_NodeId_Clear(&a_pValue->StartingNode);
-        OpcUa_RelativePath_Clear(&a_pValue->RelativePath);
-    }*/
-
     SOPC_Generic_Clear(pValue, &OpcUa_BrowsePath_EncodeableType);
 }
 
@@ -11820,24 +11670,6 @@ void OpcUa_BrowsePath_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_BrowsePath_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_BrowsePath* a_pValue = (const OpcUa_BrowsePath*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_NodeId_Write(&a_pValue->StartingNode, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = OpcUa_RelativePath_Encode(&a_pValue->RelativePath, buf);
-    }
-
-    return status;*/
     return SOPC_Generic_Encode(pValue, &OpcUa_BrowsePath_EncodeableType, buf);
 }
 
@@ -11846,32 +11678,6 @@ SOPC_ReturnStatus OpcUa_BrowsePath_Encode(const void* pValue, SOPC_Buffer* buf)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_BrowsePath_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    /*SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_BrowsePath* a_pValue = (OpcUa_BrowsePath*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_BrowsePath_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_NodeId_Read(&a_pValue->StartingNode, buf);
-    }
-    if (SOPC_STATUS_OK == status)
-    {
-        status = OpcUa_RelativePath_Decode(&a_pValue->RelativePath, buf);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_BrowsePath_Clear(a_pValue);
-    }
-
-    return status;*/
-
     return SOPC_Generic_Decode(pValue, &OpcUa_BrowsePath_EncodeableType, buf);
 }
 
@@ -23985,13 +23791,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_DeleteSubscriptionsRequest_Initialize(void* pValue)
 {
-    OpcUa_DeleteSubscriptionsRequest* a_pValue = (OpcUa_DeleteSubscriptionsRequest*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_DeleteSubscriptionsRequest_EncodeableType;
-        SOPC_Initialize_Array(&a_pValue->NoOfSubscriptionIds, (void**) &a_pValue->SubscriptionIds, sizeof(uint32_t),
-                              (SOPC_EncodeableObject_PfnInitialize*) SOPC_UInt32_InitializeAux);
-    }
+    SOPC_Generic_Initialize(pValue, &OpcUa_DeleteSubscriptionsRequest_EncodeableType);
 }
 
 /*============================================================================
@@ -23999,12 +23799,7 @@ void OpcUa_DeleteSubscriptionsRequest_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_DeleteSubscriptionsRequest_Clear(void* pValue)
 {
-    OpcUa_DeleteSubscriptionsRequest* a_pValue = (OpcUa_DeleteSubscriptionsRequest*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_Clear_Array(&a_pValue->NoOfSubscriptionIds, (void**) &a_pValue->SubscriptionIds, sizeof(uint32_t),
-                         (SOPC_EncodeableObject_PfnClear*) SOPC_UInt32_ClearAux);
-    }
+    SOPC_Generic_Clear(pValue, &OpcUa_DeleteSubscriptionsRequest_EncodeableType);
 }
 
 /*============================================================================
@@ -24012,22 +23807,7 @@ void OpcUa_DeleteSubscriptionsRequest_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_DeleteSubscriptionsRequest_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_DeleteSubscriptionsRequest* a_pValue = (const OpcUa_DeleteSubscriptionsRequest*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        const void* arr = a_pValue->SubscriptionIds;
-        status = SOPC_Write_Array(buf, &a_pValue->NoOfSubscriptionIds, &arr, sizeof(uint32_t),
-                                  (SOPC_EncodeableObject_PfnEncode*) SOPC_UInt32_WriteAux);
-    }
-
-    return status;
+    return SOPC_Generic_Encode(pValue, &OpcUa_DeleteSubscriptionsRequest_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -24035,35 +23815,20 @@ SOPC_ReturnStatus OpcUa_DeleteSubscriptionsRequest_Encode(const void* pValue, SO
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_DeleteSubscriptionsRequest_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_DeleteSubscriptionsRequest* a_pValue = (OpcUa_DeleteSubscriptionsRequest*) pValue;
 
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_DeleteSubscriptionsRequest_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Read_Array(buf, &a_pValue->NoOfSubscriptionIds, (void**) &a_pValue->SubscriptionIds,
-                                 sizeof(uint32_t), (SOPC_EncodeableObject_PfnDecode*) SOPC_UInt32_ReadAux,
-                                 (SOPC_EncodeableObject_PfnInitialize*) SOPC_UInt32_InitializeAux,
-                                 (SOPC_EncodeableObject_PfnClear*) SOPC_UInt32_ClearAux);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_DeleteSubscriptionsRequest_Clear(a_pValue);
-    }
-
-    return status;
+    return SOPC_Generic_Decode(pValue, &OpcUa_DeleteSubscriptionsRequest_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_DeleteSubscriptionsRequest_EncodeableType
  *===========================================================================*/
+SOPC_FieldDescriptor DeleteSubscriptionsRequest_SOPC_FieldDescriptor[] = {
+    {true, {.BuiltInId = SOPC_UInt32_Id},
+        (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, SubscriptionIds), true,
+        (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, NoOfSubscriptionIds)}};
+
+SOPC_TypeDescriptor OpcUa_DeleteSubscriptionsRequest_Descriptor = {1, DeleteSubscriptionsRequest_SOPC_FieldDescriptor};
+
 struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     "DeleteSubscriptionsRequest",
     OpcUaId_DeleteSubscriptionsRequest,
@@ -24076,7 +23841,7 @@ struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     NULL,
     OpcUa_DeleteSubscriptionsRequest_Encode,
     OpcUa_DeleteSubscriptionsRequest_Decode,
-NULL};
+    &OpcUa_DeleteSubscriptionsRequest_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteSubscriptionsResponse
