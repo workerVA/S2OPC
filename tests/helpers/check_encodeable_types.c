@@ -285,6 +285,186 @@ START_TEST(test_delete_subscriptions_request)
 }
 END_TEST
 
+
+
+/******************************************************************************
+ * FindServersResponse unitary test
+ ******************************************************************************/
+
+static void translate_browse_paths_to_node_ids_request_checker(void* encodeable_type_object)
+{
+    OpcUa_TranslateBrowsePathsToNodeIdsRequest* obj = encodeable_type_object;
+    OpcUa_BrowsePath* browse_path;
+    OpcUa_RelativePath* path;
+    OpcUa_RelativePathElement* elem;
+
+    ck_assert_encodeable_type(obj, OpcUa_TranslateBrowsePathsToNodeIdsRequest);
+
+    ck_assert_int_eq(obj->NoOfBrowsePaths, 2);
+    ck_assert_ptr_nonnull(obj->BrowsePaths);
+
+    // BrowsePaths[0]
+    browse_path = &obj->BrowsePaths[0];
+    ck_assert_encodeable_type(browse_path, OpcUa_BrowsePath);
+    ck_assert_int_eq(browse_path->StartingNode.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(browse_path->StartingNode.Namespace, 0x02);
+    ck_assert_uint_eq(browse_path->StartingNode.Data.Numeric, 0x0605);
+
+    path = &browse_path->RelativePath;
+    ck_assert_encodeable_type(path, OpcUa_RelativePath);
+    ck_assert_int_eq(path->NoOfElements, 2);
+    ck_assert_ptr_nonnull(path->Elements);
+
+    elem = &path->Elements[0];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x05);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0B0A);
+    ck_assert_int_eq(elem->IsInverse, false);
+    ck_assert_int_eq(elem->IncludeSubtypes, true);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0B0C);
+    ck_assert_int_eq(elem->TargetName.Name.Length, -1);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_ptr_null(elem->TargetName.Name.Data);
+
+    elem = &path->Elements[1];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x0B);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0D0C);
+    ck_assert_int_eq(elem->IsInverse, true);
+    ck_assert_int_eq(elem->IncludeSubtypes, false);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0E0D);
+    ck_assert_int_eq(elem->TargetName.Name.Length, 4);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_pstr_eq((char*) elem->TargetName.Name.Data, "mugu");
+
+    // BrowsePaths[1]
+    browse_path = &obj->BrowsePaths[1];
+    ck_assert_encodeable_type(browse_path, OpcUa_BrowsePath);
+    ck_assert_int_eq(browse_path->StartingNode.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(browse_path->StartingNode.Namespace, 0x02);
+    ck_assert_uint_eq(browse_path->StartingNode.Data.Numeric, 0x0403);
+
+    path = &browse_path->RelativePath;
+    ck_assert_encodeable_type(path, OpcUa_RelativePath);
+    ck_assert_int_eq(path->NoOfElements, 2);
+    ck_assert_ptr_nonnull(path->Elements);
+
+    elem = &path->Elements[0];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x05);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0706);
+    ck_assert_int_eq(elem->IsInverse, false);
+    ck_assert_int_eq(elem->IncludeSubtypes, true);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0908);
+    ck_assert_int_eq(elem->TargetName.Name.Length, -1);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_ptr_null(elem->TargetName.Name.Data);
+
+    elem = &path->Elements[1];
+    ck_assert_encodeable_type(elem, OpcUa_RelativePathElement);
+    ck_assert_int_eq(elem->ReferenceTypeId.IdentifierType, SOPC_IdentifierType_Numeric);
+    ck_assert_int_eq(elem->ReferenceTypeId.Namespace, 0x0A);
+    ck_assert_uint_eq(elem->ReferenceTypeId.Data.Numeric, 0x0C0B);
+    ck_assert_int_eq(elem->IsInverse, true);
+    ck_assert_int_eq(elem->IncludeSubtypes, false);
+    ck_assert_uint_eq(elem->TargetName.NamespaceIndex, 0x0E0D);
+    ck_assert_int_eq(elem->TargetName.Name.Length, 4);
+    ck_assert_int_eq(elem->TargetName.Name.DoNotClear, false);
+    ck_assert_pstr_eq((char*) elem->TargetName.Name.Data, "huet");
+
+}
+
+START_TEST(test_translate_browse_paths_to_node_ids_request)
+{
+    // Test frame creation (with cursor position reset)
+    uint8_t frame[] = {
+        0x02, 0x00, 0x00, 0x00,// int32_t NoOfBrowsePaths
+        
+        // BrowsePaths[0]
+            // BrowsePath->StartingNodeId
+            0x01, // Four byte encoding of NodeId
+            0x02, // Namespace == 2
+            0x05, 0x06, // Identifier == 0x0605
+
+            // BrowsePath->RelativePath
+            0x02, 0x00, 0x00, 0x00, // NoOfElements == 2
+
+            // BrowsePath->RelativePath.Element[0]
+            // ReferenceTypeId
+            0x01, // Four byte encoding of NodeId
+            0x05, // Namespace == 5
+            0x0A, 0x0B, // Identifier == 0x0B0A
+
+            0x00, // IsInverse == false
+            0x01, // IncludeSubtypes == true
+
+            // TargetName
+            0x0C, 0x0B, // NamespaceIndex == 0x0B0C
+            0xff, 0xff, 0xff, 0xff, // Name (null)
+
+            // BrowsePath->RelativePath.Element[1]
+            // ReferenceTypeId
+            0x01, // Four byte encoding of NodeId
+            0x0B, // Namespace == 0x0B
+            0x0C, 0x0D, // Identifier == 0x0D0C
+
+            0x01, // IsInverse == true
+            0x00, // IncludeSubtypes == false
+
+            // TargetName
+            0x0D, 0x0E, // NamespaceIndex = 0
+            0x04, 0x00, 0x00, 0x00, // Name length
+            0x6D, 0x75, 0x67, 0x75,  // Name Data == "mugu"
+
+        // BrowsePaths[1]
+            // BrowsePath->StartingNodeId
+            0x01, // Four byte encoding of NodeId
+            0x02, // Namespace == 2
+            0x03, 0x04, // Identifier == 0x0403
+
+            // BrowsePath->RelativePath
+            0x02, 0x00, 0x00, 0x00, // NoOfElements == 2
+
+            // BrowsePath->RelativePath.Element[0]
+            // ReferenceTypeId
+            0x01, // Four byte encoding of NodeId
+            0x05, // Namespace == 5
+            0x06, 0x07, // Identifier == 0x0706
+
+            0x00, // IsInverse == false
+            0x01, // IncludeSubtypes == true
+
+            // TargetName
+            0x08, 0x09, // NamespaceIndex == 0x0908
+            0xff, 0xff, 0xff, 0xff, // Name (null)
+
+            // BrowsePath->RelativePath.Element[1]
+            // ReferenceTypeId
+            0x01, // Four byte encoding of NodeId
+            0x0A, // Namespace == 0x0A
+            0x0B, 0x0C, // Identifier == 0x0C0B
+
+            0x01, // IsInverse == true
+            0x00, // IncludeSubtypes == false
+
+            // TargetName
+            0x0D, 0x0E, // NamespaceIndex = 0
+            0x04, 0x00, 0x00, 0x00, // Name length
+            0x68, 0x75, 0x65, 0x74  // Name Data == "huet"
+    };                 
+
+    check_encodeable_type(&OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType,
+                          translate_browse_paths_to_node_ids_request_checker,
+                          frame,
+                          (uint32_t) sizeof frame);
+}
+END_TEST
+
+
+
 Suite* tests_make_suite_encodeable_types(void)
 {
     Suite* s;
@@ -299,6 +479,7 @@ Suite* tests_make_suite_encodeable_types(void)
     tcase_add_test(tc_encodeable_types, test_aggregate_filter_result);
     tcase_add_test(tc_encodeable_types, test_browse_path);
     tcase_add_test(tc_encodeable_types, test_delete_subscriptions_request);
+    tcase_add_test(tc_encodeable_types, test_translate_browse_paths_to_node_ids_request);
     suite_add_tcase(s, tc_encodeable_types);
 
     return s;

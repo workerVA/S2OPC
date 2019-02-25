@@ -11925,13 +11925,7 @@ NULL};
  *===========================================================================*/
 void OpcUa_TranslateBrowsePathsToNodeIdsRequest_Initialize(void* pValue)
 {
-    OpcUa_TranslateBrowsePathsToNodeIdsRequest* a_pValue = (OpcUa_TranslateBrowsePathsToNodeIdsRequest*) pValue;
-    if (a_pValue != NULL)
-    {
-        a_pValue->encodeableType = &OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType;
-        SOPC_Initialize_Array(&a_pValue->NoOfBrowsePaths, (void**) &a_pValue->BrowsePaths, sizeof(OpcUa_BrowsePath),
-                              (SOPC_EncodeableObject_PfnInitialize*) OpcUa_BrowsePath_Initialize);
-    }
+    SOPC_Generic_Initialize(pValue, &OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType);
 }
 
 /*============================================================================
@@ -11939,12 +11933,7 @@ void OpcUa_TranslateBrowsePathsToNodeIdsRequest_Initialize(void* pValue)
  *===========================================================================*/
 void OpcUa_TranslateBrowsePathsToNodeIdsRequest_Clear(void* pValue)
 {
-    OpcUa_TranslateBrowsePathsToNodeIdsRequest* a_pValue = (OpcUa_TranslateBrowsePathsToNodeIdsRequest*) pValue;
-    if (a_pValue != NULL)
-    {
-        SOPC_Clear_Array(&a_pValue->NoOfBrowsePaths, (void**) &a_pValue->BrowsePaths, sizeof(OpcUa_BrowsePath),
-                         (SOPC_EncodeableObject_PfnClear*) OpcUa_BrowsePath_Clear);
-    }
+    SOPC_Generic_Clear(pValue, &OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType);
 }
 
 /*============================================================================
@@ -11952,23 +11941,7 @@ void OpcUa_TranslateBrowsePathsToNodeIdsRequest_Clear(void* pValue)
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encode(const void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    const OpcUa_TranslateBrowsePathsToNodeIdsRequest* a_pValue =
-        (const OpcUa_TranslateBrowsePathsToNodeIdsRequest*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    if (SOPC_STATUS_OK == status)
-    {
-        const void* arr = a_pValue->BrowsePaths;
-        status = SOPC_Write_Array(buf, &a_pValue->NoOfBrowsePaths, &arr, sizeof(OpcUa_BrowsePath),
-                                  (SOPC_EncodeableObject_PfnEncode*) OpcUa_BrowsePath_Encode);
-    }
-
-    return status;
+    return SOPC_Generic_Encode(pValue, &OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType, buf);
 }
 
 /*============================================================================
@@ -11976,35 +11949,19 @@ SOPC_ReturnStatus OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encode(const void* 
  *===========================================================================*/
 SOPC_ReturnStatus OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode(void* pValue, SOPC_Buffer* buf)
 {
-    SOPC_ReturnStatus status = SOPC_STATUS_INVALID_PARAMETERS;
-    OpcUa_TranslateBrowsePathsToNodeIdsRequest* a_pValue = (OpcUa_TranslateBrowsePathsToNodeIdsRequest*) pValue;
-
-    if (a_pValue != NULL && buf != NULL)
-    {
-        status = SOPC_STATUS_OK;
-    }
-
-    OpcUa_TranslateBrowsePathsToNodeIdsRequest_Initialize(a_pValue);
-
-    if (SOPC_STATUS_OK == status)
-    {
-        status = SOPC_Read_Array(buf, &a_pValue->NoOfBrowsePaths, (void**) &a_pValue->BrowsePaths,
-                                 sizeof(OpcUa_BrowsePath), (SOPC_EncodeableObject_PfnDecode*) OpcUa_BrowsePath_Decode,
-                                 (SOPC_EncodeableObject_PfnInitialize*) OpcUa_BrowsePath_Initialize,
-                                 (SOPC_EncodeableObject_PfnClear*) OpcUa_BrowsePath_Clear);
-    }
-
-    if (status != SOPC_STATUS_OK && a_pValue != NULL)
-    {
-        OpcUa_TranslateBrowsePathsToNodeIdsRequest_Clear(a_pValue);
-    }
-
-    return status;
+    return SOPC_Generic_Decode(pValue, &OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType, buf);
 }
 
 /*============================================================================
  * OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType
  *===========================================================================*/
+SOPC_FieldDescriptor TranslateBrowsePathsToNodeIdsRequest_SOPC_FieldDescriptor[] = {
+    {false, {.NestedEncType = &OpcUa_BrowsePath_EncodeableType},
+        (uint32_t) offsetof(OpcUa_TranslateBrowsePathsToNodeIdsRequest, BrowsePaths), true,
+        (uint32_t) offsetof(OpcUa_TranslateBrowsePathsToNodeIdsRequest, NoOfBrowsePaths)}};
+
+SOPC_TypeDescriptor OpcUa_TranslateBrowsePathsToNodeIdsRequest_Descriptor = {1, TranslateBrowsePathsToNodeIdsRequest_SOPC_FieldDescriptor};
+
 struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType = {
     "TranslateBrowsePathsToNodeIdsRequest",
     OpcUaId_TranslateBrowsePathsToNodeIdsRequest,
@@ -12017,7 +11974,7 @@ struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encodeable
     NULL,
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encode,
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode,
-NULL};
+    &OpcUa_TranslateBrowsePathsToNodeIdsRequest_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TranslateBrowsePathsToNodeIdsResponse
