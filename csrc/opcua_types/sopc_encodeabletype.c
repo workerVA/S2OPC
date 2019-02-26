@@ -74,6 +74,152 @@ const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType)
     return result;
 }
 
+void (*init_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+    NULL,
+    &SOPC_Boolean_InitializeAux,
+    &SOPC_SByte_InitializeAux,
+    &SOPC_Byte_InitializeAux,
+    &SOPC_Int16_InitializeAux,
+    &SOPC_UInt16_InitializeAux,
+    &SOPC_Int32_InitializeAux,
+    &SOPC_UInt32_InitializeAux,
+    &SOPC_Int64_InitializeAux,
+    &SOPC_UInt64_InitializeAux,
+    &SOPC_Float_InitializeAux,
+    &SOPC_Double_InitializeAux,
+    &SOPC_String_InitializeAux,
+    &SOPC_DateTime_InitializeAux,
+    &SOPC_Guid_InitializeAux,
+    &SOPC_ByteString_InitializeAux,
+    &SOPC_XmlElement_InitializeAux,
+    &SOPC_NodeId_InitializeAux,
+    &SOPC_ExpandedNodeId_InitializeAux,
+    &SOPC_StatusCode_InitializeAux,
+    &SOPC_QualifiedName_InitializeAux,
+    &SOPC_LocalizedText_InitializeAux,
+    &SOPC_ExtensionObject_InitializeAux,
+    &SOPC_DataValue_InitializeAux,
+    &SOPC_Variant_InitializeAux,
+    &SOPC_DiagnosticInfo_InitializeAux
+};
+
+void (*clear_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+    NULL,
+    &SOPC_Boolean_ClearAux,
+    &SOPC_SByte_ClearAux,
+    &SOPC_Byte_ClearAux,
+    &SOPC_Int16_ClearAux,
+    &SOPC_UInt16_ClearAux,
+    &SOPC_Int32_ClearAux,
+    &SOPC_UInt32_ClearAux,
+    &SOPC_Int64_ClearAux,
+    &SOPC_UInt64_ClearAux,
+    &SOPC_Float_ClearAux,
+    &SOPC_Double_ClearAux,
+    &SOPC_String_ClearAux,
+    &SOPC_DateTime_ClearAux,
+    &SOPC_Guid_ClearAux,
+    &SOPC_ByteString_ClearAux,
+    &SOPC_XmlElement_ClearAux,
+    &SOPC_NodeId_ClearAux,
+    &SOPC_ExpandedNodeId_ClearAux,
+    &SOPC_StatusCode_ClearAux,
+    &SOPC_QualifiedName_ClearAux,
+    &SOPC_LocalizedText_ClearAux,
+    &SOPC_ExtensionObject_ClearAux,
+    &SOPC_DataValue_ClearAux,
+    &SOPC_Variant_ClearAux,
+    &SOPC_DiagnosticInfo_ClearAux
+};
+
+SOPC_ReturnStatus (*write_aux_arr[SOPC_BUILTINID_MAX + 1])(const void*, SOPC_Buffer*) = {
+    NULL,
+    &SOPC_Boolean_WriteAux,
+    &SOPC_SByte_WriteAux,
+    &SOPC_Byte_WriteAux,
+    &SOPC_Int16_WriteAux,
+    &SOPC_UInt16_WriteAux,
+    &SOPC_Int32_WriteAux,
+    &SOPC_UInt32_WriteAux,
+    &SOPC_Int64_WriteAux,
+    &SOPC_UInt64_WriteAux,
+    &SOPC_Float_WriteAux,
+    &SOPC_Double_WriteAux,
+    &SOPC_String_WriteAux,
+    &SOPC_DateTime_WriteAux,
+    &SOPC_Guid_WriteAux,
+    &SOPC_ByteString_WriteAux,
+    &SOPC_XmlElement_WriteAux,
+    &SOPC_NodeId_WriteAux,
+    &SOPC_ExpandedNodeId_WriteAux,
+    &SOPC_StatusCode_WriteAux,
+    &SOPC_QualifiedName_WriteAux,
+    &SOPC_LocalizedText_WriteAux,
+    &SOPC_ExtensionObject_WriteAux,
+    &SOPC_DataValue_WriteAux,
+    &SOPC_Variant_WriteAux,
+    &SOPC_DiagnosticInfo_WriteAux
+};
+
+SOPC_ReturnStatus (*read_aux_arr[SOPC_BUILTINID_MAX + 1])(void*, SOPC_Buffer*) = {
+    NULL,
+    &SOPC_Boolean_ReadAux,
+    &SOPC_SByte_ReadAux,
+    &SOPC_Byte_ReadAux,
+    &SOPC_Int16_ReadAux,
+    &SOPC_UInt16_ReadAux,
+    &SOPC_Int32_ReadAux,
+    &SOPC_UInt32_ReadAux,
+    &SOPC_Int64_ReadAux,
+    &SOPC_UInt64_ReadAux,
+    &SOPC_Float_ReadAux,
+    &SOPC_Double_ReadAux,
+    &SOPC_String_ReadAux,
+    &SOPC_DateTime_ReadAux,
+    &SOPC_Guid_ReadAux,
+    &SOPC_ByteString_ReadAux,
+    &SOPC_XmlElement_ReadAux,
+    &SOPC_NodeId_ReadAux,
+    &SOPC_ExpandedNodeId_ReadAux,
+    &SOPC_StatusCode_ReadAux,
+    &SOPC_QualifiedName_ReadAux,
+    &SOPC_LocalizedText_ReadAux,
+    &SOPC_ExtensionObject_ReadAux,
+    &SOPC_DataValue_ReadAux,
+    &SOPC_Variant_ReadAux,
+    &SOPC_DiagnosticInfo_ReadAux
+};
+
+size_t alloc_size_arr[SOPC_BUILTINID_MAX + 1] = {
+    0,
+    sizeof (SOPC_Boolean),
+    sizeof (int8_t),
+    sizeof (uint8_t),
+    sizeof (int16_t),
+    sizeof (uint16_t),
+    sizeof (int32_t),
+    sizeof (uint32_t),
+    sizeof (int64_t),
+    sizeof (uint64_t),
+    sizeof (float),
+    sizeof (double),
+    sizeof (SOPC_ByteString),
+    sizeof (SOPC_String),
+    sizeof (SOPC_XmlElement),
+    sizeof (SOPC_DateTime),
+    sizeof (SOPC_Guid),
+    sizeof (SOPC_NodeId),
+    sizeof (SOPC_ExpandedNodeId),
+    sizeof (SOPC_StatusCode),
+    sizeof (SOPC_DiagnosticInfo),
+    sizeof (SOPC_QualifiedName),
+    sizeof (SOPC_LocalizedText),
+    sizeof (SOPC_ExtensionObject),
+    sizeof (SOPC_Variant),
+    sizeof (SOPC_DataValue)
+};
+
+
 void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
 {
     // Initializing encodeable type
@@ -101,51 +247,8 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
 
             if (field_desc->IsBuiltIn)
             {
-                switch(field_desc->Type.BuiltInId)
-                {
-                    case SOPC_Boolean_Id:
-                        allocation_size = sizeof (SOPC_Boolean);
-                        init_fctn = &SOPC_Boolean_InitializeAux;
-                        break;
-                    case SOPC_SByte_Id:
-                        allocation_size = sizeof (int8_t);
-                        init_fctn = &SOPC_SByte_InitializeAux;
-                        break;
-                    case SOPC_Byte_Id:
-                        allocation_size = sizeof (uint8_t);
-                        init_fctn = &SOPC_Byte_InitializeAux;
-                        break;
-                    case SOPC_Int16_Id:
-                        allocation_size = sizeof (int16_t);
-                        init_fctn = &SOPC_Int16_InitializeAux;
-                        break;
-                    case SOPC_Int32_Id:
-                        allocation_size = sizeof (int32_t);
-                        init_fctn = &SOPC_Int32_InitializeAux;
-                        break;
-                    case SOPC_UInt32_Id:
-                        allocation_size = sizeof (uint32_t);
-                        init_fctn = &SOPC_UInt32_InitializeAux;
-                        break;
-                    case SOPC_Double_Id:
-                        allocation_size = sizeof (double);
-                        init_fctn = &SOPC_Double_InitializeAux;
-                        break;
-                    case SOPC_DateTime_Id:
-                        allocation_size = sizeof (SOPC_DateTime);
-                        init_fctn = &SOPC_DateTime_InitializeAux;
-                        break;
-                    case SOPC_NodeId_Id:
-                        allocation_size = sizeof (SOPC_NodeId);
-                        init_fctn = &SOPC_NodeId_InitializeAux;
-                        break;
-                    case SOPC_QualifiedName_Id:
-                        allocation_size = sizeof (SOPC_QualifiedName);
-                        init_fctn = &SOPC_QualifiedName_InitializeAux;
-                        break;
-                    default:
-                        assert(false);
-                }
+                allocation_size = alloc_size_arr[field_desc->Type.BuiltInId];
+                init_fctn = (SOPC_EncodeableObject_PfnInitialize*) init_aux_arr[field_desc->Type.BuiltInId];
             }
             else
             {
@@ -163,41 +266,7 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
         {
             if (field_desc->IsBuiltIn)
             {
-                switch(field_desc->Type.BuiltInId)
-                {
-                    case SOPC_Boolean_Id:
-                        SOPC_Boolean_Initialize(field_ptr);
-                        break;
-                    case SOPC_SByte_Id:
-                        SOPC_SByte_Initialize(field_ptr);
-                        break;
-                    case SOPC_Byte_Id:
-                        SOPC_Byte_Initialize(field_ptr);
-                        break;
-                    case SOPC_Int16_Id:
-                        SOPC_Int16_Initialize(field_ptr);
-                        break;
-                    case SOPC_Int32_Id:
-                        SOPC_Int32_Initialize(field_ptr);
-                        break;
-                    case SOPC_UInt32_Id:
-                        SOPC_UInt32_Initialize(field_ptr);
-                        break;
-                    case SOPC_Double_Id:
-                        SOPC_Double_Initialize(field_ptr);
-                        break;
-                    case SOPC_DateTime_Id:
-                        SOPC_DateTime_Initialize(field_ptr);
-                        break;
-                    case SOPC_NodeId_Id:
-                        SOPC_NodeId_Initialize(field_ptr);
-                        break;
-                    case SOPC_QualifiedName_Id:
-                        SOPC_QualifiedName_Initialize(field_ptr);
-                        break;
-                    default:
-                        assert(false);
-                }
+                init_aux_arr[field_desc->Type.BuiltInId](field_ptr);
             }
             else
             {
@@ -231,51 +300,8 @@ void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
 
             if (field_desc->IsBuiltIn)
             {
-                switch(field_desc->Type.BuiltInId)
-                {
-                    case SOPC_Boolean_Id:
-                        allocation_size = sizeof (SOPC_Boolean);
-                        clear_fctn = &SOPC_Boolean_ClearAux;
-                        break;
-                    case SOPC_SByte_Id:
-                        allocation_size = sizeof (int8_t);
-                        clear_fctn = &SOPC_SByte_ClearAux;
-                        break;
-                    case SOPC_Byte_Id:
-                        allocation_size = sizeof (uint8_t);
-                        clear_fctn = &SOPC_Byte_ClearAux;
-                        break;
-                    case SOPC_Int16_Id:
-                        allocation_size = sizeof (int16_t);
-                        clear_fctn = &SOPC_Int16_ClearAux;
-                        break;
-                    case SOPC_Int32_Id:
-                        allocation_size = sizeof (int32_t);
-                        clear_fctn = &SOPC_Int32_ClearAux;
-                        break;
-                    case SOPC_UInt32_Id:
-                        allocation_size = sizeof (uint32_t);
-                        clear_fctn = &SOPC_UInt32_ClearAux;
-                        break;
-                    case SOPC_Double_Id:
-                        allocation_size = sizeof (double);
-                        clear_fctn = &SOPC_Double_ClearAux;
-                        break;
-                    case SOPC_DateTime_Id:
-                        allocation_size = sizeof (SOPC_DateTime);
-                        clear_fctn = &SOPC_DateTime_ClearAux;
-                        break;
-                    case SOPC_NodeId_Id:
-                        allocation_size = sizeof (SOPC_NodeId);
-                        clear_fctn = &SOPC_NodeId_ClearAux;
-                        break;
-                    case SOPC_QualifiedName_Id:
-                        allocation_size = sizeof (SOPC_QualifiedName);
-                        clear_fctn = &SOPC_QualifiedName_ClearAux;
-                        break;
-                    default:
-                        assert(false);
-                }
+                allocation_size = alloc_size_arr[field_desc->Type.BuiltInId];
+                clear_fctn = (SOPC_EncodeableObject_PfnClear*) clear_aux_arr[field_desc->Type.BuiltInId];
             }
             else
             {
@@ -293,41 +319,7 @@ void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
         {
             if (field_desc->IsBuiltIn)
             {
-                switch(field_desc->Type.BuiltInId)
-                {
-                    case SOPC_Boolean_Id:
-                        SOPC_Boolean_Clear(field_ptr);
-                        break;
-                    case SOPC_SByte_Id:
-                        SOPC_SByte_Clear(field_ptr);
-                        break;
-                    case SOPC_Byte_Id:
-                        SOPC_Byte_Clear(field_ptr);
-                        break;
-                    case SOPC_Int16_Id:
-                        SOPC_Int16_Clear(field_ptr);
-                        break;
-                    case SOPC_Int32_Id:
-                        SOPC_Int32_Clear(field_ptr);
-                        break;
-                    case SOPC_UInt32_Id:
-                        SOPC_UInt32_Clear(field_ptr);
-                        break;
-                    case SOPC_Double_Id:
-                        SOPC_Double_Clear(field_ptr);
-                        break;
-                    case SOPC_DateTime_Id:
-                        SOPC_DateTime_Clear(field_ptr);
-                        break;
-                    case SOPC_NodeId_Id:
-                        SOPC_NodeId_Clear(field_ptr);
-                        break;
-                    case SOPC_QualifiedName_Id:
-                        SOPC_QualifiedName_Clear(field_ptr);
-                        break;
-                    default:
-                        assert(false);
-                }
+                clear_aux_arr[field_desc->Type.BuiltInId](field_ptr);
             }
             else
             {
@@ -367,51 +359,8 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
 
                 if (field_desc->IsBuiltIn)
                 {
-                    switch(field_desc->Type.BuiltInId)
-                    {
-                        case SOPC_Boolean_Id:
-                            allocation_size = sizeof (SOPC_Boolean);
-                            write_fctn = &SOPC_Boolean_WriteAux;
-                            break;
-                        case SOPC_SByte_Id:
-                            allocation_size = sizeof (int8_t);
-                            write_fctn = &SOPC_SByte_WriteAux;
-                            break;
-                        case SOPC_Byte_Id:
-                            allocation_size = sizeof (uint8_t);
-                            write_fctn = &SOPC_Byte_WriteAux;
-                            break;
-                        case SOPC_Int16_Id:
-                            allocation_size = sizeof (int16_t);
-                            write_fctn = &SOPC_Int16_WriteAux;
-                            break;
-                        case SOPC_Int32_Id:
-                            allocation_size = sizeof (int32_t);
-                            write_fctn = &SOPC_Int32_WriteAux;
-                            break;
-                        case SOPC_UInt32_Id:
-                            allocation_size = sizeof (uint32_t);
-                            write_fctn = &SOPC_UInt32_WriteAux;
-                            break;
-                        case SOPC_Double_Id:
-                            allocation_size = sizeof (double);
-                            write_fctn = &SOPC_Double_WriteAux;
-                            break;
-                        case SOPC_DateTime_Id:
-                            allocation_size = sizeof (SOPC_DateTime);
-                            write_fctn = &SOPC_DateTime_WriteAux;
-                            break;
-                        case SOPC_NodeId_Id:
-                            allocation_size = sizeof (SOPC_NodeId);
-                            write_fctn = &SOPC_NodeId_WriteAux;
-                            break;
-                        case SOPC_QualifiedName_Id:
-                            allocation_size = sizeof (SOPC_QualifiedName);
-                            write_fctn = &SOPC_QualifiedName_WriteAux;
-                            break;
-                        default:
-                            assert(false);
-                    }
+                    allocation_size = alloc_size_arr[field_desc->Type.BuiltInId];
+                    write_fctn = (SOPC_EncodeableObject_PfnEncode*) write_aux_arr[field_desc->Type.BuiltInId];
                 }
                 else
                 {
@@ -438,42 +387,7 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
             {
                 if (field_desc->IsBuiltIn)
                 {
-                    switch(field_desc->Type.BuiltInId)
-                    {
-                        case SOPC_Boolean_Id:
-                            status = SOPC_Boolean_Write(field_ptr, buf);
-                            break;
-                        case SOPC_SByte_Id:
-                            status = SOPC_SByte_Write(field_ptr, buf);
-                            break;
-                        case SOPC_Byte_Id:
-                            status = SOPC_Byte_Write(field_ptr, buf);
-                            break;
-                        case SOPC_Int16_Id:
-                            status = SOPC_Int16_Write(field_ptr, buf);
-                            break;
-                        case SOPC_Int32_Id:
-                            status = SOPC_Int32_Write(field_ptr, buf);
-                            break;
-                        case SOPC_UInt32_Id:
-                            status = SOPC_UInt32_Write(field_ptr, buf);
-                            break;
-                        case SOPC_Double_Id:
-                            status = SOPC_Double_Write(field_ptr, buf);
-                            break;
-                        case SOPC_DateTime_Id:
-                            status = SOPC_DateTime_Write(field_ptr, buf);
-                            break;
-                        case SOPC_NodeId_Id:
-                            status = SOPC_NodeId_Write(field_ptr, buf);
-                            break;
-                        case SOPC_QualifiedName_Id:
-                            status = SOPC_QualifiedName_Write(field_ptr, buf);
-                            break;
-                        default:
-                            status = SOPC_STATUS_NOK;
-                            assert(false);
-                    }
+                    status = write_aux_arr[field_desc->Type.BuiltInId](field_ptr, buf);
                 }
                 else
                 {
@@ -524,71 +438,10 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
 
                 if (field_desc->IsBuiltIn)
                 {
-                    switch(field_desc->Type.BuiltInId)
-                    {
-                        case SOPC_Boolean_Id:
-                            allocation_size = sizeof (SOPC_Boolean);
-                            read_fctn = &SOPC_Boolean_ReadAux;
-                            init_fctn = &SOPC_Boolean_InitializeAux;
-                            clear_fctn = &SOPC_Boolean_ClearAux;
-                            break;
-                        case SOPC_SByte_Id:
-                            allocation_size = sizeof (int8_t);
-                            read_fctn = &SOPC_SByte_ReadAux;
-                            init_fctn = &SOPC_SByte_InitializeAux;
-                            clear_fctn = &SOPC_SByte_ClearAux;
-                            break;
-                        case SOPC_Byte_Id:
-                            allocation_size = sizeof (uint8_t);
-                            read_fctn = &SOPC_Byte_ReadAux;
-                            init_fctn = &SOPC_Byte_InitializeAux;
-                            clear_fctn = &SOPC_Byte_ClearAux;
-                            break;
-                        case SOPC_Int16_Id:
-                            allocation_size = sizeof (int16_t);
-                            read_fctn = &SOPC_Int16_ReadAux;
-                            init_fctn = &SOPC_Int16_InitializeAux;
-                            clear_fctn = &SOPC_Int16_ClearAux;
-                            break;
-                        case SOPC_Int32_Id:
-                            allocation_size = sizeof (int32_t);
-                            read_fctn = &SOPC_Int32_ReadAux;
-                            init_fctn = &SOPC_Int32_InitializeAux;
-                            clear_fctn = &SOPC_Int32_ClearAux;
-                            break;
-                        case SOPC_UInt32_Id:
-                            allocation_size = sizeof (uint32_t);
-                            read_fctn = &SOPC_UInt32_ReadAux;
-                            init_fctn = &SOPC_UInt32_InitializeAux;
-                            clear_fctn = &SOPC_UInt32_ClearAux;
-                            break;
-                        case SOPC_Double_Id:
-                            allocation_size = sizeof (double);
-                            read_fctn = &SOPC_Double_ReadAux;
-                            init_fctn = &SOPC_Double_InitializeAux;
-                            clear_fctn = &SOPC_Double_ClearAux;
-                            break;
-                        case SOPC_DateTime_Id:
-                            allocation_size = sizeof (SOPC_DateTime);
-                            read_fctn = &SOPC_DateTime_ReadAux;
-                            init_fctn = &SOPC_DateTime_InitializeAux;
-                            clear_fctn = &SOPC_DateTime_ClearAux;
-                            break;
-                        case SOPC_NodeId_Id:
-                            allocation_size = sizeof (SOPC_NodeId);
-                            read_fctn = &SOPC_NodeId_ReadAux;
-                            init_fctn = &SOPC_NodeId_InitializeAux;
-                            clear_fctn = &SOPC_NodeId_ClearAux;
-                            break;
-                        case SOPC_QualifiedName_Id:
-                            allocation_size = sizeof (SOPC_QualifiedName);
-                            read_fctn = &SOPC_QualifiedName_ReadAux;
-                            init_fctn = &SOPC_QualifiedName_InitializeAux;
-                            clear_fctn = &SOPC_QualifiedName_ClearAux;
-                            break;
-                        default:
-                            assert(false);
-                    }
+                    allocation_size = alloc_size_arr[field_desc->Type.BuiltInId];
+                    read_fctn = (SOPC_EncodeableObject_PfnDecode*) read_aux_arr[field_desc->Type.BuiltInId];
+                    init_fctn = (SOPC_EncodeableObject_PfnInitialize*) init_aux_arr[field_desc->Type.BuiltInId];
+                    clear_fctn = (SOPC_EncodeableObject_PfnClear*) clear_aux_arr[field_desc->Type.BuiltInId];
                 }
                 else
                 {
@@ -609,45 +462,9 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
             }
             else
             {
-    
                 if (field_desc->IsBuiltIn)
                 {
-                    switch(field_desc->Type.BuiltInId)
-                    {
-                        case SOPC_Boolean_Id:
-                            status = SOPC_Boolean_Read(field_ptr, buf);
-                            break;
-                        case SOPC_SByte_Id:
-                            status = SOPC_SByte_Read(field_ptr, buf);
-                            break;
-                        case SOPC_Byte_Id:
-                            status = SOPC_Byte_Read(field_ptr, buf);
-                            break;
-                        case SOPC_Int16_Id:
-                            status = SOPC_Int16_Read(field_ptr, buf);
-                            break;
-                        case SOPC_Int32_Id:
-                            status = SOPC_Int32_Read(field_ptr, buf);
-                            break;
-                        case SOPC_UInt32_Id:
-                            status = SOPC_UInt32_Read(field_ptr, buf);
-                            break;
-                        case SOPC_Double_Id:
-                            status = SOPC_Double_Read(field_ptr, buf);
-                            break;
-                        case SOPC_DateTime_Id:
-                            status = SOPC_DateTime_Read(field_ptr, buf);
-                            break;
-                        case SOPC_NodeId_Id:
-                            status = SOPC_NodeId_Read(field_ptr, buf);
-                            break;
-                        case SOPC_QualifiedName_Id:
-                            status = SOPC_QualifiedName_Read(field_ptr, buf);
-                            break;
-                        default:
-                            status = SOPC_STATUS_NOK;
-                            assert(false);
-                    }
+                    status = read_aux_arr[field_desc->Type.BuiltInId](field_ptr, buf);
                 }
                 else
                 {
