@@ -371,9 +371,7 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
                 const void* nbelem_ptr = ((const char*) pValue) + field_desc->OffsetNbElem;
 
                 // Pointer containing address to array (cqfd void**)
-                SOPC_GCC_DIAGNOSTIC_IGNORE_CAST_CONST
-                const void** array_ptr = (const void**) field_ptr;
-                SOPC_GCC_DIAGNOSTIC_RESTORE
+                const void* const* array_ptr = field_ptr;
                 
                 status = SOPC_Write_Array(
                     buf,

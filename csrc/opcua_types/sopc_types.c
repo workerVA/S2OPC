@@ -2781,11 +2781,11 @@ SOPC_ReturnStatus OpcUa_TimeZoneDataType_Decode(void* pValue, SOPC_Buffer* buf)
 /*============================================================================
  * OpcUa_TimeZoneDataType_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor TimeZoneDataType_SOPC_FieldDescriptor[] = {
+static SOPC_FieldDescriptor SOPC_TimeZoneDataType_FieldDescriptor[] = {
     {true, {.BuiltInId = 4}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, Offset), false, 0},
     {true, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_TimeZoneDataType, DaylightSavingInOffset), false, 0}};
 
-SOPC_TypeDescriptor OpcUa_TimeZoneDataType_Descriptor = {2, TimeZoneDataType_SOPC_FieldDescriptor};
+static SOPC_TypeDescriptor SOPC_TimeZoneDataType_Descriptor = {2, SOPC_TimeZoneDataType_FieldDescriptor};
 
 struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDataType",
                                                                     OpcUaId_TimeZoneDataType,
@@ -2798,7 +2798,7 @@ struct SOPC_EncodeableType OpcUa_TimeZoneDataType_EncodeableType = {"TimeZoneDat
                                                                     NULL,
                                                                     OpcUa_TimeZoneDataType_Encode,
                                                                     OpcUa_TimeZoneDataType_Decode,
-                                                                    &OpcUa_TimeZoneDataType_Descriptor
+                                                                    &SOPC_TimeZoneDataType_Descriptor
                                                                     };
 #endif
 
@@ -11566,13 +11566,13 @@ SOPC_ReturnStatus OpcUa_RelativePathElement_Decode(void* pValue, SOPC_Buffer* bu
 /*============================================================================
  * OpcUa_RelativePathElement_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor RelativePathElement_SOPC_FieldDescriptor[] = {
+SOPC_FieldDescriptor SOPC_FieldDescriptor_RelativePathElement[] = {
     {true, {.BuiltInId = SOPC_NodeId_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, ReferenceTypeId), false, 0},
     {true, {.BuiltInId = SOPC_Boolean_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, IsInverse), false, 0},
     {true, {.BuiltInId = SOPC_Boolean_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, IncludeSubtypes), false, 0},
     {true, {.BuiltInId = SOPC_QualifiedName_Id}, (uint32_t) offsetof(OpcUa_RelativePathElement, TargetName), false, 0}};
 
-SOPC_TypeDescriptor OpcUa_RelativePathElement_Descriptor = {4, RelativePathElement_SOPC_FieldDescriptor};
+SOPC_TypeDescriptor SOPC_RelativePathElement_Descriptor = {4, SOPC_FieldDescriptor_RelativePathElement};
 
 
 struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
@@ -11587,7 +11587,7 @@ struct SOPC_EncodeableType OpcUa_RelativePathElement_EncodeableType = {
     NULL,
     OpcUa_RelativePathElement_Encode,
     OpcUa_RelativePathElement_Decode,
-    &OpcUa_RelativePathElement_Descriptor};
+    &SOPC_RelativePathElement_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_RelativePath
@@ -11626,13 +11626,12 @@ SOPC_ReturnStatus OpcUa_RelativePath_Decode(void* pValue, SOPC_Buffer* buf)
 /*============================================================================
  * OpcUa_RelativePath_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor RelativePath_SOPC_FieldDescriptor[] = {
-    //{true, {.BuiltInId = SOPC_Int32_Id}, (uint32_t) offsetof(OpcUa_RelativePath, NoOfElements), false, 0},
+SOPC_FieldDescriptor SOPC_FieldDescriptor_RelativePath[] = {
     {false, {.NestedEncType = &OpcUa_RelativePathElement_EncodeableType},
         (uint32_t) offsetof(OpcUa_RelativePath, Elements), true,
         (uint32_t) offsetof(OpcUa_RelativePath, NoOfElements)}};
 
-SOPC_TypeDescriptor OpcUa_RelativePath_Descriptor = {1, RelativePath_SOPC_FieldDescriptor};
+SOPC_TypeDescriptor SOPC_RelativePath_Descriptor = {1, SOPC_FieldDescriptor_RelativePath};
 
 struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
                                                                 OpcUaId_RelativePath,
@@ -11645,7 +11644,7 @@ struct SOPC_EncodeableType OpcUa_RelativePath_EncodeableType = {"RelativePath",
                                                                 NULL,
                                                                 OpcUa_RelativePath_Encode,
                                                                 OpcUa_RelativePath_Decode,
-                                                                &OpcUa_RelativePath_Descriptor};
+                                                                &SOPC_RelativePath_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePath
@@ -11684,12 +11683,12 @@ SOPC_ReturnStatus OpcUa_BrowsePath_Decode(void* pValue, SOPC_Buffer* buf)
 /*============================================================================
  * OpcUa_BrowsePath_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor BrowsePath_SOPC_FieldDescriptor[] = {
+static SOPC_FieldDescriptor SOPC_FieldDescriptor_BrowsePath[] = {
     {true, {.BuiltInId = 17}, (uint32_t) offsetof(OpcUa_BrowsePath, StartingNode), false, 0},
     {false, {.NestedEncType = &OpcUa_RelativePath_EncodeableType},
         (uint32_t) offsetof(OpcUa_BrowsePath, RelativePath), false, 0}};
 
-SOPC_TypeDescriptor OpcUa_BrowsePath_Descriptor = {2, BrowsePath_SOPC_FieldDescriptor};
+static SOPC_TypeDescriptor SOPC_BrowsePath_Descriptor = {2, SOPC_FieldDescriptor_BrowsePath};
 
 
 struct SOPC_EncodeableType OpcUa_BrowsePath_EncodeableType = {"BrowsePath",
@@ -11703,7 +11702,7 @@ struct SOPC_EncodeableType OpcUa_BrowsePath_EncodeableType = {"BrowsePath",
                                                               NULL,
                                                               OpcUa_BrowsePath_Encode,
                                                               OpcUa_BrowsePath_Decode,
-                                                              &OpcUa_BrowsePath_Descriptor};
+                                                              &SOPC_BrowsePath_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_BrowsePathTarget
@@ -11955,12 +11954,12 @@ SOPC_ReturnStatus OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode(void* pValue
 /*============================================================================
  * OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor TranslateBrowsePathsToNodeIdsRequest_SOPC_FieldDescriptor[] = {
+SOPC_FieldDescriptor SOPC_FieldDescriptor_TranslateBrowsePathsToNodeIdsRequest[] = {
     {false, {.NestedEncType = &OpcUa_BrowsePath_EncodeableType},
         (uint32_t) offsetof(OpcUa_TranslateBrowsePathsToNodeIdsRequest, BrowsePaths), true,
         (uint32_t) offsetof(OpcUa_TranslateBrowsePathsToNodeIdsRequest, NoOfBrowsePaths)}};
 
-SOPC_TypeDescriptor OpcUa_TranslateBrowsePathsToNodeIdsRequest_Descriptor = {1, TranslateBrowsePathsToNodeIdsRequest_SOPC_FieldDescriptor};
+SOPC_TypeDescriptor SOPC_TranslateBrowsePathsToNodeIdsRequest_Descriptor = {1, SOPC_FieldDescriptor_TranslateBrowsePathsToNodeIdsRequest};
 
 struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsRequest_EncodeableType = {
     "TranslateBrowsePathsToNodeIdsRequest",
@@ -11974,7 +11973,7 @@ struct SOPC_EncodeableType OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encodeable
     NULL,
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Encode,
     OpcUa_TranslateBrowsePathsToNodeIdsRequest_Decode,
-    &OpcUa_TranslateBrowsePathsToNodeIdsRequest_Descriptor};
+    &SOPC_TranslateBrowsePathsToNodeIdsRequest_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_TranslateBrowsePathsToNodeIdsResponse
@@ -19091,7 +19090,7 @@ SOPC_ReturnStatus OpcUa_AggregateConfiguration_Decode(void* pValue, SOPC_Buffer*
 /*============================================================================
  * OpcUa_AggregateConfiguration_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor AggregateConfiguration_SOPC_FieldDescriptor[] = {
+static SOPC_FieldDescriptor SOPC_FieldDescriptor_AggregateConfiguration[] = {
     {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseServerCapabilitiesDefaults), false, 0},
     {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, TreatUncertainAsBad), false, 0},
     {1, {.BuiltInId = 3}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, PercentDataBad), false, 0},
@@ -19099,7 +19098,7 @@ SOPC_FieldDescriptor AggregateConfiguration_SOPC_FieldDescriptor[] = {
     {1, {.BuiltInId = 1}, (uint32_t) offsetof(OpcUa_AggregateConfiguration, UseSlopedExtrapolation), false, 0}};
 
 
-SOPC_TypeDescriptor OpcUa_AggregateConfiguration_Descriptor = {5, AggregateConfiguration_SOPC_FieldDescriptor};
+static SOPC_TypeDescriptor SOPC_AggregateConfiguration_Descriptor = {5, SOPC_FieldDescriptor_AggregateConfiguration};
 
 
 struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
@@ -19114,7 +19113,7 @@ struct SOPC_EncodeableType OpcUa_AggregateConfiguration_EncodeableType = {
     NULL,
     OpcUa_AggregateConfiguration_Encode,
     OpcUa_AggregateConfiguration_Decode,
-    &OpcUa_AggregateConfiguration_Descriptor};
+    &SOPC_AggregateConfiguration_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_AggregateFilter
@@ -19404,13 +19403,13 @@ SOPC_ReturnStatus OpcUa_AggregateFilterResult_Decode(void* pValue, SOPC_Buffer* 
 /*============================================================================
  * OpcUa_AggregateFilterResult_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor AggregateFilterResult_SOPC_FieldDescriptor[] = {
+static SOPC_FieldDescriptor SOPC_FieldDescriptor_AggregateFilterResult[] = {
     {true, {.BuiltInId = 13}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedStartTime), false, 0},
     {true, {.BuiltInId = 11}, (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedProcessingInterval), false, 0},
     {false, {.NestedEncType = &OpcUa_AggregateConfiguration_EncodeableType},
         (uint32_t) offsetof(OpcUa_AggregateFilterResult, RevisedAggregateConfiguration), false, 0}};
 
-SOPC_TypeDescriptor OpcUa_AggregateFilterResult_Descriptor = {3, AggregateFilterResult_SOPC_FieldDescriptor};
+static SOPC_TypeDescriptor SOPC_AggregateFilterResult_Descriptor = {3, SOPC_FieldDescriptor_AggregateFilterResult};
 
 struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     "AggregateFilterResult",
@@ -19424,7 +19423,7 @@ struct SOPC_EncodeableType OpcUa_AggregateFilterResult_EncodeableType = {
     NULL,
     OpcUa_AggregateFilterResult_Encode,
     OpcUa_AggregateFilterResult_Decode,
-    &OpcUa_AggregateFilterResult_Descriptor};
+    &SOPC_AggregateFilterResult_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_MonitoringParameters
@@ -23779,12 +23778,12 @@ SOPC_ReturnStatus OpcUa_DeleteSubscriptionsRequest_Decode(void* pValue, SOPC_Buf
 /*============================================================================
  * OpcUa_DeleteSubscriptionsRequest_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor DeleteSubscriptionsRequest_SOPC_FieldDescriptor[] = {
+SOPC_FieldDescriptor SOPC_FieldDescriptor_DeleteSubscriptionsRequest[] = {
     {true, {.BuiltInId = SOPC_UInt32_Id},
         (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, SubscriptionIds), true,
         (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, NoOfSubscriptionIds)}};
 
-SOPC_TypeDescriptor OpcUa_DeleteSubscriptionsRequest_Descriptor = {1, DeleteSubscriptionsRequest_SOPC_FieldDescriptor};
+SOPC_TypeDescriptor SOPC_DeleteSubscriptionsRequest_Descriptor = {1, SOPC_FieldDescriptor_DeleteSubscriptionsRequest};
 
 struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     "DeleteSubscriptionsRequest",
@@ -23798,7 +23797,7 @@ struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     NULL,
     OpcUa_DeleteSubscriptionsRequest_Encode,
     OpcUa_DeleteSubscriptionsRequest_Decode,
-    &OpcUa_DeleteSubscriptionsRequest_Descriptor};
+    &SOPC_DeleteSubscriptionsRequest_Descriptor};
 #endif
 
 #ifndef OPCUA_EXCLUDE_DeleteSubscriptionsResponse
