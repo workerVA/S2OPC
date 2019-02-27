@@ -2582,6 +2582,95 @@ void SOPC_ExtensionObject_Clear(SOPC_ExtensionObject* extObj)
     }
 }
 
+
+static size_t alloc_size_arr[SOPC_BUILTINID_MAX + 1] = {
+    0,
+    sizeof (SOPC_Boolean),
+    sizeof (int8_t),
+    sizeof (uint8_t),
+    sizeof (int16_t),
+    sizeof (uint16_t),
+    sizeof (int32_t),
+    sizeof (uint32_t),
+    sizeof (int64_t),
+    sizeof (uint64_t),
+    sizeof (float),
+    sizeof (double),
+    sizeof (SOPC_ByteString),
+    sizeof (SOPC_String),
+    sizeof (SOPC_XmlElement),
+    sizeof (SOPC_DateTime),
+    sizeof (SOPC_Guid),
+    sizeof (SOPC_NodeId),
+    sizeof (SOPC_ExpandedNodeId),
+    sizeof (SOPC_StatusCode),
+    sizeof (SOPC_DiagnosticInfo),
+    sizeof (SOPC_QualifiedName),
+    sizeof (SOPC_LocalizedText),
+    sizeof (SOPC_ExtensionObject),
+    sizeof (SOPC_Variant),
+    sizeof (SOPC_DataValue)
+};
+
+static void (*init_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+    NULL,
+    &SOPC_Boolean_InitializeAux,
+    &SOPC_SByte_InitializeAux,
+    &SOPC_Byte_InitializeAux,
+    &SOPC_Int16_InitializeAux,
+    &SOPC_UInt16_InitializeAux,
+    &SOPC_Int32_InitializeAux,
+    &SOPC_UInt32_InitializeAux,
+    &SOPC_Int64_InitializeAux,
+    &SOPC_UInt64_InitializeAux,
+    &SOPC_Float_InitializeAux,
+    &SOPC_Double_InitializeAux,
+    &SOPC_String_InitializeAux,
+    &SOPC_DateTime_InitializeAux,
+    &SOPC_Guid_InitializeAux,
+    &SOPC_ByteString_InitializeAux,
+    &SOPC_XmlElement_InitializeAux,
+    &SOPC_NodeId_InitializeAux,
+    &SOPC_ExpandedNodeId_InitializeAux,
+    &SOPC_StatusCode_InitializeAux,
+    &SOPC_QualifiedName_InitializeAux,
+    &SOPC_LocalizedText_InitializeAux,
+    &SOPC_ExtensionObject_InitializeAux,
+    &SOPC_DataValue_InitializeAux,
+    &SOPC_Variant_InitializeAux,
+    &SOPC_DiagnosticInfo_InitializeAux
+};
+
+static void (*clear_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+    NULL,
+    &SOPC_Boolean_ClearAux,
+    &SOPC_SByte_ClearAux,
+    &SOPC_Byte_ClearAux,
+    &SOPC_Int16_ClearAux,
+    &SOPC_UInt16_ClearAux,
+    &SOPC_Int32_ClearAux,
+    &SOPC_UInt32_ClearAux,
+    &SOPC_Int64_ClearAux,
+    &SOPC_UInt64_ClearAux,
+    &SOPC_Float_ClearAux,
+    &SOPC_Double_ClearAux,
+    &SOPC_String_ClearAux,
+    &SOPC_DateTime_ClearAux,
+    &SOPC_Guid_ClearAux,
+    &SOPC_ByteString_ClearAux,
+    &SOPC_XmlElement_ClearAux,
+    &SOPC_NodeId_ClearAux,
+    &SOPC_ExpandedNodeId_ClearAux,
+    &SOPC_StatusCode_ClearAux,
+    &SOPC_QualifiedName_ClearAux,
+    &SOPC_LocalizedText_ClearAux,
+    &SOPC_ExtensionObject_ClearAux,
+    &SOPC_DataValue_ClearAux,
+    &SOPC_Variant_ClearAux,
+    &SOPC_DiagnosticInfo_ClearAux
+};
+
+
 static void ApplyToVariantNonArrayBuiltInType(SOPC_BuiltinId builtInTypeId,
                                               SOPC_VariantValue* val,
                                               SOPC_EncodeableObject_PfnClear* clearAuxFunction)
@@ -3313,94 +3402,16 @@ void SOPC_Null_ClearAux(void* value)
     (void) value;
 }
 
-static SOPC_EncodeableObject_PfnClear* GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId)
-{
-    SOPC_EncodeableObject_PfnClear* clearFunction = NULL;
-    switch (builtInTypeId)
-    {
-    case SOPC_Null_Id:
-        clearFunction = SOPC_Null_ClearAux;
-        break;
-    case SOPC_Boolean_Id:
-        clearFunction = SOPC_Boolean_ClearAux;
-        break;
-    case SOPC_SByte_Id:
-        clearFunction = SOPC_SByte_ClearAux;
-        break;
-    case SOPC_Byte_Id:
-        clearFunction = SOPC_Byte_ClearAux;
-        break;
-    case SOPC_Int16_Id:
-        clearFunction = SOPC_Int16_ClearAux;
-        break;
-    case SOPC_UInt16_Id:
-        clearFunction = SOPC_UInt16_ClearAux;
-        break;
-    case SOPC_Int32_Id:
-        clearFunction = SOPC_Int32_ClearAux;
-        break;
-    case SOPC_UInt32_Id:
-        clearFunction = SOPC_UInt32_ClearAux;
-        break;
-    case SOPC_Int64_Id:
-        clearFunction = SOPC_Int64_ClearAux;
-        break;
-    case SOPC_UInt64_Id:
-        clearFunction = SOPC_UInt64_ClearAux;
-        break;
-    case SOPC_Float_Id:
-        clearFunction = SOPC_Float_ClearAux;
-        break;
-    case SOPC_Double_Id:
-        clearFunction = SOPC_Double_ClearAux;
-        break;
-    case SOPC_String_Id:
-        clearFunction = SOPC_String_ClearAux;
-        break;
-    case SOPC_DateTime_Id:
-        clearFunction = SOPC_DateTime_ClearAux;
-        break;
-    case SOPC_Guid_Id:
-        clearFunction = SOPC_Guid_ClearAux;
-        break;
-    case SOPC_ByteString_Id:
-        clearFunction = SOPC_ByteString_ClearAux;
-        break;
-    case SOPC_XmlElement_Id:
-        clearFunction = SOPC_XmlElement_ClearAux;
-        break;
-    case SOPC_NodeId_Id:
-        clearFunction = SOPC_NodeId_ClearAux;
-        break;
-    case SOPC_ExpandedNodeId_Id:
-        clearFunction = SOPC_ExpandedNodeId_ClearAux;
-        break;
-    case SOPC_StatusCode_Id:
-        clearFunction = SOPC_StatusCode_ClearAux;
-        break;
-    case SOPC_QualifiedName_Id:
-        clearFunction = SOPC_QualifiedName_ClearAux;
-        break;
-    case SOPC_LocalizedText_Id:
-        clearFunction = SOPC_LocalizedText_ClearAux;
-        break;
-    case SOPC_ExtensionObject_Id:
-        clearFunction = SOPC_ExtensionObject_ClearAux;
-        break;
-    case SOPC_DataValue_Id:
-        clearFunction = SOPC_DataValue_ClearAux;
-        break;
-    case SOPC_Variant_Id:
-        clearFunction = SOPC_Variant_ClearAux;
-        break;
-    case SOPC_DiagnosticInfo_Id:
-        clearFunction = SOPC_DiagnosticInfo_ClearAux;
-        break;
-    default:
-        break;
-    }
-    return clearFunction;
+SOPC_EncodeableObject_PfnClear* GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId)
+{    
+    return (SOPC_EncodeableObject_PfnClear*) clear_aux_arr[builtInTypeId];
 }
+
+SOPC_EncodeableObject_PfnInitialize* GetBuiltInTypeInitializeFunction(SOPC_BuiltinId builtInTypeId)
+{    
+    return (SOPC_EncodeableObject_PfnInitialize*) init_aux_arr[builtInTypeId];
+}
+
 
 SOPC_ReturnStatus SOPC_Null_CopyAux(void* dest, const void* src)
 {
@@ -4500,66 +4511,10 @@ static SOPC_ReturnStatus get_range_bytestring(SOPC_Variant* dst, const SOPC_Stri
     return get_range_string_helper(&dst->Value.Bstring, src, range);
 }
 
-static size_t size_of_builtin_type(SOPC_BuiltinId type_id)
-{
-    switch (type_id)
-    {
-    case SOPC_Null_Id:
-        return 0;
-    case SOPC_Boolean_Id:
-        return sizeof(SOPC_Boolean);
-    case SOPC_SByte_Id:
-        return sizeof(SOPC_SByte);
-    case SOPC_Byte_Id:
-        return sizeof(SOPC_Byte);
-    case SOPC_Int16_Id:
-        return sizeof(int16_t);
-    case SOPC_UInt16_Id:
-        return sizeof(uint16_t);
-    case SOPC_Int32_Id:
-        return sizeof(int32_t);
-    case SOPC_UInt32_Id:
-        return sizeof(uint32_t);
-    case SOPC_Int64_Id:
-        return sizeof(int64_t);
-    case SOPC_UInt64_Id:
-        return sizeof(uint64_t);
-    case SOPC_Float_Id:
-        return sizeof(float);
-    case SOPC_Double_Id:
-        return sizeof(double);
-    case SOPC_String_Id:
-        return sizeof(SOPC_String);
-    case SOPC_DateTime_Id:
-        return sizeof(SOPC_DateTime);
-    case SOPC_Guid_Id:
-        return sizeof(SOPC_Guid);
-    case SOPC_ByteString_Id:
-        return sizeof(SOPC_ByteString);
-    case SOPC_XmlElement_Id:
-        return sizeof(SOPC_XmlElement);
-    case SOPC_NodeId_Id:
-        return sizeof(SOPC_NodeId);
-    case SOPC_ExpandedNodeId_Id:
-        return sizeof(SOPC_ExpandedNodeId);
-    case SOPC_StatusCode_Id:
-        return sizeof(SOPC_StatusCode);
-    case SOPC_QualifiedName_Id:
-        return sizeof(SOPC_QualifiedName);
-    case SOPC_LocalizedText_Id:
-        return sizeof(SOPC_LocalizedText);
-    case SOPC_ExtensionObject_Id:
-        return sizeof(SOPC_ExtensionObject);
-    case SOPC_DataValue_Id:
-        return sizeof(SOPC_DataValue);
-    case SOPC_Variant_Id:
-        return sizeof(SOPC_Variant);
-    case SOPC_DiagnosticInfo_Id:
-        return sizeof(SOPC_DiagnosticInfo);
-    }
 
-    assert(false);
-    return 0;
+size_t size_of_builtin_type(SOPC_BuiltinId type_id)
+{
+    return alloc_size_arr[type_id];
 }
 
 static SOPC_ReturnStatus get_range_array(SOPC_Variant* dst, const SOPC_Variant* src, const SOPC_NumericRange* range)

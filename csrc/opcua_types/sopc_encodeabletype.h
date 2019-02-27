@@ -111,8 +111,6 @@ SOPC_EncodeableType* SOPC_EncodeableType_GetEncodeableType(uint32_t typeId);
 const char* SOPC_EncodeableType_GetName(SOPC_EncodeableType* encType);
 
 
-
-
 void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type);
 
 void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type);
