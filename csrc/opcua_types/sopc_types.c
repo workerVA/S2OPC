@@ -23778,12 +23778,12 @@ SOPC_ReturnStatus OpcUa_DeleteSubscriptionsRequest_Decode(void* pValue, SOPC_Buf
 /*============================================================================
  * OpcUa_DeleteSubscriptionsRequest_EncodeableType
  *===========================================================================*/
-SOPC_FieldDescriptor SOPC_FieldDescriptor_DeleteSubscriptionsRequest[] = {
+static SOPC_FieldDescriptor SOPC_FieldDescriptor_DeleteSubscriptionsRequest[] = {
     {true, {.BuiltInId = SOPC_UInt32_Id},
         (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, SubscriptionIds), true,
         (uint32_t) offsetof(OpcUa_DeleteSubscriptionsRequest, NoOfSubscriptionIds)}};
 
-SOPC_TypeDescriptor SOPC_DeleteSubscriptionsRequest_Descriptor = {1, SOPC_FieldDescriptor_DeleteSubscriptionsRequest};
+static SOPC_TypeDescriptor SOPC_DeleteSubscriptionsRequest_Descriptor = {1, SOPC_FieldDescriptor_DeleteSubscriptionsRequest};
 
 struct SOPC_EncodeableType OpcUa_DeleteSubscriptionsRequest_EncodeableType = {
     "DeleteSubscriptionsRequest",

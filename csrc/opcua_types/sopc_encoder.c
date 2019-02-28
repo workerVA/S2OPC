@@ -2900,7 +2900,7 @@ SOPC_ReturnStatus SOPC_DataValue_Read(SOPC_DataValue* dataValue, SOPC_Buffer* bu
     return SOPC_DataValue_Read_Internal(dataValue, buf, 0);
 }
 
-static SOPC_ReturnStatus (*write_aux_arr[SOPC_BUILTINID_MAX + 1])(const void*, SOPC_Buffer*) = {
+static SOPC_EncodeableObject_PfnEncode* write_aux_arr[SOPC_BUILTINID_MAX + 1] = {
     NULL,
     &SOPC_Boolean_WriteAux,
     &SOPC_SByte_WriteAux,
@@ -2929,7 +2929,7 @@ static SOPC_ReturnStatus (*write_aux_arr[SOPC_BUILTINID_MAX + 1])(const void*, S
     &SOPC_DiagnosticInfo_WriteAux
 };
 
-static SOPC_ReturnStatus (*read_aux_arr[SOPC_BUILTINID_MAX + 1])(void*, SOPC_Buffer*) = {
+static SOPC_EncodeableObject_PfnDecode* read_aux_arr[SOPC_BUILTINID_MAX + 1] = {
     NULL,
     &SOPC_Boolean_ReadAux,
     &SOPC_SByte_ReadAux,
@@ -2958,14 +2958,14 @@ static SOPC_ReturnStatus (*read_aux_arr[SOPC_BUILTINID_MAX + 1])(void*, SOPC_Buf
     &SOPC_DiagnosticInfo_ReadAux
 };
 
-SOPC_EncodeableObject_PfnEncode* GetBuiltInTypeWriteFunction(SOPC_BuiltinId builtInTypeId)
+SOPC_EncodeableObject_PfnEncode* SOPC_GetBuiltInTypeWriteFunction(SOPC_BuiltinId builtInTypeId)
 {    
-    return (SOPC_EncodeableObject_PfnEncode*) write_aux_arr[builtInTypeId];
+    return write_aux_arr[builtInTypeId];
 }
 
-SOPC_EncodeableObject_PfnDecode* GetBuiltInTypeReadFunction(SOPC_BuiltinId builtInTypeId)
+SOPC_EncodeableObject_PfnDecode* SOPC_GetBuiltInTypeReadFunction(SOPC_BuiltinId builtInTypeId)
 {    
-    return (SOPC_EncodeableObject_PfnDecode*) read_aux_arr[builtInTypeId];
+    return read_aux_arr[builtInTypeId];
 }
 
 

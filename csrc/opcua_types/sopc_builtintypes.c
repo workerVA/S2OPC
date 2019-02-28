@@ -2612,7 +2612,7 @@ static size_t alloc_size_arr[SOPC_BUILTINID_MAX + 1] = {
     sizeof (SOPC_DataValue)
 };
 
-static void (*init_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+static SOPC_EncodeableObject_PfnInitialize* init_aux_arr[SOPC_BUILTINID_MAX + 1] = {
     NULL,
     &SOPC_Boolean_InitializeAux,
     &SOPC_SByte_InitializeAux,
@@ -2641,7 +2641,7 @@ static void (*init_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
     &SOPC_DiagnosticInfo_InitializeAux
 };
 
-static void (*clear_aux_arr[SOPC_BUILTINID_MAX + 1])(void*) = {
+static SOPC_EncodeableObject_PfnClear* clear_aux_arr[SOPC_BUILTINID_MAX + 1] = {
     NULL,
     &SOPC_Boolean_ClearAux,
     &SOPC_SByte_ClearAux,
@@ -3402,14 +3402,14 @@ void SOPC_Null_ClearAux(void* value)
     (void) value;
 }
 
-SOPC_EncodeableObject_PfnClear* GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId)
+SOPC_EncodeableObject_PfnClear* SOPC_GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId)
 {    
-    return (SOPC_EncodeableObject_PfnClear*) clear_aux_arr[builtInTypeId];
+    return clear_aux_arr[builtInTypeId];
 }
 
-SOPC_EncodeableObject_PfnInitialize* GetBuiltInTypeInitializeFunction(SOPC_BuiltinId builtInTypeId)
+SOPC_EncodeableObject_PfnInitialize* SOPC_GetBuiltInTypeInitializeFunction(SOPC_BuiltinId builtInTypeId)
 {    
-    return (SOPC_EncodeableObject_PfnInitialize*) init_aux_arr[builtInTypeId];
+    return init_aux_arr[builtInTypeId];
 }
 
 
@@ -3853,7 +3853,7 @@ SOPC_ReturnStatus SOPC_Variant_Copy(SOPC_Variant* dest, const SOPC_Variant* src)
                 {
                     ClearToVariantArrayBuiltInType(src->BuiltInTypeId, &dest->Value.Array.Content,
                                                    &dest->Value.Array.Length,
-                                                   GetBuiltInTypeClearFunction(src->BuiltInTypeId));
+                                                   SOPC_GetBuiltInTypeClearFunction(src->BuiltInTypeId));
                 }
             }
             break;
@@ -3898,7 +3898,7 @@ SOPC_ReturnStatus SOPC_Variant_Copy(SOPC_Variant* dest, const SOPC_Variant* src)
                             {
                                 ClearToVariantArrayBuiltInType(src->BuiltInTypeId, &dest->Value.Matrix.Content,
                                                                (int32_t*) &matrixLength,
-                                                               GetBuiltInTypeClearFunction(src->BuiltInTypeId));
+                                                               SOPC_GetBuiltInTypeClearFunction(src->BuiltInTypeId));
                                 free(dest->Value.Matrix.ArrayDimensions);
                                 dest->Value.Matrix.ArrayDimensions = NULL;
                             }
@@ -4123,7 +4123,7 @@ void SOPC_Variant_Clear(SOPC_Variant* variant)
     {
         if (false == variant->DoNotClear)
         {
-            SOPC_EncodeableObject_PfnClear* clearFunction = GetBuiltInTypeClearFunction(variant->BuiltInTypeId);
+            SOPC_EncodeableObject_PfnClear* clearFunction = SOPC_GetBuiltInTypeClearFunction(variant->BuiltInTypeId);
             if (NULL == clearFunction)
                 return;
 
@@ -4512,7 +4512,7 @@ static SOPC_ReturnStatus get_range_bytestring(SOPC_Variant* dst, const SOPC_Stri
 }
 
 
-size_t size_of_builtin_type(SOPC_BuiltinId type_id)
+size_t SOPC_GetBuiltinSize(SOPC_BuiltinId type_id)
 {
     return alloc_size_arr[type_id];
 }
@@ -4566,7 +4566,7 @@ static SOPC_ReturnStatus get_range_array(SOPC_Variant* dst, const SOPC_Variant* 
         return SOPC_STATUS_NOK;
     }
 
-    const size_t type_size = size_of_builtin_type(src->BuiltInTypeId);
+    const size_t type_size = SOPC_GetBuiltinSize(src->BuiltInTypeId);
 
     // Untyped pointer to the source array data at the correct offset
     const uint8_t* src_data = *((const uint8_t* const*) &src->Value.Array.Content) + start * type_size;
@@ -4696,14 +4696,14 @@ static SOPC_ReturnStatus set_range_array(SOPC_Variant* variant, const SOPC_Varia
     }
 
     SOPC_EncodeableObject_PfnCopy* copyFunction = GetBuiltInTypeCopyFunction(src->BuiltInTypeId);
-    SOPC_EncodeableObject_PfnClear* clearFunction = GetBuiltInTypeClearFunction(src->BuiltInTypeId);
+    SOPC_EncodeableObject_PfnClear* clearFunction = SOPC_GetBuiltInTypeClearFunction(src->BuiltInTypeId);
 
     if (copyFunction == NULL || clearFunction == NULL)
     {
         return SOPC_STATUS_NOK;
     }
 
-    const size_t type_size = size_of_builtin_type(src->BuiltInTypeId);
+    const size_t type_size = SOPC_GetBuiltinSize(src->BuiltInTypeId);
 
     // Untyped pointer to the source array data at the correct offset
     const uint8_t* src_i = *((const uint8_t* const*) &src->Value.Array.Content);

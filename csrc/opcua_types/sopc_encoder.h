@@ -270,8 +270,8 @@ SOPC_ReturnStatus SOPC_DataValue_ReadAux(void* value, SOPC_Buffer* buf);
 SOPC_ReturnStatus SOPC_DataValue_ReadAux_Nested(void* value, SOPC_Buffer* buf, uint32_t nestedLevel);
 
 
-SOPC_EncodeableObject_PfnEncode* GetBuiltInTypeWriteFunction(SOPC_BuiltinId builtInTypeId);
-SOPC_EncodeableObject_PfnDecode* GetBuiltInTypeReadFunction(SOPC_BuiltinId builtInTypeId);
+SOPC_EncodeableObject_PfnEncode* SOPC_GetBuiltInTypeWriteFunction(SOPC_BuiltinId builtInTypeId);
+SOPC_EncodeableObject_PfnDecode* SOPC_GetBuiltInTypeReadFunction(SOPC_BuiltinId builtInTypeId);
 
 SOPC_ReturnStatus SOPC_Read_Array(SOPC_Buffer* msgBuf,
                                   int32_t* noOfElts,

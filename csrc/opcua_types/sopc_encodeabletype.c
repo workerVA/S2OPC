@@ -100,8 +100,8 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
 
             if (field_desc->IsBuiltIn)
             {
-                allocation_size = size_of_builtin_type(field_desc->Type.BuiltInId);
-                init_fctn = GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
+                allocation_size = SOPC_GetBuiltinSize(field_desc->Type.BuiltInId);
+                init_fctn = SOPC_GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
             }
             else
             {
@@ -119,7 +119,7 @@ void SOPC_Generic_Initialize(void* pValue, SOPC_EncodeableType* enc_type)
         {
             if (field_desc->IsBuiltIn)
             {
-                init_fctn = GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
+                init_fctn = SOPC_GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
                 init_fctn(field_ptr);
             }
             else
@@ -151,8 +151,8 @@ void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
 
             if (field_desc->IsBuiltIn)
             {
-                allocation_size = size_of_builtin_type(field_desc->Type.BuiltInId);
-                clear_fctn = GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
+                allocation_size = SOPC_GetBuiltinSize(field_desc->Type.BuiltInId);
+                clear_fctn = SOPC_GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
             }
             else
             {
@@ -170,7 +170,7 @@ void SOPC_Generic_Clear(void* pValue, SOPC_EncodeableType* enc_type)
         {
             if (field_desc->IsBuiltIn)
             {
-                clear_fctn = GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
+                clear_fctn = SOPC_GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
                 clear_fctn(field_ptr);
             }
             else
@@ -208,8 +208,8 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
             {
                 if (field_desc->IsBuiltIn)
                 {
-                    allocation_size = size_of_builtin_type(field_desc->Type.BuiltInId);
-                    write_fctn = GetBuiltInTypeWriteFunction(field_desc->Type.BuiltInId);
+                    allocation_size = SOPC_GetBuiltinSize(field_desc->Type.BuiltInId);
+                    write_fctn = SOPC_GetBuiltInTypeWriteFunction(field_desc->Type.BuiltInId);
                 }
                 else
                 {
@@ -232,7 +232,7 @@ SOPC_ReturnStatus SOPC_Generic_Encode(const void* pValue, SOPC_EncodeableType* e
             {
                 if (field_desc->IsBuiltIn)
                 {
-                    write_fctn = GetBuiltInTypeWriteFunction(field_desc->Type.BuiltInId);
+                    write_fctn = SOPC_GetBuiltInTypeWriteFunction(field_desc->Type.BuiltInId);
                     status = write_fctn(field_ptr, buf);
                 }
                 else
@@ -281,10 +281,10 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
 
                 if (field_desc->IsBuiltIn)
                 {
-                    allocation_size = size_of_builtin_type(field_desc->Type.BuiltInId);
-                    read_fctn = GetBuiltInTypeReadFunction(field_desc->Type.BuiltInId);
-                    init_fctn = GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
-                    clear_fctn = GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
+                    allocation_size = SOPC_GetBuiltinSize(field_desc->Type.BuiltInId);
+                    read_fctn = SOPC_GetBuiltInTypeReadFunction(field_desc->Type.BuiltInId);
+                    init_fctn = SOPC_GetBuiltInTypeInitializeFunction(field_desc->Type.BuiltInId);
+                    clear_fctn = SOPC_GetBuiltInTypeClearFunction(field_desc->Type.BuiltInId);
                 }
                 else
                 {
@@ -307,7 +307,7 @@ SOPC_ReturnStatus SOPC_Generic_Decode(void* pValue, SOPC_EncodeableType* enc_typ
             {
                 if (field_desc->IsBuiltIn)
                 {
-                    read_fctn = GetBuiltInTypeReadFunction(field_desc->Type.BuiltInId);
+                    read_fctn = SOPC_GetBuiltInTypeReadFunction(field_desc->Type.BuiltInId);
                     status = read_fctn(field_ptr, buf);
                 }
                 else

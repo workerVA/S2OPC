@@ -602,8 +602,8 @@ SOPC_ReturnStatus SOPC_Comp_Array(int32_t noOfElts,
                                   int32_t* comparison);
 void SOPC_Clear_Array(int32_t* noOfElts, void** eltsArray, size_t sizeOfElt, SOPC_EncodeableObject_PfnClear* clearFct);
 
-size_t size_of_builtin_type(SOPC_BuiltinId type_id);
-SOPC_EncodeableObject_PfnClear* GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId);
-SOPC_EncodeableObject_PfnInitialize* GetBuiltInTypeInitializeFunction(SOPC_BuiltinId builtInTypeId);
+size_t SOPC_GetBuiltinSize(SOPC_BuiltinId type_id);
+SOPC_EncodeableObject_PfnClear* SOPC_GetBuiltInTypeClearFunction(SOPC_BuiltinId builtInTypeId);
+SOPC_EncodeableObject_PfnInitialize* SOPC_GetBuiltInTypeInitializeFunction(SOPC_BuiltinId builtInTypeId);
 
 #endif /* SOPC_SOPC_BUILTINTYPES_H_ */
