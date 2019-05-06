@@ -179,7 +179,7 @@ test-uactt:
   <<: *test_linux
   image: com2.systerel.fr:5000/c765/uactt@sha256:d986fad99fe526ab81aca1149cd488db85b6a478187239c0ebdd265968d8c4c9  # digest of uactt:1.5
   script:
-    - 'cd acceptances_tests/ && ./launch_acceptance_tests.sh'
+    - 'cd acceptances_tests/ && ./find_rare_bug.sh'
   artifacts:
     name: 'uactt-logs-${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHA}'
     paths:
