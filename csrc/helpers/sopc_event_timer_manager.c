@@ -205,12 +205,19 @@ static void SOPC_EventTimer_CyclicTimersEvaluation(void)
         timerId = timer->id;
         SOPC_ReturnStatus status = SOPC_EventHandler_Post(timer->eventHandler, timer->event.event, timer->event.eltId,
                                                           timer->event.params, timer->event.auxParam);
+
+        SOPC_Logger_TraceDebug("TIMERS: expiration of timer id=%" PRIu32 " with event=%" PRIi32
+                               " and associated id=%" PRIu32 " currentTime=%" PRIu64 " targetTime=%" PRIu64,
+                               timer->id, timer->event.event, timer->event.eltId, currentTimeRef, timer->endTime);
+
         assert(status == SOPC_STATUS_OK);
 
         if (timer->isPeriodicTimer)
         {
             // Set target time reference
             timer->endTime = SOPC_TimeReference_AddMilliseconds(timer->endTime, timer->periodMs);
+            SOPC_Logger_TraceDebug("TIMERS: restarted with targetTime=%" PRIu64, timer->endTime);
+
             // Add to list of timers to restart it
             if (timer != SOPC_SLinkedList_Append(periodicTimersToRestart, timer->id, (void*) timer))
             {
@@ -320,8 +327,9 @@ static uint32_t SOPC_InternalEventTimer_Create(SOPC_EventHandler* eventHandler,
     uint32_t result = 0;
     void* insertResult = NULL;
 
+    SOPC_TimeReference currentTime = SOPC_TimeReference_GetCurrent();
     // Create target time reference
-    targetTime = SOPC_TimeReference_AddMilliseconds(SOPC_TimeReference_GetCurrent(), msDelay);
+    targetTime = SOPC_TimeReference_AddMilliseconds(currentTime, msDelay);
     // Allocate new timer
     newTimer = calloc(1, sizeof(SOPC_EventTimer));
 
@@ -350,6 +358,13 @@ static uint32_t SOPC_InternalEventTimer_Create(SOPC_EventHandler* eventHandler,
         {
             result = 0;
             free(newTimer);
+        }
+        else
+        {
+            SOPC_Logger_TraceDebug("TIMERS: creation of timer id=%" PRIu32 " with event=%" PRIi32
+                                   " and associated id=%" PRIu32 " currentTime=%" PRIu64 " targetTime=%" PRIu64,
+                                   newTimer->id, newTimer->event.event, newTimer->event.eltId, currentTime,
+                                   newTimer->endTime);
         }
     } // else 0 is invalid value => no timer available
     else
@@ -392,6 +407,8 @@ void SOPC_EventTimer_Cancel(uint32_t timerId)
     {
         return;
     }
+
+    SOPC_Logger_TraceDebug("TIMERS: cancelation of timer id=%" PRIu32, timerId);
 
     Mutex_Lock(&timersMutex);
     SOPC_Internal_EventTimer_Cancel_WithoutLock(timerId);
