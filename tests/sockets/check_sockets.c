@@ -84,9 +84,11 @@ static void expect_events(int32_t event1,
     SOPC_Event* ev = NULL;
     while (!event1_received || !event2_received)
     {
+        fprintf(stderr, "Wait event\n");
         ck_assert_int_eq(SOPC_STATUS_OK, SOPC_AsyncQueue_BlockingDequeue(socketEvents, (void**) &ev));
         if (event2 == ev->event && !event2_received)
         {
+            fprintf(stderr, "Received event case 2\n");
             ck_assert_int_eq(event2, ev->event);
             ck_assert_uint_eq(id2, ev->eltId);
             event2_received = true;
@@ -94,6 +96,7 @@ static void expect_events(int32_t event1,
         }
         else if (!event1_received)
         {
+            fprintf(stderr, "Received event case 1\n");
             ck_assert_int_eq(event1, ev->event);
             ck_assert_uint_eq(id1, ev->eltId);
             event1_received = true;
@@ -101,6 +104,7 @@ static void expect_events(int32_t event1,
         }
         else
         {
+            fprintf(stderr, "Received event other\n");
             ck_assert_int_eq(event1, ev->event);
             ck_assert_uint_eq(id1, ev->eltId);
         }
@@ -146,7 +150,9 @@ START_TEST(test_sockets)
     SOPC_Sockets_EnqueueEvent(SOCKET_CREATE_SERVER, endpointDescConfigId, (void*) uri, (uint32_t) true);
     SOPC_GCC_DIAGNOSTIC_RESTORE
 
+    fprintf(stderr, "Before expect_event\n");
     free(expect_event(SOCKET_LISTENER_OPENED, endpointDescConfigId));
+    fprintf(stderr, "After expect_event\n");
 
     /* CLIENT SIDE: connection establishment */
     // Create client connection
@@ -162,8 +168,10 @@ START_TEST(test_sockets)
     {
         SOPC_Event* ev1 = NULL;
         SOPC_Event* ev2 = NULL;
+        fprintf(stderr, "*Before expect_eventS\n");
         expect_events(SOCKET_LISTENER_CONNECTION, endpointDescConfigId, &ev1, SOCKET_CONNECTION,
                       clientSecureChannelConnectionId, &ev2);
+        fprintf(stderr, "*After expect_eventS\n");
         serverSocketIdx = (uint32_t) ev1->auxParam;
         clientSocketIdx = (uint32_t) ev2->auxParam;
         free(ev1);
@@ -192,7 +200,9 @@ START_TEST(test_sockets)
 
     while (totalReceivedBytes < 1000 && receivedBytes != 0)
     {
+        fprintf(stderr, "Before expect_event %u\n", totalReceivedBytes);
         SOPC_Event* ev = expect_event(SOCKET_RCV_BYTES, serverSecureChannelConnectionId);
+        fprintf(stderr, "After expect_event %u\n", totalReceivedBytes);
         receivedBuffer = (SOPC_Buffer*) ev->params;
         free(ev);
 
@@ -235,7 +245,9 @@ START_TEST(test_sockets)
     receivedBytes = 1;
     while (totalReceivedBytes < 1000 && receivedBytes != 0)
     {
+        fprintf(stderr, "*Before expect_event %u\n", totalReceivedBytes);
         SOPC_Event* ev = expect_event(SOCKET_RCV_BYTES, clientSecureChannelConnectionId);
+        fprintf(stderr, "*After expect_event %u\n", totalReceivedBytes);
         receivedBuffer = (SOPC_Buffer*) ev->params;
         free(ev);
 
@@ -281,7 +293,9 @@ START_TEST(test_sockets)
     receivedBytes = 1;
     while (totalReceivedBytes < 2 * SOPC_MAX_MESSAGE_LENGTH && receivedBytes != 0)
     {
+        fprintf(stderr, "**Before expect_event %u\n", totalReceivedBytes);
         SOPC_Event* ev = expect_event(SOCKET_RCV_BYTES, serverSecureChannelConnectionId);
+        fprintf(stderr, "**After expect_event %u\n", totalReceivedBytes);
         receivedBuffer = (SOPC_Buffer*) ev->params;
         free(ev);
 
@@ -292,6 +306,7 @@ START_TEST(test_sockets)
         ck_assert(SOPC_STATUS_OK == status);
         SOPC_Buffer_Delete(receivedBuffer);
     }
+    fprintf(stderr, "**End loop expect_event\n");
 
     ck_assert(totalReceivedBytes == 2 * SOPC_MAX_MESSAGE_LENGTH && accBuffer->length == 2 * SOPC_MAX_MESSAGE_LENGTH);
     ck_assert(receivedBytes != totalReceivedBytes);
@@ -299,22 +314,28 @@ START_TEST(test_sockets)
     status = SOPC_Buffer_SetPosition(accBuffer, 0);
     ck_assert(SOPC_STATUS_OK == status);
 
+    fprintf(stderr, "**Start read \n");
     // Check acc buffer content
     for (idx = 0; idx < 2 * SOPC_MAX_MESSAGE_LENGTH; idx++)
     {
         status = SOPC_Buffer_Read(&byte, accBuffer, 1);
         ck_assert(SOPC_STATUS_OK == status);
         ck_assert(byte == (idx % 256));
+        fprintf(stderr, "**Reading byte=%u & idx=%u\n", byte, idx);
     }
 
+    fprintf(stderr, "**End read \n");
     SOPC_Buffer_Delete(accBuffer);
 
+    fprintf(stderr, "**Enqueue close \n");
     /* CLIENT SIDE: receive a msg buffer through connection */
     SOPC_Sockets_EnqueueEvent(SOCKET_CLOSE, clientSocketIdx, NULL, clientSecureChannelConnectionId);
 
     /* SERVER SIDE: accepted connection (socket level only) */
     {
+        fprintf(stderr, ">Before expect_event\n");
         SOPC_Event* ev = expect_event(SOCKET_FAILURE, serverSecureChannelConnectionId);
+        fprintf(stderr, ">After expect_event\n");
         ck_assert_uint_eq(serverSocketIdx, ev->auxParam);
         free(ev);
     }
