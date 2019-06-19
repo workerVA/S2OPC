@@ -40,6 +40,8 @@
 #include "sopc_time.h"
 #include "sopc_types.h"
 
+#include "p_logsrv.h"
+
 static char sBuffer[256];
 static QueueHandle_t h;
 static Mutex m;
@@ -225,10 +227,21 @@ static void* cbS2OPC_Thread_p2(void* ptr)
                 sizeofOpcUa_ReferenceNode);
         fprintf(fd, "%s", sBuffer);
         fclose(fd);
+
         PRINTF(sBuffer);
         Mutex_Unlock(&m);
+
         vTaskDelay(100);
     }
+
+    /*cptKillLogSrvTest++;
+    if(cptKillLogSrvTest > 3)
+    {
+        if(pLogSrv!=NULL)
+        {
+            P_LOG_SRV_StopAndDestroy(&pLogSrv);
+        }
+    }*/
 
     return NULL;
 }
@@ -378,7 +391,6 @@ static const int64_t UNIX_EPOCH_01012020_SECS = 1577836800;
  * */
 static const int64_t SOPC_SECONDS_BETWEEN_EPOCHS = 11644473600;
 static const int64_t SOPC_SECONDS_TO_100_NANOSECONDS = 10000000; // 10^7
-
 
 static void* cbS2OPC_Thread_TestTime(void* ptr)
 {
