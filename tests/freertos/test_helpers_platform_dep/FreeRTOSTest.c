@@ -49,6 +49,9 @@ static Thread p3 = NULL;
 static Thread p4 = NULL;
 static Thread pX = NULL;
 
+extern tLogSrvWks* gLogServer;
+extern void* cbToolkit_test_server(void* arg);
+
 static void* cbS2OPC_Thread_p4(void* ptr)
 {
     SOPC_ReturnStatus status;
