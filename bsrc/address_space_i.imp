@@ -54,7 +54,6 @@ PROMOTES
     get_Reference_IsForward,
     get_Node_RefIndexEnd,
     get_RefIndex_Reference,
-    get_Value_StatusCode,
     read_AddressSpace_clear_value,
     read_AddressSpace_free_variant,
     set_local_service_treatment,
@@ -166,11 +165,15 @@ LOCAL_OPERATIONS
                                                                    }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range)),
                                                           FALSE |-> {FALSE |-> e_sc_bad_not_writable,
                                                                      TRUE |-> {FALSE |-> e_sc_bad_user_access_denied,
-                                                                               TRUE |-> {FALSE |-> e_sc_bad_index_range_invalid,
-                                                                                         TRUE |-> {FALSE |-> e_sc_bad_index_range_no_data,
-                                                                                                   TRUE |-> e_sc_ok
-                                                                                                  }(HasRange_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
-                                                                                        }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                               TRUE |-> {FALSE |-> e_sc_bad_write_not_supported,
+                                                                                         TRUE |-> {FALSE |-> e_sc_bad_index_range_invalid,
+                                                                                                   TRUE |-> {FALSE |-> e_sc_bad_index_range_no_data,
+                                                                                                             TRUE |-> e_sc_ok
+                                                                                                            }(HasRange_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                                                  }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                                        }(bool(IsReadOnly_StatusAndSourceTimestamp = FALSE or
+                                                                                                (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = FALSE &
+                                                                                                 conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = FALSE)))
                                                                               }(bool(e_operation_type_write |-> nid |-> aid |-> p_user : s_AuthorizedOperations))
                                                                     }(conv_AccessLevel_CurrentWrite(a_AccessLevel(a_NodeId~(nid))))
                                                          }(bool(local_service_treatment /= 0))
@@ -235,8 +238,15 @@ LOCAL_OPERATIONS
              d_Type_IsVariableSubtype(DataValue_LocalDataType(dataValue), DataValue_ValueRank(dataValue), a_DataType(a_NodeId~(nid)), a_ValueRank(a_NodeId~(nid))) &
              (local_service_treatment /= 0
               or
+              /* AccessLevel and UserAccessLevel (dynamic) on value shall be writable */
               (conv_AccessLevel_CurrentWrite(a_AccessLevel(a_NodeId~(nid))) = TRUE &
                e_operation_type_write |-> nid |-> aid |-> p_user : s_AuthorizedOperations)
+              ) &
+              /* If value metadata (Status and SourceTimestamp) are not writable in server,
+                 AccessLevel shall always forbid to write them. Otherwise write operation fails */
+              (IsReadOnly_StatusAndSourceTimestamp = FALSE or
+               (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = FALSE &
+                conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = FALSE)
               ) &
               HasRange_VariantIndex(DataValue_Variant(dataValue) |-> index_range) = TRUE &
               IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range) = TRUE
@@ -252,11 +262,13 @@ LOCAL_OPERATIONS
 
              (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = TRUE =>
                     a_Value_StatusCode = a_Value_StatusCode$0 <+ {a_NodeId~(nid) |-> DataValue_StatusCode(dataValue)}) &
-             (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = FALSE => a_Value_StatusCode = a_Value_StatusCode$0) &
+             (not (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = TRUE) =>
+                    a_Value_StatusCode = a_Value_StatusCode$0) &
 
              (conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = TRUE => /* Note: if source timestamp is null, current date is used */
                     a_Value_SourceTimestamp = a_Value_SourceTimestamp$0 <+ {a_NodeId~(nid) |-> DataValue_SourceTimestamp(dataValue)}) &
-             (conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = FALSE => a_Value_SourceTimestamp = a_Value_SourceTimestamp$0)) &
+             (not (conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = TRUE) =>
+                    a_Value_SourceTimestamp = a_Value_SourceTimestamp$0)) &
 
             (not(isvalid = TRUE &
                  status : t_StatusCode_i &
@@ -268,7 +280,10 @@ LOCAL_OPERATIONS
                     (local_service_treatment /= 0
                      or
                      (conv_AccessLevel_CurrentWrite(a_AccessLevel(a_NodeId~(nid))) = TRUE &
-                      e_operation_type_write |-> nid |-> aid |-> p_user : s_AuthorizedOperations)
+                      e_operation_type_write |-> nid |-> aid |-> p_user : s_AuthorizedOperations) &
+                      (IsReadOnly_StatusAndSourceTimestamp = FALSE or
+                       (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = FALSE &
+                        conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = FALSE))
                     )
                 )
              =>
@@ -278,7 +293,7 @@ LOCAL_OPERATIONS
              serviceStatusCode :
              {e_sc_bad_out_of_memory, e_sc_bad_attribute_id_invalid, e_sc_bad_index_range_invalid,
                  e_sc_bad_node_id_unknown, e_sc_bad_not_writable, e_sc_bad_type_mismatch,
-                 e_sc_bad_user_access_denied, e_sc_bad_index_range_no_data} &
+                 e_sc_bad_user_access_denied, e_sc_bad_write_not_supported, e_sc_bad_index_range_no_data} &
              /* TODO: out of memory case */
              serviceStatusCode =
               {FALSE |-> status,
@@ -292,11 +307,15 @@ LOCAL_OPERATIONS
                                                                    }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range)),
                                                           FALSE |-> {FALSE |-> e_sc_bad_not_writable,
                                                                      TRUE |-> {FALSE |-> e_sc_bad_user_access_denied,
-                                                                               TRUE |-> {FALSE |-> e_sc_bad_index_range_invalid,
-                                                                                         TRUE |-> {FALSE |-> e_sc_bad_index_range_no_data,
-                                                                                                   TRUE |-> e_sc_ok
-                                                                                                  }(HasRange_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
-                                                                                        }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                               TRUE |-> {FALSE |-> e_sc_bad_write_not_supported,
+                                                                                         TRUE |-> {FALSE |-> e_sc_bad_index_range_invalid,
+                                                                                                   TRUE |-> {FALSE |-> e_sc_bad_index_range_no_data,
+                                                                                                             TRUE |-> e_sc_ok
+                                                                                                            }(HasRange_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                                                  }(IsValid_VariantIndex(DataValue_Variant(dataValue) |-> index_range))
+                                                                                        }(bool(IsReadOnly_StatusAndSourceTimestamp = FALSE or
+                                                                                                (conv_AccessLevel_StatusWrite(a_AccessLevel(a_NodeId~(nid))) = FALSE &
+                                                                                                 conv_AccessLevel_TimestampWrite (a_AccessLevel(a_NodeId~(nid))) = FALSE)))
                                                                               }(bool(e_operation_type_write |-> nid |-> aid |-> p_user : s_AuthorizedOperations))
                                                                     }(conv_AccessLevel_CurrentWrite(a_AccessLevel(a_NodeId~(nid))))
                                                          }(bool(local_service_treatment /= 0))
@@ -531,7 +550,11 @@ OPERATIONS
         l_local_treatment,
         l_variant,
         l_source_ts,
-        l_raw_sc
+        l_raw_sc,
+        l_bres_ignored,
+        l_bres_set_metadata,
+        l_old_status,
+        l_old_ts
     IN
         node := c_Node_indet;
         prev_dataValue := c_DataValue_indet;
@@ -555,8 +578,9 @@ OPERATIONS
                             /* No access authorization check for local treatment */
                             serviceStatusCode, prev_dataValue <-- set_Value(p_user, node, l_variant, l_compat_with_conv, index_range);
                             IF serviceStatusCode = e_sc_ok THEN
-                                set_Value_StatusCode(p_user, node, l_raw_sc);
-                                set_Value_SourceTimestamp(p_user, node, l_source_ts)
+                                // Note: it will fail if we use a const address space (except for variable value)
+                                l_bres_ignored <-- set_Value_StatusCode(p_user, node, l_raw_sc);
+                                l_bres_ignored <-- set_Value_SourceTimestamp(p_user, node, l_source_ts)
                             END
                         ELSE
                             l_access_lvl <-- get_AccessLevel(node);
@@ -564,17 +588,36 @@ OPERATIONS
                             l_access_write_status <-- is_t_access_level_statusWrite(l_access_lvl);
                             l_access_write_timestamp <-- is_t_access_level_timestampWrite(l_access_lvl);
                             IF l_access_write = TRUE THEN
-                                /* Write authorization is for set_Value, and read authorization is for get_Value_StatusCode */
+                                /* Write authorization is for set_Value */
                                 l_authorized_write <-- get_user_authorization(e_operation_type_write, nid, aid, p_user);
                                 IF l_authorized_write = TRUE THEN
-                                    serviceStatusCode, prev_dataValue
-                                      <-- set_Value(p_user, node, l_variant, l_compat_with_conv,  index_range);
-                                    IF serviceStatusCode = e_sc_ok THEN
-                                        IF l_access_write_status = TRUE THEN
-                                            set_Value_StatusCode(p_user, node, l_raw_sc)
-                                        END;
-                                        IF l_access_write_timestamp = TRUE THEN
-                                            set_Value_SourceTimestamp(p_user, node, l_source_ts)
+                                    l_bres_set_metadata := FALSE;
+                                    /* Keep metadata values to make possible to restore it */
+                                    l_old_status <-- internal_get_Value_StatusCode(node);
+                                    l_old_ts <-- internal_get_Value_SourceTimestamp(node);
+
+                                    /* Set Variable metadata if AccessLevel authorizes it */
+                                    IF l_access_write_status = TRUE THEN
+                                        /* Server might fail if it has constant metadata only */
+                                        l_bres_set_metadata <-- set_Value_StatusCode(p_user, node, l_raw_sc)
+                                    ELSE
+                                        l_bres_set_metadata := TRUE
+                                    END;
+                                    IF l_bres_set_metadata = TRUE & l_access_write_timestamp = TRUE THEN
+                                        /* Server might fail if it has constant metadata only */
+                                        l_bres_set_metadata <-- set_Value_SourceTimestamp(p_user, node, l_source_ts)
+                                    END;
+                                    /* Set Variable value */
+                                    IF l_bres_set_metadata = FALSE
+                                    THEN
+                                        serviceStatusCode := e_sc_bad_write_not_supported
+                                    ELSE
+                                        serviceStatusCode, prev_dataValue
+                                          <-- set_Value(p_user, node, l_variant, l_compat_with_conv,  index_range);
+                                        IF serviceStatusCode /= e_sc_ok THEN
+                                            /* Restore initial metadata */
+                                            l_bres_ignored <-- set_Value_StatusCode(p_user, node, l_old_status);
+                                            l_bres_ignored <-- set_Value_SourceTimestamp(p_user, node, l_old_ts)
                                         END
                                     END
                                 ELSE
@@ -805,7 +848,7 @@ OPERATIONS
                 => ResponseWrite_StatusCode(wvi) : {e_sc_ok,
                     e_sc_bad_out_of_memory, e_sc_bad_attribute_id_invalid, e_sc_bad_index_range_invalid,
                     e_sc_bad_node_id_unknown, e_sc_bad_not_writable, e_sc_bad_type_mismatch,
-                    e_sc_bad_user_access_denied, e_sc_bad_index_range_no_data})
+                    e_sc_bad_user_access_denied, e_sc_bad_write_not_supported, e_sc_bad_index_range_no_data})
         VARIANT
             card(wreqs_to_iterate)
         END

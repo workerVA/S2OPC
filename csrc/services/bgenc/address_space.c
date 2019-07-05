@@ -21,7 +21,7 @@
 
  File Name            : address_space.c
 
- Date                 : 14/06/2019 15:11:01
+ Date                 : 05/07/2019 13:33:58
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -223,6 +223,10 @@ void address_space__treat_write_1(
       constants__t_Variant_i address_space__l_variant;
       constants__t_Timestamp address_space__l_source_ts;
       constants__t_RawStatusCode address_space__l_raw_sc;
+      t_bool address_space__l_bres_ignored;
+      t_bool address_space__l_bres_set_metadata;
+      constants__t_RawStatusCode address_space__l_old_status;
+      constants__t_Timestamp address_space__l_old_ts;
       
       *address_space__node = constants__c_Node_indet;
       *address_space__prev_dataValue = constants__c_DataValue_indet;
@@ -268,10 +272,12 @@ void address_space__treat_write_1(
                      if (*address_space__serviceStatusCode == constants_statuscodes_bs__e_sc_ok) {
                         address_space_bs__set_Value_StatusCode(address_space__p_user,
                            *address_space__node,
-                           address_space__l_raw_sc);
+                           address_space__l_raw_sc,
+                           &address_space__l_bres_ignored);
                         address_space_bs__set_Value_SourceTimestamp(address_space__p_user,
                            *address_space__node,
-                           address_space__l_source_ts);
+                           address_space__l_source_ts,
+                           &address_space__l_bres_ignored);
                      }
                   }
                   else {
@@ -290,23 +296,47 @@ void address_space__treat_write_1(
                            address_space__p_user,
                            &address_space__l_authorized_write);
                         if (address_space__l_authorized_write == true) {
-                           address_space_bs__set_Value(address_space__p_user,
-                              *address_space__node,
-                              address_space__l_variant,
-                              address_space__l_compat_with_conv,
-                              address_space__index_range,
-                              address_space__serviceStatusCode,
-                              address_space__prev_dataValue);
-                           if (*address_space__serviceStatusCode == constants_statuscodes_bs__e_sc_ok) {
-                              if (address_space__l_access_write_status == true) {
+                           address_space__l_bres_set_metadata = false;
+                           address_space_bs__internal_get_Value_StatusCode(*address_space__node,
+                              &address_space__l_old_status);
+                           address_space_bs__internal_get_Value_SourceTimestamp(*address_space__node,
+                              &address_space__l_old_ts);
+                           if (address_space__l_access_write_status == true) {
+                              address_space_bs__set_Value_StatusCode(address_space__p_user,
+                                 *address_space__node,
+                                 address_space__l_raw_sc,
+                                 &address_space__l_bres_set_metadata);
+                           }
+                           else {
+                              address_space__l_bres_set_metadata = true;
+                           }
+                           if ((address_space__l_bres_set_metadata == true) &&
+                              (address_space__l_access_write_timestamp == true)) {
+                              address_space_bs__set_Value_SourceTimestamp(address_space__p_user,
+                                 *address_space__node,
+                                 address_space__l_source_ts,
+                                 &address_space__l_bres_set_metadata);
+                           }
+                           if (address_space__l_bres_set_metadata == false) {
+                              *address_space__serviceStatusCode = constants_statuscodes_bs__e_sc_bad_write_not_supported;
+                           }
+                           else {
+                              address_space_bs__set_Value(address_space__p_user,
+                                 *address_space__node,
+                                 address_space__l_variant,
+                                 address_space__l_compat_with_conv,
+                                 address_space__index_range,
+                                 address_space__serviceStatusCode,
+                                 address_space__prev_dataValue);
+                              if (*address_space__serviceStatusCode != constants_statuscodes_bs__e_sc_ok) {
                                  address_space_bs__set_Value_StatusCode(address_space__p_user,
                                     *address_space__node,
-                                    address_space__l_raw_sc);
-                              }
-                              if (address_space__l_access_write_timestamp == true) {
+                                    address_space__l_old_status,
+                                    &address_space__l_bres_ignored);
                                  address_space_bs__set_Value_SourceTimestamp(address_space__p_user,
                                     *address_space__node,
-                                    address_space__l_source_ts);
+                                    address_space__l_old_ts,
+                                    &address_space__l_bres_ignored);
                               }
                            }
                         }

@@ -21,7 +21,7 @@
 
  File Name            : address_space_bs.h
 
- Date                 : 14/06/2019 15:11:21
+ Date                 : 05/07/2019 13:34:18
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -88,9 +88,11 @@ extern void address_space_bs__get_TypeDefinition(
 extern void address_space_bs__get_ValueRank(
    const constants__t_Node_i address_space_bs__p_node,
    t_entier4 * const address_space_bs__p_value_rank);
-extern void address_space_bs__get_Value_StatusCode(
-   const constants__t_user_i address_space_bs__p_user,
-   const constants__t_Node_i address_space_bs__node,
+extern void address_space_bs__internal_get_Value_SourceTimestamp(
+   const constants__t_Node_i address_space_bs__p_node,
+   constants__t_Timestamp * const address_space_bs__ts);
+extern void address_space_bs__internal_get_Value_StatusCode(
+   const constants__t_Node_i address_space_bs__p_node,
    constants__t_RawStatusCode * const address_space_bs__sc);
 extern void address_space_bs__is_IndexRangeDefined(
    const constants__t_IndexRange_i address_space_bs__p_index_range,
@@ -188,11 +190,13 @@ extern void address_space_bs__set_Value(
 extern void address_space_bs__set_Value_SourceTimestamp(
    const constants__t_user_i address_space_bs__p_user,
    const constants__t_Node_i address_space_bs__p_node,
-   const constants__t_Timestamp address_space_bs__p_ts);
+   const constants__t_Timestamp address_space_bs__p_ts,
+   t_bool * const address_space_bs__bres);
 extern void address_space_bs__set_Value_StatusCode(
    const constants__t_user_i address_space_bs__p_user,
    const constants__t_Node_i address_space_bs__p_node,
-   const constants__t_RawStatusCode address_space_bs__p_sc);
+   const constants__t_RawStatusCode address_space_bs__p_sc,
+   t_bool * const address_space_bs__bres);
 extern void address_space_bs__write_AddressSpace_free_dataValue(
    const constants__t_DataValue_i address_space_bs__data);
 

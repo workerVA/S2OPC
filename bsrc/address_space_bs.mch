@@ -59,6 +59,7 @@ DEFINITIONS
         Node_RefIndexEnd,
         RefIndex_Reference,
 
+        IsReadOnly_StatusAndSourceTimestamp,
         IsRangeDefined, /* <=> range string != NULL */
         IsValid_VariantIndex, /* Valid (or none) index range value for Variant */
         HasRange_VariantIndex /* Valid index range but has no range in  Variant */
@@ -125,6 +126,7 @@ DEFINITIONS
         Node_RefIndexEnd        : t_Node     +-> t_RefIndex  &
         RefIndex_Reference      : t_Node * t_RefIndex +-> t_Reference &
 
+        IsReadOnly_StatusAndSourceTimestamp : BOOL &
         IsRangeDefined : t_IndexRange_i --> BOOL &
         IsValid_VariantIndex : t_Variant * t_IndexRange +-> BOOL &
         HasRange_VariantIndex  : t_Variant * t_IndexRange +-> BOOL
@@ -567,7 +569,7 @@ OPERATIONS
     END
     ;
 
-    set_Value_StatusCode(p_user, p_node, p_sc) =
+    bres <-- set_Value_StatusCode(p_user, p_node, p_sc) =
     PRE
         p_user : t_user_i   &
         p_user : t_user     &
@@ -577,35 +579,55 @@ OPERATIONS
         p_sc : t_RawStatusCode &
         e_operation_type_write |-> a_NodeId(p_node) |-> e_aid_Value |-> p_user : s_AuthorizedOperations
     THEN
-        a_Value_StatusCode(p_node) := p_sc
+        CHOICE
+            bres := TRUE ||
+            a_Value_StatusCode(p_node) := p_sc
+        OR
+            /* constant address space case: only variable value can be set */
+            bres := FALSE
+        END
     END
     ;
 
-    set_Value_SourceTimestamp(p_user, p_node, p_ts) =
+    bres <-- set_Value_SourceTimestamp(p_user, p_node, p_ts) =
     PRE
         p_user : t_user_i   &
         p_user : t_user     &
         p_node  : t_Node_i    &
         p_node  : t_Node      &
-        p_node : dom(a_Value_StatusCode) &
+        p_node : dom(a_Value_SourceTimestamp) &
         p_ts : t_Timestamp &
         e_operation_type_write |-> a_NodeId(p_node) |-> e_aid_Value |-> p_user : s_AuthorizedOperations
     THEN
-        a_Value_SourceTimestamp(p_node) := p_ts
+        CHOICE
+            bres := TRUE ||
+            a_Value_SourceTimestamp(p_node) := p_ts
+        OR
+            /* constant address space case: only variable value can be set */
+            bres := FALSE
+        END
     END
     ;
 
-    /* a_Value_StatusCode */
-    sc <-- get_Value_StatusCode(p_user, node) =
+    /* a_Value_StatusCode: shall not be used to send it externally, otherwise user to be checked */
+    sc <-- internal_get_Value_StatusCode(p_node) =
     PRE
-        p_user : t_user_i &
-        p_user : t_user   &
-        node : t_Node_i &
-        node : t_Node   &
-        node : dom(a_Value_StatusCode) &
-        e_operation_type_read |-> a_NodeId(node) |-> e_aid_Value |-> p_user : s_AuthorizedOperations
+        p_node : t_Node_i &
+        p_node : t_Node   &
+        p_node : dom(a_Value_StatusCode)
     THEN
-        sc := a_Value_StatusCode(node)
+        sc := a_Value_StatusCode(p_node)
+    END
+    ;
+
+    /* a_Value_SourceTimestamp: shall not be used to send it externally, otherwise user to be checked */
+    ts <-- internal_get_Value_SourceTimestamp(p_node) =
+    PRE
+        p_node : t_Node_i &
+        p_node : t_Node   &
+        p_node : dom(a_Value_SourceTimestamp)
+    THEN
+        ts := a_Value_SourceTimestamp(p_node)
     END
     ;
 

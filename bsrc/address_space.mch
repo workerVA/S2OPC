@@ -451,19 +451,6 @@ OPERATIONS
     ;
 
     /* Promoted */
-    sc <-- get_Value_StatusCode(p_user, node) =
-    PRE
-        p_user : t_user_i &
-        p_user : t_user   &
-        node : t_Node_i &
-        node : t_Node &
-        a_NodeClass(node) = e_ncl_Variable
-    THEN
-        sc := a_Value_StatusCode(node)
-    END
-    ;
-
-    /* Promoted */
     read_AddressSpace_clear_value(val) =
     PRE
         val : t_Variant_i

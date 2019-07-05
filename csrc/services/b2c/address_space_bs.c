@@ -594,7 +594,8 @@ void address_space_bs__set_Value(const constants__t_user_i address_space_bs__p_u
 
 void address_space_bs__set_Value_SourceTimestamp(const constants__t_user_i address_space_bs__p_user,
                                                  const constants__t_Node_i address_space_bs__p_node,
-                                                 const constants__t_Timestamp address_space_bs__p_ts)
+                                                 const constants__t_Timestamp address_space_bs__p_ts,
+                                                 t_bool* const address_space_bs__bres)
 {
     (void) (address_space_bs__p_user); /* Keep for B precondition: user is already authorized for this operation */
     SOPC_AddressSpace_Node* node = address_space_bs__p_node;
@@ -605,30 +606,35 @@ void address_space_bs__set_Value_SourceTimestamp(const constants__t_user_i addre
         SOPC_Value_Timestamp ts;
         ts.timestamp = SOPC_Time_GetCurrentTimeUTC();
         ts.picoSeconds = 0;
-        SOPC_AddressSpace_Set_SourceTs(address_space_bs__nodes, node, ts);
+        *address_space_bs__bres = SOPC_AddressSpace_Set_SourceTs(address_space_bs__nodes, node, ts);
     }
     else
     {
-        SOPC_AddressSpace_Set_SourceTs(address_space_bs__nodes, node, address_space_bs__p_ts);
+        *address_space_bs__bres = SOPC_AddressSpace_Set_SourceTs(address_space_bs__nodes, node, address_space_bs__p_ts);
     }
 }
 
 void address_space_bs__set_Value_StatusCode(const constants__t_user_i address_space_bs__p_user,
                                             const constants__t_Node_i address_space_bs__p_node,
-                                            const constants__t_RawStatusCode address_space_bs__p_sc)
+                                            const constants__t_RawStatusCode address_space_bs__p_sc,
+                                            t_bool* const address_space_bs__bres)
 {
     (void) (address_space_bs__p_user); /* Keep for B precondition: user is already authorized for this operation */
     SOPC_AddressSpace_Node* node = address_space_bs__p_node;
     assert(node->node_class == OpcUa_NodeClass_Variable);
-    SOPC_AddressSpace_Set_StatusCode(address_space_bs__nodes, node, address_space_bs__p_sc);
+    *address_space_bs__bres = SOPC_AddressSpace_Set_StatusCode(address_space_bs__nodes, node, address_space_bs__p_sc);
 }
 
-void address_space_bs__get_Value_StatusCode(const constants__t_user_i address_space_bs__p_user,
-                                            const constants__t_Node_i address_space_bs__node,
-                                            constants__t_RawStatusCode* const address_space_bs__sc)
+void address_space_bs__internal_get_Value_SourceTimestamp(const constants__t_Node_i address_space_bs__p_node,
+                                                          constants__t_Timestamp* const address_space_bs__ts)
 {
-    (void) (address_space_bs__p_user); /* User is already authorized for this operation */
-    *address_space_bs__sc = SOPC_AddressSpace_Get_StatusCode(address_space_bs__nodes, address_space_bs__node);
+    *address_space_bs__ts = SOPC_AddressSpace_Get_SourceTs(address_space_bs__nodes, address_space_bs__p_node);
+}
+
+void address_space_bs__internal_get_Value_StatusCode(const constants__t_Node_i address_space_bs__p_node,
+                                                     constants__t_RawStatusCode* const address_space_bs__sc)
+{
+    *address_space_bs__sc = SOPC_AddressSpace_Get_StatusCode(address_space_bs__nodes, address_space_bs__p_node);
 }
 
 void address_space_bs__is_IndexRangeDefined(const constants__t_IndexRange_i address_space_bs__p_index_range,
