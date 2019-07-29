@@ -307,7 +307,7 @@ static void* cbS2OPC_Thread_p1(void* ptr)
         PRINTF(sBuffer);
         Mutex_Unlock(&m);
 
-        status = SOPC_Thread_Create(&p2, cbS2OPC_Thread_p2, pv);
+        status = SOPC_Thread_Create(&p2, cbS2OPC_Thread_p2, pv, NULL);
 
         Mutex_Lock(&m);
         sprintf(sBuffer, "$$$$ %2X -  Sub task 1 creates sub task 2 result = %d : current time = %lu\r\n",
@@ -317,7 +317,7 @@ static void* cbS2OPC_Thread_p1(void* ptr)
 
         Mutex_Lock(&m); // Test condition variable
         {
-            status = SOPC_Thread_Create(&p4, cbS2OPC_Thread_p4, pv);
+            status = SOPC_Thread_Create(&p4, cbS2OPC_Thread_p4, pv, NULL);
 
             sprintf(sBuffer, "$$$$ %2X -  Sub task 1 creates sub task 4 result = %d : current time = %lu\r\n",
                     (unsigned int) xTaskGetCurrentTaskHandle(), status, (uint32_t) xTaskGetTickCount());
@@ -408,7 +408,7 @@ void FREE_RTOS_TEST_S2OPC_SERVER(void* ptr)
     Condition* pv = (Condition*) ptr;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbToolkit_test_server, pv);
+    status = SOPC_Thread_Create(&pX, cbToolkit_test_server, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit test thread init launching result = %d : current time = %lu\r\n",
@@ -488,7 +488,7 @@ void FREE_RTOS_TEST_S2OPC_TIME(void* ptr)
     Condition* pv = (Condition*) ptr;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_TestTime, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_TestTime, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit test thread init launching result = %d : current time = %lu\r\n",
@@ -559,7 +559,7 @@ static void* cbS2OPC_Thread_Test_Thread(void* ptr)
     int32_t cpt = 0;
     // Nominal behavior
     thread = NULL;
-    SOPC_ReturnStatus status = SOPC_Thread_Create(&thread, test_thread_exec_fct, &cpt);
+    SOPC_ReturnStatus status = SOPC_Thread_Create(&thread, test_thread_exec_fct, &cpt, NULL);
     configASSERT(status == SOPC_STATUS_OK);
 
     configASSERT(wait_value(&cpt, 1));
@@ -569,9 +569,9 @@ static void* cbS2OPC_Thread_Test_Thread(void* ptr)
     thread = NULL;
 
     // Degraded behavior
-    status = SOPC_Thread_Create(NULL, test_thread_exec_fct, &cpt);
+    status = SOPC_Thread_Create(NULL, test_thread_exec_fct, &cpt, NULL);
     configASSERT(status == SOPC_STATUS_INVALID_PARAMETERS);
-    status = SOPC_Thread_Create(&thread, NULL, &cpt);
+    status = SOPC_Thread_Create(&thread, NULL, &cpt, NULL);
     configASSERT(status == SOPC_STATUS_INVALID_PARAMETERS);
     status = SOPC_Thread_Join(thread);
     configASSERT(status != SOPC_STATUS_OK); // Todo: expected NOK, returned INVALID_STATE
@@ -585,7 +585,7 @@ static void* cbS2OPC_Thread_Test_Thread_Mutex(void* ptr)
     // Nominal behavior
     configASSERT(SOPC_STATUS_OK == Mutex_Initialization(&gmutex));
     configASSERT(SOPC_STATUS_OK == Mutex_Lock(&gmutex));
-    configASSERT(SOPC_STATUS_OK == SOPC_Thread_Create(&thread, test_thread_mutex_fct, &cpt));
+    configASSERT(SOPC_STATUS_OK == SOPC_Thread_Create(&thread, test_thread_mutex_fct, &cpt, NULL));
 
     // Wait until the thread reaches the "lock mutex" statement
     configASSERT(wait_value(&cpt, 1));
@@ -618,7 +618,7 @@ static void* cbS2OPC_Thread_Test_Mutex_Recursive(void* ptr)
     int32_t cpt = 0;
     configASSERT(SOPC_STATUS_OK == Mutex_Initialization(&gmutex));
     configASSERT(SOPC_STATUS_OK == Mutex_Lock(&gmutex));
-    configASSERT(SOPC_STATUS_OK == SOPC_Thread_Create(&thread, test_thread_mutex_recursive_fct, &cpt));
+    configASSERT(SOPC_STATUS_OK == SOPC_Thread_Create(&thread, test_thread_mutex_recursive_fct, &cpt, NULL));
 
     // Wait until the thread reaches the "lock mutex" statement
     configASSERT(wait_value(&cpt, 1));
@@ -696,7 +696,7 @@ static void* cbS2OPC_Thread_Test_CondVar(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
     status = Condition_Init(&gcond);
     configASSERT(status == SOPC_STATUS_OK);
-    status = SOPC_Thread_Create(&thread, test_thread_condvar_fct, &condRes);
+    status = SOPC_Thread_Create(&thread, test_thread_condvar_fct, &condRes, NULL);
     configASSERT(status == SOPC_STATUS_OK);
     SOPC_Sleep(10);
     status = Mutex_Lock(&gmutex);
@@ -733,7 +733,7 @@ static void* cbS2OPC_Thread_Test_CondVar(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
     status = Condition_Init(&gcond);
     configASSERT(status == SOPC_STATUS_OK);
-    status = SOPC_Thread_Create(&thread, test_thread_condvar_timed_fct, &condRes);
+    status = SOPC_Thread_Create(&thread, test_thread_condvar_timed_fct, &condRes, NULL);
     configASSERT(status == SOPC_STATUS_OK);
     SOPC_Sleep(10);
     status = Mutex_Lock(&gmutex);
@@ -770,7 +770,7 @@ static void* cbS2OPC_Thread_Test_CondVar(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
     status = Condition_Init(&gcond);
     configASSERT(status == SOPC_STATUS_OK);
-    status = SOPC_Thread_Create(&thread, test_thread_condvar_timed_fct, &condRes);
+    status = SOPC_Thread_Create(&thread, test_thread_condvar_timed_fct, &condRes, NULL);
     configASSERT(status == SOPC_STATUS_OK);
     SOPC_Sleep(10);
     status = Mutex_Lock(&gmutex);
@@ -852,7 +852,7 @@ static void* cbS2OPC_Thread_CheckThread(void* ptr)
     SOPC_LogSrv_WaitClient(UINT32_MAX);
 
     pX = NULL;
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Thread, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Thread, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X - Test thread launching result = %d : current time = %lu\r\n",
@@ -873,7 +873,7 @@ static void* cbS2OPC_Thread_CheckThread(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
 
     pX = NULL;
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Thread_Mutex, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Thread_Mutex, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X - Test thread mutex launching result = %d : current time = %lu\r\n",
@@ -894,7 +894,7 @@ static void* cbS2OPC_Thread_CheckThread(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
 
     pX = NULL;
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Mutex_Recursive, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_Mutex_Recursive, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X - Test thread mutex recursive launching result = %d : current time = %lu\r\n",
@@ -915,7 +915,7 @@ static void* cbS2OPC_Thread_CheckThread(void* ptr)
     configASSERT(status == SOPC_STATUS_OK);
 
     pX = NULL;
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_CondVar, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_Test_CondVar, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X - Test thread cond var launching result = %d : current time = %lu\r\n",
@@ -943,7 +943,7 @@ void FREE_RTOS_TEST_S2OPC_CHECK_THREAD(void* ptr)
     Condition* pv = (Condition*) ptr;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_CheckThread, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_CheckThread, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit check thread launching result = %d : current time = %lu\r\n",
@@ -1066,7 +1066,7 @@ void FREE_RTOS_TEST_S2OPC_UDP_SOCKET_API(void* ptr)
     Condition* pv = (Condition*) ptr;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_UDP_Socket_API, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_UDP_Socket_API, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit test udp socket api init launching result = %d : current time = %lu\r\n",
@@ -1081,7 +1081,7 @@ void FREE_RTOS_TEST_S2OPC_UDP_SOCKET_API_LB(void* ptr)
     Condition* pv = (Condition*) ptr;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_UDP_Socket_API_LB, pv);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_UDP_Socket_API_LB, pv, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit test udp socket api init launching result = %d : current time = %lu\r\n",
@@ -1194,7 +1194,7 @@ void FREE_RTOS_TEST_S2OPC_PUBSUB(void* ptr)
     SOPC_ReturnStatus status;
     Mutex_Initialization(&m);
 
-    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_PubSub, NULL);
+    status = SOPC_Thread_Create(&pX, cbS2OPC_Thread_PubSub, NULL, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  Toolkit test pubsub init launching result = %d : current time = %lu\r\n",
@@ -1315,7 +1315,7 @@ void FREE_RTOS_TEST_S2OPC_USECASE_PUBSUB_SYNCHRO(void* ptr)
 
     P_CHANNEL_Init(&channel, 16 * sizeof(tMessage), sizeof(tMessage), 16);
 
-    status = SOPC_Thread_Create(&p1, cbS2OPC_Thread_prod, NULL);
+    status = SOPC_Thread_Create(&p1, cbS2OPC_Thread_prod, NULL, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  cbS2OPC_Thread_prod init launching result = %d : current time = %lu\r\n",
@@ -1323,7 +1323,7 @@ void FREE_RTOS_TEST_S2OPC_USECASE_PUBSUB_SYNCHRO(void* ptr)
     PRINTF(sBuffer);
     Mutex_Unlock(&m);
 
-    status = SOPC_Thread_Create(&p2, cbS2OPC_Thread_cons, NULL);
+    status = SOPC_Thread_Create(&p2, cbS2OPC_Thread_cons, NULL, NULL);
 
     Mutex_Lock(&m);
     sprintf(sBuffer, "$$$$ %2X -  cbS2OPC_Thread_cons init launching result = %d : current time = %lu\r\n",
