@@ -1782,7 +1782,7 @@ int __attribute__((weak)) _write(int handle, const char* buffer, size_t size)
     // Log server exist
     if (NULL == gLogServer || E_LOG_SERVER_ONLINE != gLogServer->status)
     {
-        length = PRINTF(buffer, size);
+       return size;
     }
     else
     {

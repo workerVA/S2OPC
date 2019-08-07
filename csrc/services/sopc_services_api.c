@@ -347,8 +347,17 @@ static void onServiceEvent(SOPC_EventHandler* handler, int32_t scEvent, uint32_t
         // params = local service request
         // auxParam = user application session context
         assert(id <= INT32_MAX);
+        {
+            extern traceString chn1;
+            vTracePrintF(chn1, "svc in");
+        }
 
         io_dispatch_mgr__server_treat_local_service_request(id, params, auxParam, &sCode);
+
+        {
+            extern traceString chn1;
+            vTracePrintF(chn1, "svc out");
+        }
         if (constants_statuscodes_bs__e_sc_ok != sCode)
         {
             // Error case

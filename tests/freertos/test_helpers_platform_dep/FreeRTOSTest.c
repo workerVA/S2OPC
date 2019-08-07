@@ -1093,7 +1093,7 @@ void FREE_RTOS_TEST_S2OPC_UDP_SOCKET_API_LB(void* ptr)
 
 static void* cbS2OPC_Thread_PubSub(void* ptr)
 {
-    SOPC_LogSrv_Start(60, 4023);
+    // SOPC_LogSrv_Start(60, 4023);
     // SOPC_LogSrv_WaitClient(UINT32_MAX);
 
     P_ETHERNET_IF_IsReady(UINT32_MAX);

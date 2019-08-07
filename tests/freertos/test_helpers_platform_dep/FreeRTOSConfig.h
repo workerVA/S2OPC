@@ -42,7 +42,7 @@
 #define configUSE_TICKLESS_IDLE 0
 #define configCPU_CLOCK_HZ (SystemCoreClock)
 #define configTICK_RATE_HZ ((TickType_t) 1000)
-#define configMAX_PRIORITIES 1
+#define configMAX_PRIORITIES 10
 #define configMINIMAL_STACK_SIZE ((unsigned short) 2048)
 #define configMINIMAL_STACK_SIZE_TIMER ((unsigned short) 256)
 #define configMAX_TASK_NAME_LEN 40
@@ -75,9 +75,9 @@
 #define configUSE_DAEMON_TASK_STARTUP_HOOK 0
 
 /* Run time and task stats gathering related definitions. */
-#define configGENERATE_RUN_TIME_STATS 0
-#define configUSE_TRACE_FACILITY 0
-#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+#define configGENERATE_RUN_TIME_STATS 1
+#define configUSE_TRACE_FACILITY 1
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
 #define configRECORD_STACK_HIGH_ADDRESS 1
 
 /* Co-routine related definitions. */
@@ -85,7 +85,7 @@
 #define configMAX_CO_ROUTINE_PRIORITIES 2
 
 #define configFRTOS_MEMORY_SCHEME 4
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H 0
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H 1
 /* Software timer related definitions. */
 #define configUSE_TIMERS 1
 #define configTIMER_TASK_PRIORITY (configMAX_PRIORITIES - 1)

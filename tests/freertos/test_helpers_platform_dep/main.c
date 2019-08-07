@@ -58,8 +58,11 @@
 
 Condition gHandleConditionVariable;
 
+traceString chn1;
+
 int main(void)
 {
+    chn1 = xTraceRegisterString("MyChannel");
     // Configuration of MPU. I and D cache are disabled.
     BOARD_ConfigMPU();
     // Initialization of GPIO
