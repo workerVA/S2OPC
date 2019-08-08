@@ -227,9 +227,9 @@ SOPC_SecureChannel_Config scConfig = {.isClientSc = true,
                                       .key_priv_cli = NULL,
                                       .crt_srv = NULL,
                                       .pki = NULL,
-                                      .reqSecuPolicyUri = SOPC_SecurityPolicy_Basic256Sha256_URI,
+                                      .reqSecuPolicyUri = SOPC_SecurityPolicy_None_URI,
                                       .requestedLifetime = 20000,
-                                      .msgSecurityMode = OpcUa_MessageSecurityMode_SignAndEncrypt};
+                                      .msgSecurityMode = OpcUa_MessageSecurityMode_None};
 
 int main(void)
 {

@@ -55,7 +55,7 @@
 static const char* app_namespace_uris[] = {(const char*) PRODUCT_URI, NULL};
 
 static int32_t endpointClosed = 0;
-static bool secuActive = true;
+static bool secuActive = false;
 
 volatile sig_atomic_t stopServer = 0;
 
