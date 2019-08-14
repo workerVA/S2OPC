@@ -236,7 +236,6 @@ static eAnalyzerStatus cbFsmReceiveEOF(tAnalyzerWks* pCtx, eAnalyzerEvent event,
 static eAnalyzerStatus cbFsmReceiveDLM(tAnalyzerWks* pCtx, eAnalyzerEvent event, uint8_t value)
 {
     eAnalyzerStatus status = pCtx->status;
-
     switch (status)
     {
     case ANALYZER_STATUS_WAIT_FOR_TAG:
@@ -256,94 +255,64 @@ static eAnalyzerStatus cbFsmReceiveDLM(tAnalyzerWks* pCtx, eAnalyzerEvent event,
     }
 
     status = pCtx->status;
-
     return status;
 }
 
-eAnalyzerResult UpdateAnalyzerTmo(tAnalyzerWks* pCtx)
+eAnalyzerStatus UpdateAnalyzerTmo(tAnalyzerWks* pCtx)
 {
-    eAnalyzerResult result = ANALYZER_RESULT_OK;
+    if (pCtx == NULL)
+    {
+        return ANALYZER_STATUS_WAIT_FOR_SOF;
+    }
 
+    return tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_TIMEOUT](pCtx, ANALYZER_EVENT_TIMEOUT, 0);
+}
+
+eAnalyzerStatus ExecuteAnalyzer(tAnalyzerWks* pCtx, uint8_t value)
+{
+    eAnalyzerStatus status = ANALYZER_STATUS_WAIT_FOR_SOF;
+    if (pCtx == NULL)
+    {
+        return ANALYZER_STATUS_WAIT_FOR_SOF;
+    }
+
+    switch (value)
+    {
+    case PLT_DLM:
+    {
+        status = tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_DELIM](pCtx,                 //
+                                                                    ANALYZER_EVENT_DELIM, //
+                                                                    value);               //
+    }
+    break;
+    default:
+    {
+        status = tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_BYTE](pCtx,                //
+                                                                   ANALYZER_EVENT_BYTE, //
+                                                                   value);              //
+    }
+    break;
+    }
+    return status;
+}
+
+tAnalyzerMsg* GetReadyMessage(tAnalyzerWks* pCtx)
+{
+    if (pCtx == NULL || pCtx->status != ANALYZER_STATUS_READY)
+    {
+        return NULL;
+    }
+    return &pCtx->currentMsg;
+}
+
+eAnalyzerResult InitializeAnalyzer(tAnalyzerWks* pCtx, uint16_t trigTmoCpt)
+{
     if (pCtx == NULL)
     {
         return ANALYZER_RESULT_NOK;
     }
 
-    (void) tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_TIMEOUT](pCtx, ANALYZER_EVENT_TIMEOUT, 0);
-
-    return result;
-}
-
-eAnalyzerResult ExecuteAnalyzer(tAnalyzerWks* pCtx, const uint8_t* buffer, uint16_t length)
-{
-    eAnalyzerStatus status = ANALYZER_STATUS_WAIT_FOR_SOF;
-    eAnalyzerResult result = ANALYZER_RESULT_OK;
-    uint16_t wIter = 0;
-    uint8_t currentValue = 0;
-
-    if ((pCtx == NULL) || (buffer == NULL))
-    {
-        return ANALYZER_RESULT_NOK;
-    }
-
-    if (length == 0)
-    {
-        return ANALYZER_RESULT_OK;
-    }
-
-    for (wIter = 0; wIter < length; wIter++)
-    {
-        currentValue = buffer[wIter];
-        switch (currentValue)
-        {
-        case PLT_DLM:
-        {
-            status = tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_DELIM](pCtx, ANALYZER_EVENT_DELIM, currentValue);
-        }
-        break;
-        default:
-        {
-            status = tabAnalyzerFsm[pCtx->status][ANALYZER_EVENT_BYTE](pCtx, ANALYZER_EVENT_BYTE, currentValue);
-        }
-        break;
-        }
-
-        if (status == ANALYZER_STATUS_READY)
-        {
-            eChannelResult res = P_CHANNEL_Send(&pCtx->inputMessages,                                            //
-                                                (uint8_t*) (&pCtx->currentMsg),                                  //
-                                                sizeof(tAnalyzerMsg) - PLT_MAX_LENGTH + pCtx->currentMsg.length, //
-                                                NULL,                                                            //
-                                                E_CHANNEL_WR_MODE_NORMAL);                                       //
-
-            if (res == E_CHANNEL_RESULT_ERROR_FULL)
-            {
-                P_CHANNEL_Flush(&pCtx->inputMessages);
-                result = ANALYZER_RESULT_NOK;
-            }
-        }
-    }
-
-    return result;
-}
-
-eAnalyzerResult InitializeAnalyzer(tAnalyzerWks* pCtx, uint16_t nbPendingMessages, uint16_t trigTmoCpt)
-{
-    if (pCtx == NULL || nbPendingMessages == 0)
-    {
-        return ANALYZER_RESULT_NOK;
-    }
-
     memset(pCtx, 0, sizeof(tAnalyzerWks));
-    eChannelResult res = P_CHANNEL_Init(&pCtx->inputMessages,                     //
-                                        nbPendingMessages * sizeof(tAnalyzerMsg), //
-                                        sizeof(tAnalyzerMsg),                     //
-                                        nbPendingMessages);                       //
-
-    if (res != E_CHANNEL_RESULT_OK)
-    {
-        return ANALYZER_RESULT_NOK;
-    }
 
     pCtx->trigTmoCpt = trigTmoCpt;
 
@@ -354,17 +323,16 @@ void DeinitializeAnalyzer(tAnalyzerWks* pCtx)
 {
     if (pCtx != NULL)
     {
-        P_CHANNEL_DeInit(&pCtx->inputMessages);
         memset(pCtx, 0, sizeof(tAnalyzerWks));
     }
 }
 
-tAnalyzerWks* CreateAnalyzer(uint16_t nbPendingMessages, uint16_t trigTmoCpt)
+tAnalyzerWks* CreateAnalyzer(uint16_t trigTmoCpt)
 {
     tAnalyzerWks* p = pvPortMalloc(sizeof(tAnalyzerWks));
     if (p != NULL)
     {
-        eAnalyzerResult res = InitializeAnalyzer(p, nbPendingMessages, trigTmoCpt);
+        eAnalyzerResult res = InitializeAnalyzer(p, trigTmoCpt);
         if (res != ANALYZER_RESULT_OK)
         {
             vPortFree(p);
@@ -384,15 +352,103 @@ void DestroyAnalyzer(tAnalyzerWks** ppCtx)
     }
 }
 
-/*
-static uint16_t BuildFrame(uint8_t tag,
-                           uint16_t in_length,
-                           const uint8_t* pInValue,
-                           uint16_t maxOutLength,
-                           uint8_t* pOutValue)
+uint16_t BuildFrame(uint8_t tag,
+                    uint16_t in_length,
+                    const uint8_t* pInValue,
+                    uint16_t max_out_length,
+                    uint8_t* pOutValue)
 {
-    return 0;
-}*/
+    uint8_t length_MSB = (in_length >> 8) & 0xFF;
+    uint8_t length_LSB = in_length & 0xFF;
+    uint8_t crc_MSB = 0;
+    uint8_t crc_LSB = 0;
+    uint16_t crc = 0;
+    uint16_t wIter = 0;
+    uint16_t wJter = 0;
+
+    if (in_length > PLT_MAX_LENGTH || pInValue == NULL || pOutValue == NULL || max_out_length < PLT_MAX_FRAME_SIZE)
+    {
+        return 0;
+    }
+
+    memset(pOutValue, 0, max_out_length);
+
+    pOutValue[wIter++] = PLT_SOF;
+
+    if (tag == PLT_DLM || tag == PLT_SOF || tag == PLT_EOF)
+    {
+        pOutValue[wIter++] = PLT_DLM;
+        pOutValue[wIter++] = tag | PLT_MASK_DELIM_ON;
+    }
+    else
+    {
+        pOutValue[wIter++] = tag;
+    }
+    crc = UpdateChecksum(crc, tag);
+
+    if (length_MSB == PLT_DLM || length_MSB == PLT_SOF || length_MSB == PLT_EOF)
+    {
+        pOutValue[wIter++] = PLT_DLM;
+        pOutValue[wIter++] = length_MSB | PLT_MASK_DELIM_ON;
+    }
+    else
+    {
+        pOutValue[wIter++] = length_MSB;
+    }
+    crc = UpdateChecksum(crc, length_MSB);
+
+    if (length_LSB == PLT_DLM || length_LSB == PLT_SOF || length_LSB == PLT_EOF)
+    {
+        pOutValue[wIter++] = PLT_DLM;
+        pOutValue[wIter++] = length_LSB | PLT_MASK_DELIM_ON;
+    }
+    else
+    {
+        pOutValue[wIter++] = length_LSB;
+    }
+    crc = UpdateChecksum(crc, length_LSB);
+
+    for (wJter = 0; wJter < in_length; wJter++)
+    {
+        if (pInValue[wJter] == PLT_DLM || pInValue[wJter] == PLT_SOF || pInValue[wJter] == PLT_EOF)
+        {
+            pOutValue[wIter++] = PLT_DLM;
+            pOutValue[wIter++] = pInValue[wJter] | PLT_MASK_DELIM_ON;
+        }
+        else
+        {
+            pOutValue[wIter++] = pInValue[wJter];
+        }
+        crc = UpdateChecksum(crc, pInValue[wJter]);
+    }
+
+    crc_MSB = (crc >> 8) & 0xFF;
+    crc_LSB = crc & 0xFF;
+
+    if (crc_MSB == PLT_DLM || crc_MSB == PLT_SOF || crc_MSB == PLT_EOF)
+    {
+        pOutValue[wIter++] = PLT_DLM;
+        pOutValue[wIter++] = crc_MSB | PLT_MASK_DELIM_ON;
+    }
+    else
+    {
+        pOutValue[wIter++] = crc_MSB;
+    }
+
+    if (length_LSB == crc_LSB || crc_LSB == PLT_SOF || crc_LSB == PLT_EOF)
+    {
+        pOutValue[wIter++] = PLT_DLM;
+        pOutValue[wIter++] = crc_LSB | PLT_MASK_DELIM_ON;
+    }
+    else
+    {
+        pOutValue[wIter++] = crc_LSB;
+    }
+
+    pOutValue[wIter++] = PLT_EOF;
+
+    return wIter;
+}
 
 static uint16_t UpdateChecksum(uint16_t reminder, uint8_t value)
 {

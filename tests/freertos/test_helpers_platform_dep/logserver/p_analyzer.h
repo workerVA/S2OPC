@@ -34,13 +34,15 @@
 #define PLT_MASK_DELIM_ON (0x80)
 #define PLT_MASK_DELIM_OFF (0x7F)
 #define PLT_POLY (0x8005)
-#define PLT_MAX_LENGTH (256)
+#define PLT_MAX_LENGTH (128)
 #define CRC_BITS_PER_TRANSPORT_BYTE (8)
 #define CRC_REAL_BITS_LENGTH (16)
 #define CRC_NB_TRANSPORT_BYTES (2)
 #define LNG_BITS_PER_TRANSPORT_BYTE (8)
 #define LNG_REAL_BITS_LENGTH (16)
 #define LNG_NB_TRANSPORT_BYTES (2)
+
+#define PLT_MAX_FRAME_SIZE ((PLT_MAX_LENGTH + CRC_NB_TRANSPORT_BYTES + LNG_NB_TRANSPORT_BYTES + 3)) * 2
 
 typedef enum E_ANALYZER_STATUS
 {
@@ -81,12 +83,17 @@ typedef struct T_ANALYZER_WKS
     uint16_t cptTimeout;
     uint16_t trigTmoCpt;
     tAnalyzerMsg currentMsg;
-    tChannel inputMessages;
 } tAnalyzerWks;
 
-tAnalyzerWks* CreateAnalyzer(uint16_t nbPendingMessages, uint16_t trigTmoCpt);
+tAnalyzerWks* CreateAnalyzer(uint16_t trigTmoCpt);
 void DestroyAnalyzer(tAnalyzerWks** ppCtx);
-eAnalyzerResult ExecuteAnalyzer(tAnalyzerWks* pCtx, const uint8_t* buffer, uint16_t length);
-eAnalyzerResult UpdateAnalyzerTmo(tAnalyzerWks* pCtx);
+eAnalyzerStatus ExecuteAnalyzer(tAnalyzerWks* pCtx, uint8_t value);
+tAnalyzerMsg* GetReadyMessage(tAnalyzerWks* pCtx);
+eAnalyzerStatus UpdateAnalyzerTmo(tAnalyzerWks* pCtx);
+uint16_t BuildFrame(uint8_t tag,
+                    uint16_t in_length,
+                    const uint8_t* pInValue,
+                    uint16_t max_out_length,
+                    uint8_t* pOutValue);
 
 #endif
