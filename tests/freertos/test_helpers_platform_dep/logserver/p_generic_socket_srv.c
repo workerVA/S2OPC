@@ -176,6 +176,7 @@ static void cbTaskSocketClientEncodeAndTx(void* pParameters)
     TickType_t xTicksToWait = 0;
     TimeOut_t xTimeOut = {0, 0};
     uint16_t nbBytes = 0;
+    uint16_t nbOutBytes = 0;
     uint16_t iIter = 0;
     int16_t byteSent = 0; // Used by lwip, -1 if error on socket
 
@@ -214,13 +215,13 @@ static void cbTaskSocketClientEncodeAndTx(void* pParameters)
                 // Wait on reception of bytes to encode
                 memset(pClt->bufferTX, 0, sizeof(pClt->bufferTX));
 
-                resChannel = P_CHANNEL_Receive(&pClt->channelOutput,      //
-                                               NULL,                      //
-                                               &pClt->bufferTX[0],        //
-                                               &nbBytes,                  //
-                                               sizeof(pClt->bufferTX),    //
-                                               xTicksToWait,              //
-                                               E_CHANNEL_RD_MODE_NORMAL); //
+                resChannel = P_CHANNEL_Receive(&pClt->channelOutput,       //
+                                               NULL,                       //
+                                               &pClt->bufferTX[0],         //
+                                               &nbBytes,                   //
+                                               sizeof(pClt->bufferTX) / 2, //
+                                               xTicksToWait,               //
+                                               E_CHANNEL_RD_MODE_NORMAL);  //
 
                 // In case of event (flush or rx)
                 if (E_CHANNEL_RESULT_ERROR_TMO != resChannel)
@@ -230,8 +231,12 @@ static void cbTaskSocketClientEncodeAndTx(void* pParameters)
                     // In case of error of encoderCallback, client disconnected.
                     if (pClt->cbEncoder != NULL)
                     {
-                        if (E_ENCODER_RESULT_OK !=
-                            pClt->cbEncoder(pClt->ptrEncoderContext, pClt->bufferTX, &nbBytes, sizeof(pClt->bufferTX)))
+                        if (E_ENCODER_RESULT_OK != pClt->cbEncoder(pClt->ptrEncoderContext,         //
+                                                                   (const uint8_t*) pClt->bufferTX, //
+                                                                   nbBytes,                         //
+                                                                   pClt->bufferTX + sizeof(pClt->bufferTX) / 2,
+                                                                   &nbOutBytes,
+                                                                   sizeof(pClt->bufferTX) / 2)) //
                         {
                             pClt->status = E_LOG_CLIENT_DISCONNECTED;
                         }
@@ -239,18 +244,25 @@ static void cbTaskSocketClientEncodeAndTx(void* pParameters)
 
                     // Check if nbBytes to send < size of buffer TX because not guaranteed after modification by
                     // callback. In case of lwip error, client disconnected
-                    if ((nbBytes <= sizeof(pClt->bufferTX)) && (nbBytes > 0))
+                    if ((nbOutBytes <= sizeof(pClt->bufferTX) / 2)   //
+                        && (nbOutBytes > 0)                          //
+                        && (pClt->status == E_LOG_CLIENT_CONNECTED)) //
                     {
                         byteSent = 0;
-                        for (iIter = 0; (iIter < nbBytes) && (byteSent >= 0); iIter += (uint16_t) byteSent)
+                        for (iIter = 0; (iIter < nbOutBytes) && (byteSent >= 0); iIter += (uint16_t) byteSent)
                         {
-                            byteSent = lwip_send(pClt->socket, pClt->bufferTX + iIter, nbBytes - iIter, 0);
+                            byteSent = lwip_send(pClt->socket,                                        //
+                                                 pClt->bufferTX + iIter + sizeof(pClt->bufferTX) / 2, //
+                                                 nbOutBytes - iIter,                                  //
+                                                 0);                                                  //
                             if (byteSent < 0)
                             {
                                 pClt->status = E_LOG_CLIENT_DISCONNECTED;
                             }
                         }
                     }
+
+                    nbOutBytes = 0;
 
                     xTaskCheckForTimeOut(&xTimeOut, &xTicksToWait); //---Period reajust
                 }
@@ -324,6 +336,7 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
     TickType_t xTicksToWait = 0;
     TimeOut_t xTimeOut = {0, 0};
     uint16_t nbBytes = 0;
+    uint16_t nbOutBytes = 0;
     uint16_t wIterSent = 0;
     uint16_t nbBytesSent = 0;
 
@@ -345,13 +358,13 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
         {
             memset(pClt->bufferRX_ANALYZER, 0, sizeof(pClt->bufferRX_ANALYZER));
             // Check if bytes received
-            resChannel = P_CHANNEL_Receive(&pClt->channelInput,             //
-                                           NULL,                            //
-                                           &pClt->bufferRX_ANALYZER[0],     //
-                                           &nbBytes,                        //
-                                           sizeof(pClt->bufferRX_ANALYZER), //
-                                           xTicksToWait,                    //
-                                           E_CHANNEL_RD_MODE_NORMAL);       //
+            resChannel = P_CHANNEL_Receive(&pClt->channelInput,                 //
+                                           NULL,                                //
+                                           pClt->bufferRX_ANALYZER,             //
+                                           &nbBytes,                            //
+                                           sizeof(pClt->bufferRX_ANALYZER) / 2, //
+                                           xTicksToWait,                        //
+                                           E_CHANNEL_RD_MODE_NORMAL);           //
 
             // If not a timeout, analyze bytes and do action
             // send response via channel out is possible, max frame size in parameters.
@@ -361,29 +374,33 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
                 pClt->bActiviteRx = 1;
                 if (NULL != pClt->cbAnalyzer)
                 {
-                    if (pClt->cbAnalyzer(pClt->ptrAnalyzerContext,      //
-                                         pClt, pClt->bufferRX_ANALYZER, //
-                                         &nbBytes,                      //
-                                         sizeof(pClt->bufferRX_ANALYZER)) != E_DECODER_RESULT_OK)
+                    if (pClt->cbAnalyzer(pClt->ptrAnalyzerContext,                                      //
+                                         pClt,                                                          //
+                                         (const uint8_t*) pClt->bufferRX_ANALYZER,                      //
+                                         nbBytes,                                                       //
+                                         pClt->bufferRX_ANALYZER + sizeof(pClt->bufferRX_ANALYZER) / 2, //
+                                         &nbOutBytes,                                                   //
+                                         sizeof(pClt->bufferRX_ANALYZER) / 2) != E_DECODER_RESULT_OK)   //
                     {
                         pClt->status = E_LOG_CLIENT_DISCONNECTED;
                     }
                     else
                     {
-                        if ((nbBytes > 0) && (nbBytes <= sizeof(pClt->bufferRX_ANALYZER)))
+                        if ((nbOutBytes > 0) && (nbOutBytes <= sizeof(pClt->bufferRX_ANALYZER) / 2))
                         {
                             resChannelSent = E_CHANNEL_RESULT_OK;
                             nbBytesSent = 0;
 
-                            for (wIterSent = 0;                                                    //
-                                 (wIterSent < nbBytes) && (resChannelSent == E_CHANNEL_RESULT_OK); //
-                                 wIterSent += nbBytesSent)                                         //
+                            for (wIterSent = 0;                                                       //
+                                 (wIterSent < nbOutBytes) && (resChannelSent == E_CHANNEL_RESULT_OK); //
+                                 wIterSent += nbBytesSent)                                            //
                             {
-                                resChannelSent = P_CHANNEL_Send(&pClt->channelOutput,                //
-                                                                &pClt->bufferRX_ANALYZER[wIterSent], //
-                                                                nbBytes - wIterSent,                 //
-                                                                &nbBytesSent,                        //
-                                                                E_CHANNEL_WR_MODE_NORMAL);           //
+                                resChannelSent = P_CHANNEL_Send(
+                                    &pClt->channelOutput,                                                      //
+                                    pClt->bufferRX_ANALYZER + wIterSent + sizeof(pClt->bufferRX_ANALYZER) / 2, //
+                                    nbOutBytes - wIterSent,                                                    //
+                                    &nbBytesSent,                                                              //
+                                    E_CHANNEL_WR_MODE_NORMAL);                                                 //
 
                                 if (resChannelSent == E_CHANNEL_RESULT_ERROR_FULL)
                                 {
@@ -393,7 +410,7 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
                         }
                     }
                     // Raz nb bytes to send, set by callback return
-                    nbBytes = 0;
+                    nbOutBytes = 0;
                 }
                 xTaskCheckForTimeOut(&xTimeOut, &xTicksToWait); //---Period reajust
             }
@@ -409,33 +426,34 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
                 if (NULL != pClt->cbAnalyzerPeriodic)
                 {
                     // Raz output buffer
-                    nbBytes = 0;
+                    nbOutBytes = 0;
                     memset(pClt->bufferRX_ANALYZER, 0, sizeof(pClt->bufferRX_ANALYZER));
 
                     // Periodic callback called
-                    if (pClt->cbAnalyzerPeriodic(pClt->ptrAnalyzerContext,                                //
-                                                 pClt,                                                    //
-                                                 pClt->bufferRX_ANALYZER,                                 //
-                                                 &nbBytes,                                                //
-                                                 sizeof(pClt->bufferRX_ANALYZER)) != E_DECODER_RESULT_OK) //
+                    if (pClt->cbAnalyzerPeriodic(pClt->ptrAnalyzerContext,                                      //
+                                                 pClt,                                                          //
+                                                 pClt->bufferRX_ANALYZER + sizeof(pClt->bufferRX_ANALYZER) / 2, //
+                                                 &nbOutBytes,                                                   //
+                                                 sizeof(pClt->bufferRX_ANALYZER) / 2) != E_DECODER_RESULT_OK)   //
                     {
                         pClt->status = E_LOG_CLIENT_DISCONNECTED;
                     }
                     else
                     {
                         // If no error and output, send data to encoder. Check limit before.
-                        if ((nbBytes > 0) && (nbBytes <= sizeof(pClt->bufferRX_ANALYZER)))
+                        if ((nbOutBytes > 0) && (nbOutBytes <= sizeof(pClt->bufferRX_ANALYZER) / 2))
                         {
                             resChannelSent = E_CHANNEL_RESULT_OK;
-                            for (wIterSent = 0;                                                    //
-                                 (wIterSent < nbBytes) && (resChannelSent == E_CHANNEL_RESULT_OK); //
-                                 wIterSent += nbBytesSent)                                         //
+                            for (wIterSent = 0;                                                       //
+                                 (wIterSent < nbOutBytes) && (resChannelSent == E_CHANNEL_RESULT_OK); //
+                                 wIterSent += nbBytesSent)                                            //
                             {
-                                resChannelSent = P_CHANNEL_Send(&pClt->channelOutput,                //
-                                                                &pClt->bufferRX_ANALYZER[wIterSent], //
-                                                                nbBytes - wIterSent,                 //
-                                                                &nbBytesSent,                        //
-                                                                E_CHANNEL_WR_MODE_NORMAL);           //
+                                resChannelSent = P_CHANNEL_Send(
+                                    &pClt->channelOutput,                                                      //
+                                    pClt->bufferRX_ANALYZER + wIterSent + sizeof(pClt->bufferRX_ANALYZER) / 2, //
+                                    nbOutBytes - wIterSent,                                                    //
+                                    &nbBytesSent,                                                              //
+                                    E_CHANNEL_WR_MODE_NORMAL);                                                 //
 
                                 if (resChannelSent == E_CHANNEL_RESULT_ERROR_FULL)
                                 {
@@ -445,7 +463,7 @@ static void cbTaskSocketClientDecodeAndDo(void* pParameters)
                         }
                     }
                     // Raz nb bytes to send, set by callback return.
-                    nbBytes = 0;
+                    nbOutBytes = 0;
                 }
 
                 xTaskCheckForTimeOut(&xTimeOut, &xTicksToWait); //---Period reajust
@@ -1576,6 +1594,37 @@ eLogSrvResult P_LOG_CLIENT_SendResponse(tLogClientWks* pClt,
                                               length,                    //
                                               &nbBytesSent,              //
                                               E_CHANNEL_WR_MODE_NORMAL)) //
+    {
+        result = E_LOG_SRV_RESULT_OK;
+    }
+
+    if (pNbBytesSent != NULL)
+    {
+        *pNbBytesSent = nbBytesSent;
+    }
+
+    return result;
+}
+
+// Send response to a client
+eLogSrvResult P_LOG_CLIENT_BroadCast(tLogClientWks* pClt,
+                                     const uint8_t* pBuffer,
+                                     uint16_t length,
+                                     uint16_t* pNbBytesSent)
+{
+    eLogSrvResult result = E_LOG_SRV_RESULT_NOK;
+    uint16_t nbBytesSent = 0;
+
+    if (pClt == NULL || pClt->pServer == NULL)
+    {
+        return result;
+    }
+
+    if (E_CHANNEL_RESULT_OK == P_CHANNEL_Send(&pClt->pServer->logChannel, //
+                                              pBuffer,                    //
+                                              length,                     //
+                                              &nbBytesSent,               //
+                                              E_CHANNEL_WR_MODE_NORMAL))  //
     {
         result = E_LOG_SRV_RESULT_OK;
     }

@@ -66,7 +66,7 @@ float gPerformanceValue = 0.0;
 tLogSrvWks* gAnalyzerSrv;
 static void cbAnalyzerCreation(void** pAnalyzerContext, tLogClientWks* pClt)
 {
-    *pAnalyzerContext = CreateAnalyzer(8, 5000 / P_LOG_CLT_RX_PERIOD);
+    *pAnalyzerContext = CreateAnalyzer(5000 / P_LOG_CLT_RX_PERIOD);
 }
 static void cbAnalyzerDestruction(void** pAnalyzerContext, tLogClientWks* pClt)
 {
@@ -74,16 +74,76 @@ static void cbAnalyzerDestruction(void** pAnalyzerContext, tLogClientWks* pClt)
 }
 static eResultDecoder cbAnalyzerExecution(void* pAnalyzerContext,
                                           tLogClientWks* pClt,
-                                          uint8_t* pBufferInOut,
-                                          uint16_t* dataSize,
+                                          const uint8_t* pBufferIn,
+                                          uint16_t dataSize,
+                                          uint8_t* pBufferOut,
+                                          uint16_t* pOutSize,
                                           uint16_t maxSizeBufferOut)
 {
     // Don't modify dataSize output, echo simulation
+    uint16_t wIter = 0;
+    eAnalyzerStatus status;
+    tAnalyzerMsg* pMsg;
+    uint16_t byteSent;
 
-    ExecuteAnalyzer(pAnalyzerContext, pBufferInOut, *dataSize);
-    *dataSize = 0;
+    for (wIter = 0; wIter < dataSize; wIter++)
+    {
+        status = ExecuteAnalyzer(pAnalyzerContext, pBufferIn[wIter]);
+        if (status == ANALYZER_STATUS_READY)
+        {
+            pMsg = GetReadyMessage(pAnalyzerContext);
+            if (pMsg != NULL)
+            {
+                printf("Tag recu = %d\r\n", pMsg->tag);
+                printf("Length recue = %d\r\n", pMsg->length);
+                printf("Data recue : ");
+                for (int i = 0; i < pMsg->length; i++)
+                {
+                    printf("%2X ", pMsg->data[i]);
+                }
+                printf("\r\n");
+
+                byteSent = 0;
+
+                P_LOG_CLIENT_SendResponse(pClt, ((uint8_t*) pMsg), pMsg->length + 3, &byteSent);
+                if (byteSent != pMsg->length + 3)
+                {
+                    return E_DECODER_RESULT_ERROR_NOK;
+                }
+            }
+        }
+    }
+
+    *pOutSize = 0;
     return E_DECODER_RESULT_OK;
 }
+
+static eResultEncoder cbEncoderCallback(void* pAnalyzerContext,
+                                        const uint8_t* pBufferIn,
+                                        uint16_t dataSize,
+                                        uint8_t* pBufferOut,
+                                        uint16_t* pOutSize,
+                                        uint16_t maxSizeBufferOut)
+{
+    tAnalyzerMsg* msg = NULL;
+
+    if (PLT_MAX_FRAME_SIZE > maxSizeBufferOut)
+    {
+        *pOutSize = 0;
+        return E_ENCODER_RESULT_ERROR_NOK;
+    }
+
+    msg = (tAnalyzerMsg*) pBufferIn;
+    *pOutSize = BuildFrame(msg->tag, msg->length, msg->data, maxSizeBufferOut, pBufferOut);
+
+    if (*pOutSize > 0)
+    {
+        memset(pBufferOut, 0, maxSizeBufferOut);
+        memcpy(pBufferOut, pBufferIn, *pOutSize);
+    }
+    return E_ENCODER_RESULT_OK;
+}
+
 #endif
 
 int main(void)
@@ -150,7 +210,7 @@ int main(void)
 
     gAnalyzerSrv = P_LOG_SRV_CreateAndStart(61, 4023, 1, 0, 0,                                                    //
                                             cbAnalyzerCreation, cbAnalyzerDestruction, cbAnalyzerExecution, NULL, //
-                                            NULL, NULL, NULL, NULL,                                               //
+                                            NULL, NULL, cbEncoderCallback, NULL,                                  //
                                             NULL);                                                                //
 #endif
     vTaskStartScheduler();

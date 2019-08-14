@@ -81,16 +81,16 @@
 #define P_LOG_FIFO_MAX_NB_ELT_SRV_TX (1024)   // Max elt
 
 #define P_LOG_FIFO_DATA_SIZE_CLT_TX (8196)
-#define P_LOG_FIFO_ELT_MAX_SIZE_CLT_TX (256)
-#define P_LOG_FIFO_MAX_NB_ELT_CLT_TX (1024)
+#define P_LOG_FIFO_ELT_MAX_SIZE_CLT_TX (512)
+#define P_LOG_FIFO_MAX_NB_ELT_CLT_TX (128)
 
 #define P_LOG_FIFO_DATA_SIZE_CLT_RX (1024)
-#define P_LOG_FIFO_ELT_MAX_SIZE_CLT_RX (128)
+#define P_LOG_FIFO_ELT_MAX_SIZE_CLT_RX (512)
 #define P_LOG_FIFO_MAX_NB_ELT_CLT_RX (128)
 
 #define UDP_BUFFER_SIZE (128)
 #define LWIP_RX_BUFFER_SIZE (P_LOG_FIFO_ELT_MAX_SIZE_CLT_RX)
-#define ANALYZER_RX_BUFFER_SIZE (P_LOG_FIFO_ELT_MAX_SIZE_CLT_RX)
+#define ANALYZER_RX_BUFFER_SIZE (P_LOG_FIFO_ELT_MAX_SIZE_CLT_RX * 2)
 #define ENCODER_RX_BUFFER_SIZE (P_LOG_FIFO_ELT_MAX_SIZE_CLT_TX * 2)
 #define LOG_RECORD_RX_BUFFER_SIZE (P_LOG_FIFO_ELT_MAX_SIZE_SRV_TX)
 
@@ -129,10 +129,12 @@ typedef struct T_LOG_CLIENT_WORKSPACE tLogClientWks;
 //***Analyzer callbacks***
 // Analyzer callback.
 typedef eResultDecoder (*ptrFct_AnalyzerCallback)(
-    void* pAnalyzerContext,     // Context analyzer.
-    tLogClientWks* pClt,        // Client workspace, can be used to send response by callback
-    uint8_t* pBufferInOut,      // Last buffer received
-    uint16_t* dataSize,         // Data size of significant data in buffer then out buffer
+    void* pAnalyzerContext,   // Context analyzer.
+    tLogClientWks* pClt,      // Client workspace, can be used to send response by callback
+    const uint8_t* pBufferIn, // Last buffer received
+    uint16_t dataSizeIn,      // Data size of significant data in buffer then out buffer
+    uint8_t* pBufferOut,
+    uint16_t* dataSizeOut,
     uint16_t maxSizeBufferOut); // Max size  of buffer.
 
 // Analyzer periodic callback. Called each P_LOG_CLT_RX_PERIOD defined in this .H
@@ -157,9 +159,11 @@ typedef void (*ptrFct_EncoderContextCreation)(void** ppEncoderContext);
 
 typedef void (*ptrFct_EncoderContextDestruction)(void** ppEncoderContext);
 
-typedef eResultEncoder (*ptrFct_EncoderCallback)(void* pEncoderContext,      // Encoder context
-                                                 uint8_t* pBufferInOut,      // Buffer in out
-                                                 uint16_t* pNbBytesToEncode, // Signicant bytes in / out
+typedef eResultEncoder (*ptrFct_EncoderCallback)(void* pEncoderContext,    // Encoder context
+                                                 const uint8_t* pBufferIn, // Buffer in out
+                                                 uint16_t nbBytesIn,
+                                                 uint8_t* pBufferOut, // Signicant bytes out
+                                                 uint16_t* dataSizeOut,
                                                  uint16_t maxSizeBufferOut); // Max size of buffer
 
 typedef eResultEncoder (*ptrFct_EncoderPeriodicCallback)(void* pEncoderContext);
@@ -177,6 +181,7 @@ tLogSrvWks* P_LOG_SRV_CreateAndStart(uint16_t port,          // Listen port
                                      int16_t maxClient,      // Max client
                                      uint32_t timeoutS,      // Timeout. If 0, no timeout.
                                      uint32_t periodeHelloS, // Period of hello message
+
                                      ptrFct_AnalyzerContextCreation cbAnalyzerContextCreationCallback,       //
                                      ptrFct_AnalyzerContextDestruction cbAnalyzerContextDestructionCallback, //
                                      ptrFct_AnalyzerCallback cbAnalyzerCallback,                             //
@@ -206,5 +211,10 @@ eLogSrvResult P_LOG_CLIENT_SendResponse(tLogClientWks* pClt,     // Client handl
                                         const uint8_t* pBuffer,  // Buffer to send
                                         uint16_t length,         // Length
                                         uint16_t* pNbBytesSent); // Sent length
+
+eLogSrvResult P_LOG_CLIENT_BroadCast(tLogClientWks* pClt,
+                                     const uint8_t* pBuffer,
+                                     uint16_t length,
+                                     uint16_t* pNbBytesSent);
 
 #endif /* P_LOGSRV_H */

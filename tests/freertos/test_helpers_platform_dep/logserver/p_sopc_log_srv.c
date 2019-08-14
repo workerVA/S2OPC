@@ -52,32 +52,35 @@ static void cbOneConnexion(void** pAnalyzerContext, tLogClientWks* pClt)
 // Callback used by analyzer, so *dataSize not changed, buffer in copy to buffer out to client
 static eResultDecoder cbEchoCallback(void* pAnalyzerContext,
                                      tLogClientWks* pClt,
-                                     uint8_t* pBufferInOut,
-                                     uint16_t* dataSize,
+                                     const uint8_t* pBufferIn,
+                                     uint16_t dataSize,
+                                     uint8_t* pBufferOut,
+                                     uint16_t* pOutSize,
                                      uint16_t maxSizeBufferOut)
 {
     // Don't modify dataSize output, echo simulation
+    memcpy(pBufferOut, pBufferIn, dataSize);
+    *pOutSize = dataSize;
     return 0;
 }
 
 // Callback used by logserv to customize sent buffer
-static eResultEncoder cbEncoderCallback(void* pEncoderContext,      // Encoder context
-                                        uint8_t* pBufferInOut,      // Buffer in out
+static eResultEncoder cbEncoderCallback(void* pEncoderContext,    // Encoder context
+                                        const uint8_t* pBufferIn, // Buffer in out
+                                        uint16_t dataSize,
+                                        uint8_t* pBufferOut,
                                         uint16_t* pNbBytesToEncode, // Signicant bytes in / out
                                         uint16_t maxSizeBufferOut)
 {
     uint16_t lengthLogMemStatus = 0;
-    uint16_t lengthLog = *pNbBytesToEncode;
+    uint16_t lengthLog = dataSize;
 
-    memmove((void*) pBufferInOut + maxSizeBufferOut / 2, (void*) pBufferInOut, lengthLog);
-
-    snprintf((void*) pBufferInOut, maxSizeBufferOut / 2, "HF=%u / HL=%u - ", xPortGetFreeHeapSize(),
+    snprintf((void*) pBufferOut, maxSizeBufferOut, "HF=%u / HL=%u - ", xPortGetFreeHeapSize(),
              xPortGetMinimumEverFreeHeapSize());
 
-    pBufferInOut[maxSizeBufferOut / 2 - 1] = 0;
-
-    lengthLogMemStatus = strlen((void*) pBufferInOut);
-    memmove((void*) pBufferInOut + lengthLogMemStatus, (void*) pBufferInOut + maxSizeBufferOut / 2, lengthLog);
+    lengthLogMemStatus = strlen((void*) pBufferOut);
+    lengthLog = dataSize > (maxSizeBufferOut - lengthLogMemStatus) ? maxSizeBufferOut - lengthLogMemStatus : dataSize;
+    memcpy((void*) pBufferOut + lengthLogMemStatus, pBufferIn, lengthLog);
 
     *pNbBytesToEncode = lengthLog + lengthLogMemStatus;
 
