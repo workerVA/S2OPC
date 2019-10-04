@@ -185,7 +185,7 @@ static void* cbS2OPC_Thread_pX(void* ptr)
 static void* cbS2OPC_Thread_p2(void* ptr)
 {
     unsigned short int cpt = 0;
-
+    FILE* fd;
     Condition* pv = (Condition*) ptr;
     SOPC_ReturnStatus status = SOPC_Thread_Create(&p3, cbS2OPC_Thread_p3, ptr, "Thread_p2");
 
@@ -1001,10 +1001,13 @@ static void* cbS2OPC_Thread_UDP_Socket_API(void* ptr)
 
             if (pBuffer->length > 0)
             {
-                pBuffer->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length : pBuffer->length - 1] = '\r';
-                pBuffer->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length + 1 : pBuffer->length - 1] =
+                pBuffer->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length : pBuffer->length - 1] =
+                    '\r';
+                pBuffer
+                    ->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length + 1 : pBuffer->length - 1] =
                     '\n';
-                pBuffer->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length + 2 : pBuffer->length - 1] =
+                pBuffer
+                    ->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length + 2 : pBuffer->length - 1] =
                     0;
 
                 printf((void*) pBuffer->data);
@@ -1061,14 +1064,13 @@ static void* cbS2OPC_Thread_UDP_Socket_API_LB(void* ptr)
 
                 if (pBuffer->length > 0)
                 {
-                    pBuffer->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length : pBuffer->length - 1] =
+                    pBuffer
+                        ->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length : pBuffer->length - 1] =
                         '\r';
-                    pBuffer
-                        ->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length + 1 : pBuffer->length - 1] =
-                        '\n';
-                    pBuffer
-                        ->data[pBuffer->length < (pBuffer->max_size - 2) ? pBuffer->length + 2 : pBuffer->length - 1] =
-                        0;
+                    pBuffer->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length + 1
+                                                                                : pBuffer->length - 1] = '\n';
+                    pBuffer->data[pBuffer->length < (pBuffer->maximum_size - 2) ? pBuffer->length + 2
+                                                                                : pBuffer->length - 1] = 0;
 
                     printf((void*) pBuffer->data);
                     fflush(stdout);
