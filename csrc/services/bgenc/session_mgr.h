@@ -21,7 +21,7 @@
 
  File Name            : session_mgr.h
 
- Date                 : 08/11/2019 16:15:07
+ Date                 : 22/11/2019 16:50:36
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -46,6 +46,7 @@
 /*--------------
    SEES Clause
   --------------*/
+#include "app_cb_call_context_bs.h"
 #include "channel_mgr.h"
 #include "constants.h"
 #include "constants_statuscodes_bs.h"

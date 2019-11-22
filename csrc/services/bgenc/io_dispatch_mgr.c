@@ -21,7 +21,7 @@
 
  File Name            : io_dispatch_mgr.c
 
- Date                 : 21/11/2019 14:52:38
+ Date                 : 25/11/2019 10:07:45
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -240,6 +240,26 @@ void io_dispatch_mgr__l_may_close_secure_channel_without_session(
    }
 }
 
+void io_dispatch_mgr__l_set_app_call_context_channel_config(
+   const constants__t_channel_i io_dispatch_mgr__p_channel) {
+   {
+      t_bool io_dispatch_mgr__l_is_connected;
+      constants__t_channel_config_idx_i io_dispatch_mgr__l_channel_config;
+      constants__t_endpoint_config_idx_i io_dispatch_mgr__l_endpoint_config;
+      
+      channel_mgr__is_connected_channel(io_dispatch_mgr__p_channel,
+         &io_dispatch_mgr__l_is_connected);
+      if (io_dispatch_mgr__l_is_connected == true) {
+         channel_mgr__get_channel_info(io_dispatch_mgr__p_channel,
+            &io_dispatch_mgr__l_channel_config);
+         channel_mgr__server_get_endpoint_config(io_dispatch_mgr__p_channel,
+            &io_dispatch_mgr__l_endpoint_config);
+         app_cb_call_context_bs__set_app_call_context_channel_config(io_dispatch_mgr__l_channel_config,
+            io_dispatch_mgr__l_endpoint_config);
+      }
+   }
+}
+
 void io_dispatch_mgr__receive_msg_buffer(
    const constants__t_channel_i io_dispatch_mgr__channel,
    const constants__t_byte_buffer_i io_dispatch_mgr__buffer,
@@ -277,6 +297,7 @@ void io_dispatch_mgr__receive_msg_buffer(
             &io_dispatch_mgr__l_msg_header_type);
          io_dispatch_mgr__get_msg_service_class(io_dispatch_mgr__l_msg_type,
             &io_dispatch_mgr__l_msg_service_class);
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__channel);
          switch (io_dispatch_mgr__l_msg_header_type) {
          case constants__e_msg_request_type:
             io_dispatch_mgr__l_valid_req = false;
@@ -386,6 +407,7 @@ void io_dispatch_mgr__receive_msg_buffer(
             break;
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -401,6 +423,7 @@ void io_dispatch_mgr__snd_msg_failure(
       channel_mgr__is_connected_channel(io_dispatch_mgr__channel,
          &io_dispatch_mgr__l_connected_channel);
       if (io_dispatch_mgr__l_connected_channel == true) {
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__channel);
          channel_mgr__is_client_channel(io_dispatch_mgr__channel,
             &io_dispatch_mgr__l_is_client_channel);
          if (io_dispatch_mgr__l_is_client_channel == true) {
@@ -411,6 +434,7 @@ void io_dispatch_mgr__snd_msg_failure(
                io_dispatch_mgr__error_status);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -424,6 +448,7 @@ void io_dispatch_mgr__client_request_timeout(
       channel_mgr__is_connected_channel(io_dispatch_mgr__channel,
          &io_dispatch_mgr__l_connected_channel);
       if (io_dispatch_mgr__l_connected_channel == true) {
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__channel);
          channel_mgr__is_client_channel(io_dispatch_mgr__channel,
             &io_dispatch_mgr__l_is_client_channel);
          if (io_dispatch_mgr__l_is_client_channel == true) {
@@ -432,6 +457,7 @@ void io_dispatch_mgr__client_request_timeout(
                constants_statuscodes_bs__e_sc_bad_timeout);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -445,11 +471,14 @@ void io_dispatch_mgr__client_channel_connected_event(
          io_dispatch_mgr__channel,
          &io_dispatch_mgr__l_bres);
       if (io_dispatch_mgr__l_bres == true) {
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__channel);
          service_mgr__client_channel_connected_event_session(io_dispatch_mgr__channel_config_idx,
             io_dispatch_mgr__channel);
          service_mgr__client_channel_connected_event_discovery(io_dispatch_mgr__channel_config_idx,
             io_dispatch_mgr__channel);
+         app_cb_call_context_bs__clear_app_call_context();
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -457,11 +486,16 @@ void io_dispatch_mgr__client_secure_channel_timeout(
    const constants__t_channel_config_idx_i io_dispatch_mgr__channel_config_idx) {
    {
       t_bool io_dispatch_mgr__l_bres;
+      constants__t_channel_i io_dispatch_mgr__l_channel;
       
+      channel_mgr__get_connected_channel(io_dispatch_mgr__channel_config_idx,
+         &io_dispatch_mgr__l_channel);
+      io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__l_channel);
       service_mgr__client_discovery_req_failures_on_final_connection_failure(io_dispatch_mgr__channel_config_idx);
       service_mgr__client_close_sessions_on_final_connection_failure(io_dispatch_mgr__channel_config_idx);
       channel_mgr__cli_set_connection_timeout_channel(io_dispatch_mgr__channel_config_idx,
          &io_dispatch_mgr__l_bres);
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -479,6 +513,7 @@ void io_dispatch_mgr__server_channel_connected_event(
          io_dispatch_mgr__channel,
          io_dispatch_mgr__l_is_one_sc_closing,
          io_dispatch_mgr__bres);
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -497,6 +532,7 @@ void io_dispatch_mgr__client_activate_new_session(
       if (*io_dispatch_mgr__bres == true) {
          channel_mgr__get_connected_channel(io_dispatch_mgr__channel_config_idx,
             &io_dispatch_mgr__l_channel);
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__l_channel);
          channel_mgr__is_connected_channel(io_dispatch_mgr__l_channel,
             &io_dispatch_mgr__l_connected_channel);
          if (io_dispatch_mgr__l_connected_channel == false) {
@@ -519,6 +555,7 @@ void io_dispatch_mgr__client_activate_new_session(
                io_dispatch_mgr__bres);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -559,6 +596,7 @@ void io_dispatch_mgr__client_reactivate_session_new_user(
             }
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -614,6 +652,7 @@ void io_dispatch_mgr__client_send_service_request(
             service_mgr__dealloc_msg_out(io_dispatch_mgr__req_msg);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -643,6 +682,7 @@ void io_dispatch_mgr__client_send_discovery_request(
          (io_dispatch_mgr__l_valid_channel_config == true)) {
          channel_mgr__get_connected_channel(io_dispatch_mgr__channel_config_idx,
             &io_dispatch_mgr__l_channel);
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__l_channel);
          channel_mgr__is_connected_channel(io_dispatch_mgr__l_channel,
             &io_dispatch_mgr__l_connected_channel);
          if (io_dispatch_mgr__l_connected_channel == false) {
@@ -691,6 +731,7 @@ void io_dispatch_mgr__client_send_discovery_request(
             service_mgr__dealloc_msg_out(io_dispatch_mgr__req_msg);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -722,6 +763,7 @@ void io_dispatch_mgr__server_treat_local_service_request(
             io_dispatch_mgr__app_context,
             io_dispatch_mgr__ret);
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -763,6 +805,7 @@ void io_dispatch_mgr__client_send_close_session_request(
       else {
          *io_dispatch_mgr__ret = constants_statuscodes_bs__e_sc_bad_invalid_argument;
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -779,6 +822,7 @@ void io_dispatch_mgr__internal_client_create_session(
       
       channel_mgr__get_connected_channel(io_dispatch_mgr__channel_config_idx,
          &io_dispatch_mgr__l_channel);
+      io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__l_channel);
       channel_mgr__is_connected_channel(io_dispatch_mgr__l_channel,
          &io_dispatch_mgr__l_connected_channel);
       if (io_dispatch_mgr__l_connected_channel == false) {
@@ -800,6 +844,7 @@ void io_dispatch_mgr__internal_client_create_session(
                io_dispatch_mgr__l_req_handle_in_req_id);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -816,6 +861,7 @@ void io_dispatch_mgr__internal_client_activate_orphaned_session(
       
       channel_mgr__get_connected_channel(io_dispatch_mgr__channel_config_idx,
          &io_dispatch_mgr__l_channel);
+      io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__l_channel);
       channel_mgr__is_connected_channel(io_dispatch_mgr__l_channel,
          &io_dispatch_mgr__l_connected_channel);
       if (io_dispatch_mgr__l_connected_channel == true) {
@@ -833,6 +879,7 @@ void io_dispatch_mgr__internal_client_activate_orphaned_session(
                io_dispatch_mgr__l_req_handle_in_req_id);
          }
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -846,6 +893,7 @@ void io_dispatch_mgr__internal_server_evaluate_session_timeout(
       if (io_dispatch_mgr__l_valid_session == true) {
          service_mgr__server_evaluate_session_timeout(io_dispatch_mgr__session);
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -864,6 +912,7 @@ void io_dispatch_mgr__secure_channel_lost(
       channel_mgr__is_connected_channel(io_dispatch_mgr__channel,
          &io_dispatch_mgr__l_connected_channel);
       if (io_dispatch_mgr__l_connected_channel == true) {
+         io_dispatch_mgr__l_set_app_call_context_channel_config(io_dispatch_mgr__channel);
          channel_mgr__is_client_channel(io_dispatch_mgr__channel,
             &io_dispatch_mgr__l_is_client);
          if (io_dispatch_mgr__l_is_client == true) {
@@ -895,6 +944,7 @@ void io_dispatch_mgr__secure_channel_lost(
          }
          channel_mgr__channel_lost(io_dispatch_mgr__channel);
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -919,6 +969,7 @@ void io_dispatch_mgr__internal_server_data_changed(
       else {
          *io_dispatch_mgr__bres = false;
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -937,6 +988,7 @@ void io_dispatch_mgr__internal_server_subscription_publish_timeout(
       else {
          *io_dispatch_mgr__bres = false;
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
@@ -995,12 +1047,14 @@ void io_dispatch_mgr__internal_server_send_publish_response_prio_event(
       else {
          *io_dispatch_mgr__bres = false;
       }
+      app_cb_call_context_bs__clear_app_call_context();
    }
 }
 
 void io_dispatch_mgr__close_all_active_connections(
    t_bool * const io_dispatch_mgr__bres) {
    channel_mgr__close_all_channel(io_dispatch_mgr__bres);
+   app_cb_call_context_bs__clear_app_call_context();
 }
 
 void io_dispatch_mgr__UNINITIALISATION(void) {

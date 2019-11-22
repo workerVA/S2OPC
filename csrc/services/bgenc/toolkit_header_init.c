@@ -21,7 +21,7 @@
 
  File Name            : toolkit_header_init.c
 
- Date                 : 08/11/2019 16:48:22
+ Date                 : 22/11/2019 16:51:05
 
  C Translator Version : tradc Java V1.0 (14/03/2012)
 
@@ -41,6 +41,7 @@
 #include "address_space_local.h"
 #include "address_space_typing.h"
 #include "address_space_typing_bs.h"
+#include "app_cb_call_context_bs.h"
 #include "browse_treatment.h"
 #include "browse_treatment_1.h"
 #include "browse_treatment_context.h"
@@ -159,6 +160,7 @@ void INITIALISATION(void) {
    session_request_handle_bs__INITIALISATION();
    user_authentication_bs__INITIALISATION();
    user_authentication__INITIALISATION();
+   app_cb_call_context_bs__INITIALISATION();
    session_mgr__INITIALISATION();
    msg_read_request_bs__INITIALISATION();
    user_authorization_bs__INITIALISATION();
