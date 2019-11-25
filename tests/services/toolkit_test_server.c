@@ -61,6 +61,8 @@ static char* default_locale_ids[] = {"en-US", "fr-FR", NULL};
 static int32_t endpointClosed = 0;
 static bool secuActive = true;
 
+static uint32_t epConfigIdx = 0;
+
 volatile sig_atomic_t stopServer = 0;
 
 typedef enum
@@ -159,11 +161,17 @@ static void Test_ComEvent_FctServer(SOPC_App_Com_Event event, uint32_t idOrStatu
 /*
  * Server callback definition used for address space modification notification
  */
-static void Test_AddressSpaceNotif_Fct(SOPC_App_AddSpace_Event event, void* opParam, SOPC_StatusCode opStatus)
+static void Test_AddressSpaceNotif_Fct(const SOPC_CallContext* callCtxPtr,
+                                       SOPC_App_AddSpace_Event event,
+                                       void* opParam,
+                                       SOPC_StatusCode opStatus)
 {
     /* avoid unused parameter compiler warning */
     (void) opParam;
     (void) opStatus;
+    assert(NULL != callCtxPtr);
+    assert(epConfigIdx == SOPC_CallContext_GetEndpointConfigIdx(callCtxPtr));
+    // other call context parameters depend on client connection configuration and user
 
     if (event != AS_WRITE_EVENT)
     {
@@ -791,7 +799,6 @@ int main(int argc, char* argv[])
     SOPC_S2OPC_Config_Initialize(&s2opcConfig);
     SOPC_Server_Config* serverConfig = &s2opcConfig.serverConfig;
     SOPC_Endpoint_Config* epConfig = NULL;
-    uint32_t epConfigIdx = 0;
 
     SOPC_UserAuthentication_Manager* authenticationManager = NULL;
     SOPC_UserAuthorization_Manager* authorizationManager = NULL;

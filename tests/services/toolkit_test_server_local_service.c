@@ -50,6 +50,8 @@ static int getEndpointsReceived = false;
 
 static uint32_t cptReadResps = 0;
 
+static uint32_t epConfigIdx = 0;
+
 static void Test_ComEvent_FctServer(SOPC_App_Com_Event event, uint32_t idOrStatus, void* param, uintptr_t appContext)
 {
     /* avoid unused parameter compiler warning */
@@ -122,10 +124,14 @@ static void Test_ComEvent_FctServer(SOPC_App_Com_Event event, uint32_t idOrStatu
     }
 }
 
-static void Test_AddressSpaceNotif_Fct(SOPC_App_AddSpace_Event event, void* opParam, SOPC_StatusCode opStatus)
+static void Test_AddressSpaceNotif_Fct(const SOPC_CallContext* callCtxPtr,
+                                       SOPC_App_AddSpace_Event event,
+                                       void* opParam,
+                                       SOPC_StatusCode opStatus)
 {
     // No notification shall be received when using local services
     /* avoid unused parameter compiler warning */
+    (void) callCtxPtr;
     (void) event;
     (void) opParam;
     (void) opStatus;
@@ -167,7 +173,6 @@ int main(int argc, char* argv[])
     OpcUa_WriteRequest* pWriteReqSent = NULL;
     OpcUa_WriteRequest* pWriteReqCopy = NULL;
 
-    uint32_t epConfigIdx = 0;
     SOPC_S2OPC_Config s2opcConfig;
     SOPC_S2OPC_Config_Initialize(&s2opcConfig);
     SOPC_Server_Config* sConfig = &s2opcConfig.serverConfig;
