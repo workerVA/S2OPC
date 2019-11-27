@@ -100,6 +100,11 @@ LOCAL_OPERATIONS
     END
     ;
     
+    /* Set application context for the channel used:
+     * for now used only when message received because it is only used 
+     * during a server service treatment. 
+     * It might be extended later to client side or others treatments / events.
+     */
     l_set_app_call_context_channel_config (p_channel) =
     PRE
         p_channel : t_channel_i
@@ -447,7 +452,6 @@ OPERATIONS
         l_connected_channel <-- is_connected_channel (channel);
         IF l_connected_channel = TRUE
         THEN
-            l_set_app_call_context_channel_config (channel);
             l_is_client_channel <-- is_client_channel (channel);
             IF l_is_client_channel = TRUE
             THEN
@@ -461,8 +465,6 @@ OPERATIONS
             => reqId / reqHandle is not necessary unique on server side since client provided it
             */
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -475,15 +477,12 @@ OPERATIONS
         l_connected_channel <-- is_connected_channel (channel);
         IF l_connected_channel = TRUE
         THEN
-            l_set_app_call_context_channel_config (channel);
             l_is_client_channel <-- is_client_channel (channel);
             IF l_is_client_channel = TRUE
             THEN
                 client_snd_msg_failure (channel, request_handle, e_sc_bad_timeout)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -494,28 +493,20 @@ OPERATIONS
         l_bres <-- cli_set_connected_channel (channel_config_idx, channel);
         IF l_bres = TRUE
         THEN
-            l_set_app_call_context_channel_config (channel);
             client_channel_connected_event_session (channel_config_idx, channel);
-            client_channel_connected_event_discovery (channel_config_idx, channel);
-            clear_app_call_context
+            client_channel_connected_event_discovery (channel_config_idx, channel)
         END
-        ;
-        clear_app_call_context
     END
     ;
 
     client_secure_channel_timeout (channel_config_idx) =
     VAR
-        l_bres,
-        l_channel
+        l_bres
     IN
-        l_channel <-- get_connected_channel (channel_config_idx);
-        l_set_app_call_context_channel_config (l_channel);
         client_discovery_req_failures_on_final_connection_failure (channel_config_idx);
         client_close_sessions_on_final_connection_failure (channel_config_idx);
-        l_bres <-- cli_set_connection_timeout_channel (channel_config_idx);
+        l_bres <-- cli_set_connection_timeout_channel (channel_config_idx)
         // No new (auto) attempt will be made to connect with this secure channel confix => close sessions waiting for it
-        clear_app_call_context
     END
     ;
 
@@ -523,11 +514,8 @@ OPERATIONS
     VAR
         l_is_one_sc_closing
     IN
-        // No application call context to set since no callback is called
         l_is_one_sc_closing <-- l_may_close_secure_channel_without_session;
         bres <-- srv_new_secure_channel (endpoint_config_idx, channel_config_idx, channel, l_is_one_sc_closing)
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -541,7 +529,6 @@ OPERATIONS
         IF bres = TRUE
         THEN
             l_channel <-- get_connected_channel (channel_config_idx);
-            l_set_app_call_context_channel_config (l_channel);
             l_connected_channel <-- is_connected_channel (l_channel);
             IF l_connected_channel = FALSE
             THEN
@@ -558,8 +545,6 @@ OPERATIONS
                 bres <-- client_async_activate_new_session_with_channel (channel_config_idx, l_channel, p_user_token, app_context)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -591,8 +576,6 @@ OPERATIONS
                 END
             END // ELSE: session closed by client_service_activate_session in case of error
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -635,8 +618,6 @@ OPERATIONS
                 dealloc_msg_out (req_msg)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -658,7 +639,6 @@ OPERATIONS
         IF l_valid_msg = TRUE & l_valid_channel_config = TRUE
         THEN
             l_channel <-- get_connected_channel (channel_config_idx);
-            l_set_app_call_context_channel_config (l_channel);
             l_connected_channel <-- is_connected_channel (l_channel);
             IF l_connected_channel = FALSE
             THEN
@@ -700,8 +680,6 @@ OPERATIONS
                 dealloc_msg_out (req_msg)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -720,8 +698,6 @@ OPERATIONS
             l_msg_service_class <-- get_msg_service_class (l_msg_typ);
             ret <-- server_receive_local_service_req  (endpoint_config_idx, l_msg_service_class, l_msg_typ, req_msg, app_context)
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -754,8 +730,6 @@ OPERATIONS
         ELSE
             ret := e_sc_bad_invalid_argument
         END
-        ;
-        clear_app_call_context        
     END
     ;
 
@@ -769,7 +743,6 @@ OPERATIONS
         l_req_handle_in_req_id
     IN
         l_channel <-- get_connected_channel (channel_config_idx);
-        l_set_app_call_context_channel_config (l_channel);
         l_connected_channel <-- is_connected_channel (l_channel);
         IF l_connected_channel = FALSE
         THEN
@@ -786,8 +759,6 @@ OPERATIONS
                 send_channel_msg_buffer (l_channel, l_buffer_out, l_req_handle_in_req_id)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -801,7 +772,6 @@ OPERATIONS
         l_req_handle_in_req_id
     IN
         l_channel <-- get_connected_channel (channel_config_idx);
-        l_set_app_call_context_channel_config (l_channel);
         l_connected_channel <-- is_connected_channel (l_channel);
         IF l_connected_channel = TRUE
         THEN
@@ -814,8 +784,6 @@ OPERATIONS
                 send_channel_msg_buffer (l_channel, l_buffer_out, l_req_handle_in_req_id)
             END
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -828,8 +796,6 @@ OPERATIONS
         THEN
             server_evaluate_session_timeout (session)
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -847,7 +813,6 @@ OPERATIONS
         l_connected_channel <-- is_connected_channel (channel);
         IF l_connected_channel = TRUE
         THEN
-            l_set_app_call_context_channel_config (channel);
             l_is_client <-- is_client_channel (channel);
             IF l_is_client = TRUE
             THEN
@@ -880,8 +845,6 @@ OPERATIONS
             END;
             channel_lost (channel)
         END
-        ;
-        clear_app_call_context
     END
     ;
 
@@ -899,8 +862,6 @@ OPERATIONS
         ELSE
             bres := FALSE
         END
-        ;
-        clear_app_call_context
     END;
 
     bres <-- internal_server_subscription_publish_timeout (p_subscription) =
@@ -915,8 +876,6 @@ OPERATIONS
         ELSE
             bres := FALSE
         END
-        ;
-        clear_app_call_context        
     END;
 
     bres <-- internal_server_send_publish_response_prio_event (p_session, p_req_handle, p_req_context, p_publish_resp_msg, p_statusCode) =
@@ -951,16 +910,12 @@ OPERATIONS
         ELSE
             bres := FALSE
         END
-        ;
-        clear_app_call_context    
     END
     ;
 
     bres <-- close_all_active_connections =
     BEGIN
         bres <-- close_all_channel
-        ;
-        clear_app_call_context        
     END
     ;
 

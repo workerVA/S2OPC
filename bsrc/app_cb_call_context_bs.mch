@@ -25,7 +25,8 @@ MACHINE
 SEES
     constants
 OPERATIONS
-
+    
+    /* For now only set on received message treatment and used only for server service request treatment */
     set_app_call_context_channel_config(p_channel_config, p_endpoint_config) =
     PRE
         p_channel_config : t_channel_config_idx_i &
@@ -36,6 +37,7 @@ OPERATIONS
     END
     ;
 
+    /* For now only set on server service request on activated session treatment */
     set_app_call_context_session(p_user) =
     PRE
         p_user    : t_user_i    &
