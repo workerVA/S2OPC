@@ -216,6 +216,19 @@ if(CROSS_COMPILE STREQUAL linux)
     set(MATH_LIB m)
 elseif(CROSS_COMPILE STREQUAL windows)
     set(SOCK_LIB ws2_32)
+elseif(CROSS_COMPILE STREQUAL freertos)
+    #TODO check that these include dirs are defined
+    set(FREERTOS_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/Source/include/"
+                              "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/config/"
+                              "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/"
+                              )
+    set(LWIP_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/config/"
+                          "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/src/include/"
+                          "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/system/"
+                          )
+    set(MBEDTLS_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/mbedTLS/include"
+                             "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/mbedTLS/config"
+                             )
 endif()
 
 # Define platform dependent source files
@@ -332,7 +345,7 @@ set(S2OPC_STATIC_DEP_LIBS ${MBEDTLS_STATIC_LIBRARIES} ${MATH_LIB} ${THREAD_LIB} 
 add_library(s2opc_obj OBJECT ${PLATFORM_SRCS} ${S2OPC_SRCS})
 target_include_directories(s2opc_obj BEFORE
 	PUBLIC  ${S2OPC_PUBLIC_INCLUDES}
-	PRIVATE ${S2OPC_PRIVATE_INCLUDES} ${MBEDTLS_INCLUDE_DIRS}
+    PRIVATE ${S2OPC_PRIVATE_INCLUDES} ${MBEDTLS_INCLUDE_DIRS} ${FREERTOS_INCLUDE_DIRS} ${LWIP_INCLUDE_DIRS}
 )
 add_dependencies(s2opc_obj build_info)
 
@@ -379,6 +392,7 @@ install(TARGETS s2opc
         ARCHIVE DESTINATION lib # Supposedly static lib
         PUBLIC_HEADER DESTINATION include
 )
+#install(FILES ${S2OPC_INCLUDE_FILES} DESTINATION include)
 
 install(FILES ${CMAKE_SOURCE_DIR}/scripts/generate-s2opc-address-space.py DESTINATION bin)
 
@@ -895,39 +909,41 @@ endif()
 
 ###### Subscribing client library and binary ######
 
-set(LIBSUBSCRIBE_PATH "tests/client_subscription")
-add_library(client_subscription "${LIBSUBSCRIBE_PATH}/libs2opc_client.c"
-                                "${LIBSUBSCRIBE_PATH}/toolkit_helpers.c"
-                                "${LIBSUBSCRIBE_PATH}/state_machine.c"
-                                "${LIBSUBSCRIBE_PATH}/pki_permissive.c"
-                                )
-target_link_libraries(client_subscription PRIVATE s2opc)
-target_include_directories(client_subscription PRIVATE ${S2OPC_PUBLIC_INCLUDES}
-                                                       ${S2OPC_PRIVATE_INCLUDES}
-                                                       ${LIBSUBSCRIBE_PATH})
-set_target_properties(client_subscription PROPERTIES PUBLIC_HEADER "${LIBSUBSCRIBE_PATH}/libs2opc_client.h")
-install(TARGETS client_subscription
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION include)
+#TODO find a way not to build this! (Add an option ?)
 
-if(ENABLE_TESTING)
-
-# s2opc_subscription_client is not built on Windows
-if(NOT WIN32)
-# Demo client
-add_executable(s2opc_subscription_client "${LIBSUBSCRIBE_PATH}/client.c"
-                                         )
-target_link_libraries(s2opc_subscription_client PRIVATE client_subscription s2opc)
-endif(NOT WIN32)
-
-# Helpers unit tests
-add_executable(check_libsub "${LIBSUBSCRIBE_PATH}/check_libsub.c")
-target_include_directories(check_libsub PRIVATE ${S2OPC_PRIVATE_INCLUDES} ${MBEDTLS_INCLUDE_DIRS} ${CHECK_INCLUDE_DIRS})
-target_link_libraries(check_libsub PRIVATE client_subscription s2opc ${CHECK_LIBRARIES})
-s2opc_client_validation_test(check_libsub)
-
-endif(ENABLE_TESTING)
+#set(LIBSUBSCRIBE_PATH "tests/client_subscription")
+#add_library(client_subscription "${LIBSUBSCRIBE_PATH}/libs2opc_client.c"
+#                                "${LIBSUBSCRIBE_PATH}/toolkit_helpers.c"
+#                                "${LIBSUBSCRIBE_PATH}/state_machine.c"
+#                                "${LIBSUBSCRIBE_PATH}/pki_permissive.c"
+#                                )
+#target_link_libraries(client_subscription PRIVATE s2opc)
+#target_include_directories(client_subscription PRIVATE ${S2OPC_PUBLIC_INCLUDES}
+#                                                       ${S2OPC_PRIVATE_INCLUDES}
+#                                                       ${LIBSUBSCRIBE_PATH})
+#set_target_properties(client_subscription PROPERTIES PUBLIC_HEADER "${LIBSUBSCRIBE_PATH}/libs2opc_client.h")
+#install(TARGETS client_subscription
+#        LIBRARY DESTINATION lib
+#        ARCHIVE DESTINATION lib
+#        PUBLIC_HEADER DESTINATION include)
+#
+#if(ENABLE_TESTING)
+#
+## s2opc_subscription_client is not built on Windows
+#if(NOT WIN32)
+## Demo client
+#add_executable(s2opc_subscription_client "${LIBSUBSCRIBE_PATH}/client.c"
+#                                         )
+#target_link_libraries(s2opc_subscription_client PRIVATE client_subscription s2opc)
+#endif(NOT WIN32)
+#
+## Helpers unit tests
+#add_executable(check_libsub "${LIBSUBSCRIBE_PATH}/check_libsub.c")
+#target_include_directories(check_libsub PRIVATE ${S2OPC_PRIVATE_INCLUDES} ${MBEDTLS_INCLUDE_DIRS} ${CHECK_INCLUDE_DIRS})
+#target_link_libraries(check_libsub PRIVATE client_subscription s2opc ${CHECK_LIBRARIES})
+#s2opc_client_validation_test(check_libsub)
+#
+#endif(ENABLE_TESTING)
 
 ###### PyS2OPC ######
 
