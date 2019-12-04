@@ -169,17 +169,56 @@ string(REGEX REPLACE "[-/]DNDEBUG" "" CMAKE_C_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLA
 
 # Source files of S2OPC library
 
-# Define platform dependent source files
-if(UNIX)
-  set(PLATFORM_DIR linux)
-  set(THREAD_LIB pthread rt)
-  set(MATH_LIB m)
-elseif(WIN32)
-  set(PLATFORM_DIR windows)
-  set(SOCK_LIB ws2_32)
+macro(SUPPORTED_OS_LIST result arch_dir)
+    file(GLOB children RELATIVE ${arch_dir} "${arch_dir}/*")
+    set(DIRLIST "")
+    foreach(child ${children})
+        if(IS_DIRECTORY ${arch_dir}/${child})
+            list(APPEND DIRLIST ${child})
+        endif()
+    endforeach()
+    set(${result} ${DIRLIST})
+endmacro()
+
+# if cross compile option
+# then cross compile for specified os
+# else CROSS_COMPILE=current platform
+
+SUPPORTED_OS_LIST(SUPPORTED_OSES "${CMAKE_CURRENT_SOURCE_DIR}/csrc/helpers_platform_dep/")
+
+if(CROSS_COMPILE)
+    string(TOLOWER ${CROSS_COMPILE} CROSS_COMPILE)
+
+    # check that OS is supported
+    list(FIND SUPPORTED_OSES ${CROSS_COMPILE} os_index)
+    if(${os_index} GREATER -1)
+        set(PLATFORM_DIR ${CROSS_COMPILE})
+    else()
+        message(FATAL_ERROR "OS ${CROSS_COMPILE} is not supported.")
+    endif()
 else()
-  message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+    message("Cross compile not defined, choosing the host platform")
+    if(UNIX)
+        set(CROSS_COMPILE linux)
+    elseif(WIN32)
+        set(CROSS_COMPILE windows)
+    else()
+        message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+    endif()
 endif()
+
+# Set platform directory
+set(PLATFORM_DIR ${CROSS_COMPILE})
+
+# Specific thread libs
+if(CROSS_COMPILE STREQUAL linux)
+    set(THREAD_LIB pthread rt)
+    set(MATH_LIB m)
+elseif(CROSS_COMPILE STREQUAL windows)
+    set(SOCK_LIB ws2_32)
+endif()
+
+# Define platform dependent source files
 
 file(GLOB PLATFORM_SRCS "csrc/helpers_platform_dep/*.c" "csrc/helpers_platform_dep/${PLATFORM_DIR}/*.c")
 
@@ -232,7 +271,8 @@ else()
 	set(MBEDTLS_USE_STATIC_LIBS 1)
 endif()
 
-find_package(MbedTLS REQUIRED)
+#TODO see if required when cross compiling
+#find_package(MbedTLS REQUIRED)
 
 # We always link check statically, so that our test binaries are standalone
 if(ENABLE_TESTING)

@@ -23,10 +23,12 @@
 
 SOPC_FileSystem_CreationResult SOPC_FileSystem_mkdir(const char* directoryPath)
 {
+    (void) (directoryPath);
     return SOPC_FileSystem_Creation_OK;
 }
 
 SOPC_FileSystem_RemoveResult SOPC_FileSystem_rmdir(const char* directoryPath)
 {
+    (void) (directoryPath);
     return SOPC_FileSystem_Creation_OK;
 }
