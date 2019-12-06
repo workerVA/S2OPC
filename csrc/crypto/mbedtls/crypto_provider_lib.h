@@ -25,6 +25,7 @@
 #ifndef SOPC_CRYPTO_PROVIDER_LIB_H_
 #define SOPC_CRYPTO_PROVIDER_LIB_H_
 
+#include "mbedtls_config.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/entropy.h"
 

@@ -53,8 +53,8 @@ else()
 	# -g option is already set in Debug and Debugwithdebinfo modes.
 	# -fPIC option is added to produce position independent code, which is reusable in dynamic libraries.
 	# It is not set in Release mode.
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fPIC")
-	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -fno-omit-frame-pointer -fPIC")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer")# -fPIC")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -fno-omit-frame-pointer") #-fPIC")
 endif()
 
 add_definitions(-DSOPC_PTR_SIZE=${CMAKE_SIZEOF_VOID_P})
@@ -84,7 +84,7 @@ endif()
 option(WITH_TSAN "build with TSAN" OFF)
 if(WITH_TSAN)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread -pie -fno-omit-frame-pointer")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=thread -fno-omit-frame-pointer -fPIC")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=thread -fno-omit-frame-pointer")# -fPIC")
 endif()
 
 option(WITH_UBSAN "build with UBSAN" OFF)
@@ -218,16 +218,16 @@ elseif(CROSS_COMPILE STREQUAL windows)
     set(SOCK_LIB ws2_32)
 elseif(CROSS_COMPILE STREQUAL freertos)
     #TODO check that these include dirs are defined
-    set(FREERTOS_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/Source/include/"
-                              "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/config/"
-                              "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/"
+    set(FREERTOS_INCLUDE_DIRS "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/FreeRTOS/Source/include/"
+                              "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/FreeRTOS/config/"
+                              "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/"
                               )
-    set(LWIP_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/config/"
-                          "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/src/include/"
-                          "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/LwIP/system/"
-                          )
-    set(MBEDTLS_INCLUDE_DIRS "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/mbedTLS/include"
-                             "/users/luperini/git/stm32f7_ci/Middlewares/Third_Party/mbedTLS/config"
+    set(LWIP_INCLUDE_DIRS     "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/LwIP/config/"
+                              "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/LwIP/src/include/"
+                              "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/LwIP/system/"
+                              )
+    set(MBEDTLS_INCLUDE_DIRS  "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/mbedTLS/include"
+                              "/users/luperini/Ac6/workspace/STM32746G_DISCOVERY_LwIP/Middlewares/Third_Party/mbedTLS/config"
                              )
 endif()
 
@@ -350,7 +350,7 @@ target_include_directories(s2opc_obj BEFORE
 add_dependencies(s2opc_obj build_info)
 
 # Needed if we want to use the objects in a shared library
-set_property(TARGET s2opc_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
+#set_property(TARGET s2opc_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 # Manage the Nano profiles extended mode
 if (WITH_NANO_EXTENDED)
