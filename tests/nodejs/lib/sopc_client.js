@@ -103,7 +103,24 @@ const SOPC_DataValuePtr = ref.refType(bind.SOPC_DataValue);
  * @returns 0 if OK else C error code
  */
 function initialize(toolkit_log_path, toolkit_log_level){
-    return bind.sopc_client.SOPC_ClientHelper_Initialize(toolkit_log_path, toolkit_log_level.value);
+
+    /* hangs indefinitely when closing the toolkit */
+    //let disco_callback = ffi.Callback('void', ['uint32'],
+    //                               function(connectionId) {
+    //                                   console.log("Disconnecting ", connectionId);
+    //                                   //disconnect_callback(connectionId);
+    //                               });
+
+    //// Make an extra reference to the callback pointer to avoid GC
+    //process.on('exit', function() {
+    //    disco_callback
+    //});
+    //// Make an extra reference to the callback pointer to avoid GC
+    //process.on('exit', function() {
+    //    disconnect_callback
+    //});
+
+    return bind.sopc_client.SOPC_ClientHelper_Initialize(toolkit_log_path, toolkit_log_level.value, ref.NULL);
 }
 
 /**

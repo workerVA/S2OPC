@@ -293,7 +293,7 @@ const SOPC_ClientHelper_GetEndpointsResultPtr = ref.refType(SOPC_ClientHelper_Ge
 const SOPC_ClientHelper_GetEndpointsResultPtrPtr = ref.refType(SOPC_ClientHelper_GetEndpointsResultPtr);
 
 const sopc_client = ffi.Library('libclient_subscription', {
-    'SOPC_ClientHelper_Initialize': ['int32', ['CString', 'int32']],
+    'SOPC_ClientHelper_Initialize': ['int32', ['CString', 'int32', 'pointer']],
     'SOPC_ClientHelper_Finalize': ['void', []],
     'SOPC_ClientHelper_Connect': ['int32', ['CString', SOPC_ClientHelper_SecurityCfg]],
     'SOPC_ClientHelper_Disconnect': ['int32', ['int32']],
