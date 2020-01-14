@@ -52,6 +52,7 @@ const SOPC_SecurityPolicy = {
  * @param {Number} security_mode
  * @param {String} user_policy_id
  * @param {String} path_cert_auth
+ * @param {String} path_crl
  * @param {String} path_cert_srv
  * @param {String} path_cert_cli
  * @param {String} path_key_cli
@@ -59,7 +60,7 @@ const SOPC_SecurityPolicy = {
  * @param {String} user_password
  */
 function SecurityCfg(security_policy, security_mode, user_policy_id,
-                     path_cert_auth = ref.NULL, path_cert_srv = ref.NULL,
+                     path_cert_auth = ref.NULL, path_crl = ref.NULL, path_cert_srv = ref.NULL,
                      path_cert_cli = ref.NULL, path_key_cli = ref.NULL,
                      user_name = ref.NULL, user_password = ref.NULL)
 {
@@ -67,7 +68,7 @@ function SecurityCfg(security_policy, security_mode, user_policy_id,
         throw `Invalid security_policy (${security_policy}).`;
     }
 
-    let fileList = [path_cert_auth, path_cert_srv, path_cert_cli, path_key_cli];
+    let fileList = [path_cert_auth, path_crl, path_cert_srv, path_cert_cli, path_key_cli];
     if (security_mode === SOPC_MessageSecurityMode.Sign || security_mode === SOPC_MessageSecurityMode.SignAndEncrypt) {
         for (let file of fileList) {
             if (file === ref.NULL) {
@@ -83,6 +84,7 @@ function SecurityCfg(security_policy, security_mode, user_policy_id,
         security_policy : security_policy,
         security_mode : security_mode.value,
         path_cert_auth : path_cert_auth,
+        path_crl : path_crl,
         path_cert_srv : path_cert_srv,
         path_cert_cli : path_cert_cli,
         path_key_cli : path_key_cli,

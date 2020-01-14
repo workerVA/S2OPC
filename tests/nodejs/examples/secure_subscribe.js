@@ -54,6 +54,7 @@ let dataChange_callback = function(connectionId, nodeId, dataValue) {
 let prefixPathCert = path.join(__dirname, "../../data/cert/");
 let path_cert_cli  = path.join(prefixPathCert, "client_2k_cert.der");
 let path_cert_auth = path.join(prefixPathCert, "cacert.der");
+let path_crl = path.join(prefixPathCert, "cacrl.der");
 let path_cert_srv  = path.join(prefixPathCert, "server_2k_cert.der");
 let path_key_cli   = path.join(prefixPathCert, "client_2k_key.pem");
 
@@ -64,6 +65,7 @@ if(status){
                                               default_security_mode,
                                               default_user_security_policy_id,
                                               path_cert_auth=path_cert_auth,
+                                              path_crl = path_crl,
                                               path_cert_srv=path_cert_srv,
                                               path_cert_cli=path_cert_cli,
                                               path_key_cli=path_key_cli,

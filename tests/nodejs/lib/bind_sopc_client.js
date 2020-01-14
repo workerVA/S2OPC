@@ -37,6 +37,7 @@ const SOPC_ClientHelper_SecurityCfg = StructType({
     security_policy: 'CString',
     security_mode: 'int32',
     path_cert_auth: 'CString',
+    path_crl: 'CString',
     path_cert_srv: 'CString',
     path_cert_cli: 'CString',
     path_key_cli: 'CString',
