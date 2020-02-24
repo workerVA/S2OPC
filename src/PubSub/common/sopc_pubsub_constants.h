@@ -23,4 +23,9 @@
 // Size of buffer (max size of message)
 #define SOPC_PUBSUB_BUFFER_SIZE 4096
 
+// Size of array. Use for subscriber context
+#define SOPC_PUBSUB_MAX_PUBLISHER_PER_SCHEDULER 10
+// Size of array. Use for subscriber context
+#define SOPC_PUBSUB_MAX_MESSAGE_PER_PUBLISHER 10
+
 #endif /* SOPC_PUBSUB_CONSTANTS_H_ */
