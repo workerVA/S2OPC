@@ -41,6 +41,17 @@
 #define LOGGER_FUNC_FORMAT ATTR_FORMAT(printf, 1, 2)
 
 /**
+ * \brief log level enumeration
+ */
+typedef enum
+{
+    SOPC_LOG_LEVEL_ERROR = 0,
+    SOPC_LOG_LEVEL_WARNING = 1,
+    SOPC_LOG_LEVEL_INFO = 2,
+    SOPC_LOG_LEVEL_DEBUG = 3
+} SOPC_Log_Level;
+
+/**
  * \brief enumerate to define log modules
  */
 typedef enum SOPC_Log_Module
@@ -49,6 +60,29 @@ typedef enum SOPC_Log_Module
     SOPC_LOG_MODULE_CLIENTSERVER, /**< ClientServer log module */
     SOPC_LOG_MODULE_PUBSUB        /**< PubSub log module */
 } SOPC_Log_Module;
+
+/* TODO doc */
+typedef void (*SOPC_Log_Initialize)(void);
+typedef SOPC_Log_Instance* (*SOPC_Log_CreateInstance)(SOPC_Log_Configuration *log_configuration);
+typedef SOPC_Log_Instance* (*SOPC_Log_CreateInstanceAssociation)(SOPC_Log_Instance* log_instance, const char* category);
+typedef void (*SOPC_Log_VTrace)(SOPC_Log_Instance* pLogInst, SOPC_Log_Level level, const char* format, va_list args);
+typedef void (*SOPC_Log_ClearInstance)(SOPC_Log_Instance** ppLogInst);
+typedef void (*SOPC_Log_Clear)(void);
+
+/**
+ * \brief logger functions structure
+ *
+ * each logger should fill this structure with its functions
+ */
+typedef struct SOPC_Logger
+{
+    SOPC_Log_Initialize initialize;
+    SOPC_Log_CreateInstance create_instance;
+    SOPC_Log_CreateInstanceAssociation create_instance_assoc;
+    SOPC_Log_VTrace vtrace;
+    SOPC_Log_ClearInstance clear_instance;
+    SOPC_Log_Clear clear;
+} SOPC_Logger;
 
 /*
  * \brief Initializes the logger and create the necessary log file(s)
