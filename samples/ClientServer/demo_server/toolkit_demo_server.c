@@ -725,6 +725,40 @@ static const SOPC_UserAuthentication_Functions authentication_uactt_functions = 
     .pFuncFree = (SOPC_UserAuthentication_Free_Func) SOPC_Free,
     .pFuncValidateUserIdentity = authentication_uactt};
 
+/** \brief Authorize R/W operation callback */
+static SOPC_ReturnStatus user_authorized(SOPC_UserAuthorization_Manager* authorizationManager,
+                                         SOPC_UserAuthorization_OperationType operationType,
+                                         const SOPC_NodeId* nodeId,
+                                         uint32_t attributeId,
+                                         const SOPC_User* pUser,
+                                         bool* pbOperationAuthorized)
+{
+    (void) (authorizationManager);
+    (void) (operationType);
+    (void) (nodeId);
+    (void) (attributeId);
+    assert(NULL != pbOperationAuthorized);
+
+    // Authorize read only by default (i.e. anonymous users)
+    *pbOperationAuthorized = SOPC_USER_AUTHORIZATION_OPERATION_READ == operationType;
+
+    if (!*pbOperationAuthorized && SOPC_User_IsUsername(pUser))
+    {
+        // Authorize some users to write or execute methods
+        const SOPC_String* username = SOPC_User_GetUsername(pUser);
+        if (strcmp(SOPC_String_GetRawCString(username), "user1") == 0)
+        {
+            *pbOperationAuthorized = true;
+        }
+    }
+
+    return SOPC_STATUS_OK;
+}
+
+static const SOPC_UserAuthorization_Functions userAuthorizationFunctions = {
+    .pFuncFree = (SOPC_UserAuthorization_Free_Func) SOPC_Free,
+    .pFuncAuthorizeOperation = user_authorized};
+
 static SOPC_ReturnStatus Server_SetUserManagementConfig(SOPC_Endpoint_Config* pEpConfig,
                                                         SOPC_UserAuthentication_Manager** output_authenticationManager,
                                                         SOPC_UserAuthorization_Manager** output_authorizationManager)
@@ -736,7 +770,7 @@ static SOPC_ReturnStatus Server_SetUserManagementConfig(SOPC_Endpoint_Config* pE
 
     /* Create an user authorization manager which accepts any user.
      * i.e.: UserAccessLevel right == AccessLevel right for any user for a given node of address space */
-    *output_authorizationManager = SOPC_UserAuthorization_CreateManager_AllowAll();
+    *output_authorizationManager = SOPC_Calloc(1, sizeof(SOPC_UserAuthorization_Manager));
     *output_authenticationManager = SOPC_Calloc(1, sizeof(SOPC_UserAuthentication_Manager));
     if (NULL == *output_authenticationManager || NULL == *output_authorizationManager)
     {
@@ -746,8 +780,11 @@ static SOPC_ReturnStatus Server_SetUserManagementConfig(SOPC_Endpoint_Config* pE
 
     if (SOPC_STATUS_OK == status)
     {
+        /* Set a user authorization function  */
+        (*output_authorizationManager)->pFunctions = &userAuthorizationFunctions;
         /* Set a user authentication function that complies with UACTT tests expectations */
         (*output_authenticationManager)->pFunctions = &authentication_uactt_functions;
+
         pEpConfig->authenticationManager = *output_authenticationManager;
         pEpConfig->authorizationManager = *output_authorizationManager;
     }
