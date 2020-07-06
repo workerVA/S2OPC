@@ -591,19 +591,19 @@ static void Server_Event_AddressSpace(SOPC_App_AddSpace_Event event, void* opPar
 }
 
 static void Server_Event_Toolkit(SOPC_App_Com_Event event, uint32_t idOrStatus, void* param, uintptr_t appContext)
- {
-     (void) idOrStatus;
-     SOPC_EncodeableType* message_type = NULL;
+{
+    (void) idOrStatus;
+    SOPC_EncodeableType* message_type = NULL;
 
-     switch (event)
-     {
-     case SE_CLOSED_ENDPOINT:
-         printf("# Info: Closed endpoint event.\n");
-         SOPC_Atomic_Int_Set(&serverOnline, 0);
-         return;
-     case SE_LOCAL_SERVICE_RESPONSE:
-         message_type = *((SOPC_EncodeableType**) param);
-         /* Listen for WriteResponses, which only contain status codes */
+    switch (event)
+    {
+    case SE_CLOSED_ENDPOINT:
+        printf("# Info: Closed endpoint event.\n");
+        SOPC_Atomic_Int_Set(&serverOnline, 0);
+        return;
+    case SE_LOCAL_SERVICE_RESPONSE:
+        message_type = *((SOPC_EncodeableType**) param);
+        /* Listen for WriteResponses, which only contain status codes */
         /*if (message_type == &OpcUa_WriteResponse_EncodeableType)
         {
             OpcUa_WriteResponse* write_response = param;
