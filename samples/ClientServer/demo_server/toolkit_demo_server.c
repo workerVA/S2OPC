@@ -310,6 +310,8 @@ static SOPC_ReturnStatus Server_Initialize(const char* logDirPath)
         logConfiguration.logSysConfig.fileSystemLogConfig.logDirPath = "./toolkit_demo_server_logs/";
 #endif
     }
+    logConfiguration.logSysConfig.fileSystemLogConfig.logMaxBytes = 10485760;
+    logConfiguration.logSysConfig.fileSystemLogConfig.logMaxFiles = 50;
     logConfiguration.logLevel = SOPC_LOG_LEVEL_DEBUG;
     SOPC_ReturnStatus status = SOPC_Common_Initialize(logConfiguration);
     // Initialize the toolkit library and define the communication events callback
