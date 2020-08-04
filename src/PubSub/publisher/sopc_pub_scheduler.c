@@ -85,8 +85,6 @@ typedef struct SOPC_PubScheduler_MessageCtx
     SOPC_Dataset_NetworkMessage* message;
     SOPC_PubScheduler_TransportCtx* transport;
     SOPC_PubSub_SecurityType* security;
-    SOPC_Buffer* postEncodeBuffer[2];
-    uint32_t postEncodeBufferCurrent;
     uint32_t rt_publisher_msg_id;
 } SOPC_PubScheduler_MessageCtx;
 
@@ -307,9 +305,6 @@ static void SOPC_PubScheduler_MessageCtx_Array_Clear(void)
             SOPC_PubSub_Security_Clear(pubSchedulerCtx.messages.array[i].security);
             SOPC_Free(pubSchedulerCtx.messages.array[i].security);
             pubSchedulerCtx.messages.array[i].security = NULL;
-
-            SOPC_Buffer_Delete(pubSchedulerCtx.messages.array[i].postEncodeBuffer[0]);
-            SOPC_Buffer_Delete(pubSchedulerCtx.messages.array[i].postEncodeBuffer[1]);
         }
 
         /* Destroy messages array */
@@ -336,30 +331,6 @@ static bool SOPC_PubScheduler_MessageCtx_Array_Init_Next(SOPC_PubScheduler_Trans
     {
         return false;
     }
-
-    if (result)
-    {
-        context->postEncodeBuffer[0] = SOPC_Buffer_Create(SOPC_PUBSUB_BUFFER_SIZE);
-        if (context->postEncodeBuffer[0] == NULL)
-        {
-            printf("# Error : message can't be created #%d - postEncodeBuffer[0] alloc failed\n",
-                   (int32_t) pubSchedulerCtx.messages.current);
-            result = false;
-        }
-    }
-
-    if (result)
-    {
-        context->postEncodeBuffer[1] = SOPC_Buffer_Create(SOPC_PUBSUB_BUFFER_SIZE);
-        if (context->postEncodeBuffer[1] == NULL)
-        {
-            printf("# Error : message can't be created #%d - postEncodeBuffer[1] alloc failed\n",
-                   (int32_t) pubSchedulerCtx.messages.current);
-            result = false;
-        }
-    }
-
-    context->postEncodeBufferCurrent = 2;
 
     if (result)
     {
@@ -398,11 +369,6 @@ static bool SOPC_PubScheduler_MessageCtx_Array_Init_Next(SOPC_PubScheduler_Trans
             SOPC_Free(context->security);
             context->security = NULL;
         }
-
-        SOPC_Buffer_Delete(context->postEncodeBuffer[0]);
-        SOPC_Buffer_Delete(context->postEncodeBuffer[1]);
-
-        context->postEncodeBufferCurrent = 2;
 
         printf("# Error : message can't be created #%d\n", (int32_t) pubSchedulerCtx.messages.current);
     }
@@ -479,20 +445,8 @@ static void SOPC_RT_Publisher_SendPubMsgCallback(uint32_t msgId,     // Message 
 
     if (size > 0 && pCtx != NULL && pCtx->transport != NULL && pCtx->transport->fctSend != NULL)
     {
-        SOPC_ReturnStatus status = SOPC_STATUS_OK;
-        if (pCtx->postEncodeBufferCurrent < 2)
-        {
-            pCtx->transport->fctSend(pCtx->transport,                                        //
-                                     pCtx->postEncodeBuffer[pCtx->postEncodeBufferCurrent]); //
-        }
-
-        pubSchedulerCtx.sequenceNumber++; //
-        status = SOPC_Buffer_Copy(pCtx->postEncodeBuffer[(pCtx->postEncodeBufferCurrent + 1) % 2], &buffer);
-
-        if (status == SOPC_STATUS_OK)
-        {
-            pCtx->postEncodeBufferCurrent = (pCtx->postEncodeBufferCurrent + 1) % 2;
-        }
+        pCtx->transport->fctSend(pCtx->transport, &buffer);
+        pubSchedulerCtx.sequenceNumber++;
     }
 
     return;
