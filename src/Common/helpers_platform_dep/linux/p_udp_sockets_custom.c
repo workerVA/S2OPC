@@ -114,7 +114,9 @@ SOPC_ReturnStatus SOPC_TX_UDP_send(int sockAddress,
     memset(&sockIpAddr, 0, sizeof(sockIpAddr));
     sockIpAddr.sin_family = AF_INET;
     sockIpAddr.sin_addr = mcastAddr;
-    sockIpAddr.sin_port = htons(strtol(service, NULL, 10));
+    long int port = strtol(service, NULL, 10);
+    assert(port <= UINT16_MAX);
+    sockIpAddr.sin_port = htons((uint16_t)port);
 
     fdIOBuffer.iov_base = txBuffer;
     fdIOBuffer.iov_len = (size_t) txBuffLen;
